@@ -12,41 +12,100 @@
 - HTML5 解析を行う `HtmlDocument`
 - `Legacy` 配下は旧資産の保管用であり、新規コードから参照しない
 
-## 使い方
+## 使用例
 
-### `HtmlTemplate` の例
+### HtmlTemplate
 
 ```php
 use Period\WpFramework\Support\HtmlTemplate;
 
 $template = new HtmlTemplate('<a href="{{ url }}">{{ label }}</a>');
 echo $template->render([
-    'url' => 'https://example.com',
-    'label' => 'Example',
+    'url' => '/contact',
+    'label' => 'お問い合わせ',
 ]);
 ```
 
-### `HtmlDocument` の例
+---
+
+### HtmlDocument
 
 ```php
 use Period\WpFramework\Support\HtmlDocument;
 
-$html = '<html><head><title>Example</title></head><body><p>本文</p></body></html>';
-$document = HtmlDocument::fromString($html);
-
-$title = $document->firstText('title');
-$paragraphs = $document->filter('p');
+$doc = HtmlDocument::fromUrl('https://example.com');
+$title = $doc->firstText('title');
 ```
 
-### `fetch_title` ショートコードの例
+---
 
-WordPress 環境で次のように利用します。
+### Element（仮想HTML）
 
 ```php
-echo do_shortcode('[fetch_title url="https://example.com"]');
+use Period\WpFramework\View\Element;
+
+echo Element::div(['class' => 'card'], [
+    Element::h3([], 'タイトル'),
+    Element::p([], '説明文'),
+    Element::a(['href' => '#'], 'リンク'),
+])->render();
 ```
 
-このショートコードは指定した URL から HTML を取得し、`<title>` を抽出して表示します。
+---
+
+### raw HTML
+
+```php
+use Period\WpFramework\View\Element;
+
+echo Element::div([], [
+    Element::raw('<strong>強調</strong>')
+])->render();
+```
+
+※ raw HTML は信頼済みデータのみ使用してください
+
+---
+
+### data-* JSON
+
+```php
+use Period\WpFramework\View\Element;
+
+echo Element::div([
+    'data-user' => ['id' => 1, 'name' => 'omi']
+])->render();
+```
+
+配列やオブジェクトは data-* 属性の場合、自動的に JSON に変換されます。
+
+---
+
+### ショートコード
+
+```text
+[fetch_title url="https://example.com"]
+```
+
+`fetch_title` ショートコードは指定した URL から HTML を取得し、`<title>` を抽出して表示します。
+
+---
+
+### HttpClient
+
+```php
+use Period\WpFramework\Support\HttpClient;
+
+$client = HttpClient::create();
+$response = $client->get('https://example.com');
+
+if ($response->isOk()) {
+    echo $response->body();
+}
+
+$client->cookies()->set('preview', '1');
+$response = $client->get('https://example.com/private');
+```
 
 ## インストール
 
