@@ -25,9 +25,11 @@ final class CookieJar
         return $this->cookies;
     }
 
-    public function fromHeader(string $header): self
+    public function fromHeader(string|array $header): self
     {
-        $lines = preg_split('/\r\n|\n|\r/', $header);
+        $lines = is_array($header)
+            ? $header
+            : preg_split('/\r\n|\n|\r/', $header);
 
         if (!is_array($lines)) {
             return $this;
