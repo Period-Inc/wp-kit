@@ -4,30 +4,23 @@ declare(strict_types=1);
 
 namespace Period\WpFramework\Infrastructure;
 
-use Period\WpFramework\Application;
-use Period\WpFramework\Infrastructure\Shortcode\FetchTitleShortcode;
+use Period\WpFramework\Infrastructure\Shortcode\ShortcodeInterface;
 
 final class ShortcodeRegistrar
 {
-    private Application $app;
-
-    public function __construct(Application $app)
+    /**
+     * @param ShortcodeInterface[] $shortcodes
+     */
+    public function __construct(private array $shortcodes)
     {
-        $this->app = $app;
     }
 
     public function register(): void
     {
-        add_shortcode('period_button', [$this, 'button']);
-        (new FetchTitleShortcode())->register();
-    }
-
-    public function button(array|string $atts = []): string
-    {
-        if (!is_array($atts)) {
-            $atts = [];
+        foreach ($this->shortcodes as $shortcode) {
+            if ($shortcode instanceof ShortcodeInterface) {
+                $shortcode->register();
+            }
         }
-
-        return $this->app->button($atts);
     }
 }

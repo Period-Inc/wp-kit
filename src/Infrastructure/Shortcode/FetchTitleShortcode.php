@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Period\WpFramework\Infrastructure\Shortcode;
 
+use Period\WpFramework\Infrastructure\Shortcode\ShortcodeInterface;
 use Period\WpFramework\Support\HtmlDocument;
 use Period\WpFramework\Support\HtmlTemplate;
 
-final class FetchTitleShortcode
+final class FetchTitleShortcode implements ShortcodeInterface
 {
     public function register(): void
     {
