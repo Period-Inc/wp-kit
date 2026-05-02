@@ -56,7 +56,7 @@ final class HtmlTemplate
         return match ($mode) {
             'attr' => self::escAttr($value),
             'url' => self::escUrl($value),
-            'html' => self::wpKsesPost($value),
+            'html' => self::stripHtml($value),
             'raw' => $value,
             default => self::escHtml($value),
         };
@@ -80,37 +80,23 @@ final class HtmlTemplate
 
     private static function escHtml(string $value): string
     {
-        if (function_exists('esc_html')) {
-            return esc_html($value);
-        }
-
         return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
 
     private static function escAttr(string $value): string
     {
-        if (function_exists('esc_attr')) {
-            return esc_attr($value);
-        }
-
         return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
 
     private static function escUrl(string $value): string
     {
-        if (function_exists('esc_url')) {
-            return esc_url($value);
-        }
+        $value = filter_var($value, FILTER_SANITIZE_URL);
 
-        return filter_var($value, FILTER_SANITIZE_URL) ?? '';
+        return htmlspecialchars((string) $value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
 
-    private static function wpKsesPost(string $value): string
+    private static function stripHtml(string $value): string
     {
-        if (function_exists('wp_kses_post')) {
-            return wp_kses_post($value);
-        }
-
-        return $value;
+        return strip_tags($value);
     }
 }

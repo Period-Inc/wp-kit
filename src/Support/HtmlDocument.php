@@ -26,13 +26,7 @@ final class HtmlDocument
     {
         $html = '';
 
-        if (function_exists('wp_remote_get')) {
-            $response = wp_remote_get($url);
-
-            if (!is_wp_error($response) && is_array($response) && isset($response['body'])) {
-                $html = (string) $response['body'];
-            }
-        } elseif (ini_get('allow_url_fopen')) {
+        if (ini_get('allow_url_fopen')) {
             $html = (string) @file_get_contents($url);
         }
 

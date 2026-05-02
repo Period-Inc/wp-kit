@@ -56,41 +56,10 @@ final class HttpClient
                 $requestHeaders['Cookie'] = $cookieHeader;
             }
 
-            if (function_exists('wp_remote_get') && $method === 'GET') {
-                return $this->requestWithWpRemote('get', $url, $requestHeaders);
-            }
-
-            if (function_exists('wp_remote_post') && $method === 'POST') {
-                return $this->requestWithWpRemote('post', $url, $requestHeaders, $body);
-            }
-
             return $this->requestWithFallback($method, $url, $body, $requestHeaders);
         } catch (\Throwable $exception) {
             return new HttpResponse();
         }
-    }
-
-    private function requestWithWpRemote(string $type, string $url, array $headers, ?string $body = null): HttpResponse
-    {
-        $options = ['headers' => $headers];
-
-        if ($type === 'post') {
-            $options['body'] = $body ?? '';
-        }
-
-        $response = $type === 'get' ? wp_remote_get($url, $options) : wp_remote_post($url, $options);
-
-        if (is_wp_error($response) || !is_array($response)) {
-            return new HttpResponse();
-        }
-
-        $status = isset($response['response']['code']) ? (int) $response['response']['code'] : 0;
-        $body = isset($response['body']) ? (string) $response['body'] : '';
-        $headers = $this->normalizeHeaders($response['headers'] ?? []);
-
-        $this->importSetCookie($headers);
-
-        return new HttpResponse($status, $headers, $body);
     }
 
     private function requestWithFallback(string $method, string $url, ?string $body, array $headers): HttpResponse
