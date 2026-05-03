@@ -15,6 +15,9 @@ final class MonthNameTest extends TestCase
         $this->assertCount(12, MonthName::EN_UPPER);
         $this->assertCount(12, MonthName::EN_SHORT);
         $this->assertCount(12, MonthName::EN_SHORT_UPPER);
+        $this->assertCount(12, MonthName::JA);
+        $this->assertCount(12, MonthName::JA_FULL);
+        $this->assertCount(12, MonthName::JA_TRADITIONAL);
     }
 
     public function testMonthNameFirstAndLastValuesMatch(): void
@@ -23,5 +26,13 @@ final class MonthNameTest extends TestCase
         $this->assertSame('December', MonthName::EN[11]);
         $this->assertSame('Jan', MonthName::EN_SHORT[0]);
         $this->assertSame('Dec', MonthName::EN_SHORT[11]);
+        $this->assertSame('1月', MonthName::JA[0]);
+        $this->assertSame('12月', MonthName::JA[11]);
+
+        $this->assertSame('一月', MonthName::JA_FULL[0]);
+        $this->assertSame('十二月', MonthName::JA_FULL[11]);
+
+        $this->assertSame('睦月', MonthName::JA_TRADITIONAL[0]);
+        $this->assertSame('師走', MonthName::JA_TRADITIONAL[11]);
     }
 }

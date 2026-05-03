@@ -1,153 +1,150 @@
 # period-wp-framework
 
-`period-wp-framework` は、WordPress テーマ制作やカスタマイズを補助する軽量ライブラリです。
+`period-wp-framework` は、WordPress のテーマ制作やプラグイン開発を支援する軽量ライブラリです。
 
-- prefix: `period_wp_`
 - entry function: `pwf()`
 - namespace: `Period\WpFramework`
+- WordPress 依存は `Infrastructure` に閉じています
 
-## 特徴
+## 概要
 
-- テンプレート描画を支援する `HtmlTemplate`
-- HTML5 解析を行う `HtmlDocument`
-- CSSセレクタ用ID生成 `CssName`
-- `Legacy` 配下は旧資産の保管用であり、新規コードから参照しない
+このライブラリは、WordPress 固有の機能と汎用的なユーティリティを分離して提供します。
 
-## 使用例
+- `Support`: WordPress に依存しないヘルパーとユーティリティ
+- `Infrastructure`: WordPress 固有のラッパーと拡張機能
+- `Application`: ライブラリの中心となるエントリポイント
 
-### HtmlTemplate
+## セットアップ
+
+```bash
+composer install
+```
+
+PHP ファイルに `bootstrap.php` を読み込んでください。
 
 ```php
-use Period\WpFramework\Support\HtmlTemplate;
+require_once __DIR__ . '/bootstrap.php';
+$app = pwf();
+```
 
-$template = new HtmlTemplate('<a href="{{ url }}">{{ label }}</a>');
-echo $template->render([
-    'url' => '/contact',
-    'label' => 'お問い合わせ',
+## 基本構成
+
+### Support
+`Support` には、テンプレート描画、URL 操作、HTTP クライアントなどの汎用機能があります。
+
+### Infrastructure
+`Infrastructure` は WordPress 固有の機能を包含します。`MetaBox`、`PostTypeRegistrar`、`ScriptStyleRegistrar` などがここに含まれます。
+
+### Application
+`Application` は、`Support` と `Infrastructure` を結びつけるエントリポイントです。
+
+## Assets (ScriptStyleRegistrar)
+
+スクリプトとスタイルの登録をラップし、`enqueue` もサポートします。
+
+```php
+$app->assets()
+    ->script(
+        'app',
+        get_stylesheet_directory_uri() . '/assets/js/app.js',
+        [
+            'path' => get_stylesheet_directory() . '/assets/js/app.js',
+            'enqueue' => true,
+        ]
+    )
+    ->style(
+        'main',
+        get_stylesheet_directory_uri() . '/assets/css/main.css',
+        [
+            'path' => get_stylesheet_directory() . '/assets/css/main.css',
+            'enqueue' => true,
+        ]
+    );
+```
+
+## PostTypeRegistrar
+
+カスタム投稿タイプとタクソノミーをラップして登録できます。
+
+```php
+$app->posts()
+    ->register('news', [
+        'label' => 'ニュース',
+        'menu_icon' => 'dashicons-media-text',
+    ])
+    ->registerTaxonomy('news_category', 'news', [
+        'label' => 'ニュースカテゴリー',
+    ])
+    ->boot();
+```
+
+## MetaBox
+
+WordPress のメタボックスを簡単に定義できます。
+
+```php
+use Period\WpFramework\Infrastructure\WordPress\MetaBox;
+
+new MetaBox([
+    'id' => 'test',
+    'post_type' => 'post',
+    'fields' => [
+        [
+            'name' => 'title',
+            'type' => 'text',
+        ],
+    ],
 ]);
 ```
 
----
+### repeater / gallery
 
-### HtmlDocument
-
-```php
-use Period\WpFramework\Support\HtmlDocument;
-
-$doc = HtmlDocument::fromUrl('https://example.com');
-$title = $doc->firstText('title');
-```
-
----
-
-### Element（仮想HTML）
+`repeater` フィールドは JSON 形式で保存され、並び替えに対応しています。
 
 ```php
-use Period\WpFramework\View\Element;
-
-echo Element::div(['class' => 'card'], [
-    Element::h3([], 'タイトル'),
-    Element::p([], '説明文'),
-    Element::a(['href' => '#'], 'リンク'),
-])->render();
+[
+    'type' => 'repeater',
+    'name' => 'items',
+    'fields' => [
+        ['name' => 'title', 'type' => 'text'],
+        ['name' => 'image', 'type' => 'image'],
+    ],
+]
 ```
 
----
+- 保存形式: JSON
+- 並び替え可能
 
-### raw HTML
+## Shortcode
 
-```php
-use Period\WpFramework\View\Element;
+`Infrastructure` には URL 取得や投稿取得を補助するショートコードがあります。
 
-echo Element::div([], [
-    Element::raw('<strong>強調</strong>')
-])->render();
-```
+- `fetch_title`
+- `posts`
+- `template_url`
 
-※ raw HTML は信頼済みデータのみ使用してください
-
----
-
-### data-\* JSON
-
-```php
-use Period\WpFramework\View\Element;
-
-echo Element::div([
-    'data-user' => ['id' => 1, 'name' => 'omi']
-])->render();
-```
-
-配列やオブジェクトは data-\* 属性の場合、自動的に JSON に変換されます。
-
----
-
-### ショートコード
+例:
 
 ```text
 [fetch_title url="https://example.com"]
 ```
 
-`fetch_title` ショートコードは指定した URL から HTML を取得し、`<title>` を抽出して表示します。
-
-`tax_query` は JSON 形式で指定できます。
-
 ```text
 [posts tax_query='[{"taxonomy":"category","field":"slug","terms":["news"]}]']
 ```
 
-詳細な使用方法は `docs/usage-tax-query.md` を参照してください。
+## docs へのリンク
+
+- `docs/usage-metabox.md`
+- `docs/usage-tax-query.md`
+
+## 主な Support 機能
+
+- `HtmlTemplate`: プレーンなテンプレート描画
+- `Url`: URL 操作
+- `HttpClient`: HTTP リクエスト
+- `CssName`: CSS class / id 変換
 
 ---
 
-### HttpClient
-
-```php
-use Period\WpFramework\Support\HttpClient;
-
-$client = HttpClient::create();
-$response = $client->get('https://example.com');
-
-if ($response->isOk()) {
-    echo $response->body();
-}
-
-$client->cookies()->set('preview', '1');
-$response = $client->get('https://example.com/private');
-```
-
----
-
-### Url
-
-```php
-use Period\WpFramework\Support\Url;
-
-echo Url::current();
-echo Url::root();
-echo Url::join('https://example.com/blog/post', '../about');
-```
-
-## インストール
-
-```bash
-composer install
-composer dump-autoload
-```
-
-## 注意
-
-- `Legacy` フォルダ以下は旧資産の保管用です。
-- 新規コードでは `Legacy` 配下を直接参照しないようにしてください。
-
-## Utilities
-
-補助ユーティリティは以下を参照してください。
-
-- CssName  
-  URL や文字列を CSS class / id として安全な形式に変換  
-  [docs/usage-cssname.md](docs/usage-cssname.md)
-
-- LineEnding  
-  改行コード定数  
-  [docs/usage-line-ending.md](docs/usage-line-ending.md)
+`Legacy` フォルダは旧資産の保管用です。新規コードでは直接参照しないでください。
