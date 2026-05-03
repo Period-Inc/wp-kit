@@ -9,6 +9,8 @@ use Period\WpFramework\Infrastructure\Shortcode\ButtonShortcode;
 use Period\WpFramework\Infrastructure\Shortcode\FetchTitleShortcode;
 use Period\WpFramework\Infrastructure\Shortcode\TemplateUrlShortcode;
 use Period\WpFramework\Infrastructure\WordPress\NavMenuClassEnhancer;
+use Period\WpFramework\Infrastructure\WordPress\PostTypeRegistrar;
+use Period\WpFramework\Infrastructure\WordPress\ScriptStyleRegistrar;
 use Period\WpFramework\Support\ArgsResolver;
 use Period\WpFramework\View\Renderer;
 
@@ -17,6 +19,8 @@ final class Application
     private string $basePath;
     private ArgsResolver $argsResolver;
     private Renderer $renderer;
+    private ScriptStyleRegistrar $assets;
+    private PostTypeRegistrar $posts;
     private bool $booted = false;
 
     public function __construct(string $basePath)
@@ -24,6 +28,18 @@ final class Application
         $this->basePath = rtrim($basePath, '/');
         $this->argsResolver = new ArgsResolver();
         $this->renderer = new Renderer($this->basePath . '/templates');
+        $this->assets = new ScriptStyleRegistrar($this->basePath);
+        $this->posts = new PostTypeRegistrar();
+    }
+
+    public function assets(): ScriptStyleRegistrar
+    {
+        return $this->assets;
+    }
+
+    public function posts(): PostTypeRegistrar
+    {
+        return $this->posts;
     }
 
     public function boot(): void
