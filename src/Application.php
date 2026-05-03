@@ -7,6 +7,7 @@ namespace Period\WpFramework;
 use Period\WpFramework\Infrastructure\ShortcodeRegistrar;
 use Period\WpFramework\Infrastructure\Shortcode\ButtonShortcode;
 use Period\WpFramework\Infrastructure\Shortcode\FetchTitleShortcode;
+use Period\WpFramework\Infrastructure\Shortcode\TemplateUrlShortcode;
 use Period\WpFramework\Support\ArgsResolver;
 use Period\WpFramework\View\Renderer;
 
@@ -33,6 +34,7 @@ final class Application
         $shortcodes = [
             new ButtonShortcode($this),
             new FetchTitleShortcode(),
+            new TemplateUrlShortcode(),
         ];
 
         (new ShortcodeRegistrar($shortcodes))->register();
