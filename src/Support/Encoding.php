@@ -6,6 +6,8 @@ namespace Period\WpFramework\Support;
 
 final class Encoding
 {
+    public const UTF8 = 'UTF-8';
+
     public static function base64UrlEncode(string $value): string
     {
         $encoded = base64_encode($value);
@@ -23,7 +25,7 @@ final class Encoding
         return $decoded === false ? '' : $decoded;
     }
 
-    public static function decodeHtmlEntities(string $value, int $flags = ENT_COMPAT, string $encoding = 'UTF-8'): string
+    public static function decodeHtmlEntities(string $value, int $flags = ENT_COMPAT, string $encoding = self::UTF8): string
     {
         return html_entity_decode($value, $flags, $encoding);
     }
