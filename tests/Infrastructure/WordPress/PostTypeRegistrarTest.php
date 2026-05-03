@@ -116,4 +116,37 @@ final class PostTypeRegistrarTest extends TestCase
 
         $this->assertSame('custom_news', $registrar->metaBoxes()[0]['post_type']);
     }
+
+    public function testMetaBoxUsesLastRegisteredPostTypeAfterMultipleRegisters(): void
+    {
+        $registrar = new PostTypeRegistrar();
+
+        $registrar->register('news', ['label' => 'ニュース'])
+            ->register('product', ['label' => '製品'])
+            ->metaBox([
+                'id' => 'product_detail',
+                'title' => '製品詳細',
+                'fields' => [
+                    ['name' => 'price', 'type' => 'text'],
+                ],
+            ]);
+
+        $this->assertSame('product', $registrar->metaBoxes()[0]['post_type']);
+    }
+
+    public function testMetaBoxDoesNotInferPostTypeWhenCalledBeforeRegister(): void
+    {
+        $registrar = new PostTypeRegistrar();
+
+        $registrar->metaBox([
+            'id' => 'news_detail',
+            'title' => 'ニュース詳細',
+            'fields' => [
+                ['name' => 'lead', 'type' => 'textarea'],
+            ],
+        ]);
+        $registrar->register('news', ['label' => 'ニュース']);
+
+        $this->assertArrayNotHasKey('post_type', $registrar->metaBoxes()[0]);
+    }
 }
