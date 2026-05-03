@@ -70,17 +70,19 @@ final class MetaBox
         }
     }
 
-    public function save(int $postId): void
+    public function save(int $postId, array $postData = []): void
     {
         if (!function_exists('wp_verify_nonce')) {
             return;
         }
 
-        if (empty($_POST[$this->nonceName])) {
+        $data = $postData !== [] ? $postData : $_POST;
+
+        if (empty($data[$this->nonceName])) {
             return;
         }
 
-        if (!wp_verify_nonce((string) $_POST[$this->nonceName], $this->nonceAction)) {
+        if (!wp_verify_nonce((string) $data[$this->nonceName], $this->nonceAction)) {
             return;
         }
 
@@ -102,7 +104,7 @@ final class MetaBox
             }
 
             $field = $this->normalizeField($field);
-            $value = $this->sanitizeFieldValue($field);
+            $value = $this->sanitizeFieldValue($field, $data);
 
             if (!function_exists('update_post_meta')) {
                 continue;
@@ -1175,13 +1177,14 @@ JS;
         }
     }
 
-    private function sanitizeFieldValue(array $field): mixed
+    private function sanitizeFieldValue(array $field, array $postData = []): mixed
     {
-        $raw = $_POST[$field['name']] ?? null;
+        $data = $postData !== [] ? $postData : $_POST;
+        $raw = $data[$field['name']] ?? null;
 
         switch ($field['type']) {
             case 'checkbox':
-                return isset($_POST[$field['name']]) ? '1' : '';
+                return isset($data[$field['name']]) ? '1' : '';
             case 'select':
                 return is_string($raw) ? $raw : '';
             case 'image':
