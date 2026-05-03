@@ -10,5 +10,11 @@
     "symfony/dom-crawler": "^8.0",
     "symfony/css-selector": "^8.0",
     "masterminds/html5": "^2.10"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^10.0"
+  },
+  "scripts": {
+    "test": "phpunit"
   }
 }
