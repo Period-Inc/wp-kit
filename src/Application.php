@@ -8,6 +8,7 @@ use Period\WpFramework\Infrastructure\ShortcodeRegistrar;
 use Period\WpFramework\Infrastructure\Shortcode\ButtonShortcode;
 use Period\WpFramework\Infrastructure\Shortcode\FetchTitleShortcode;
 use Period\WpFramework\Infrastructure\Shortcode\TemplateUrlShortcode;
+use Period\WpFramework\Infrastructure\WordPress\NavMenuClassEnhancer;
 use Period\WpFramework\Support\ArgsResolver;
 use Period\WpFramework\View\Renderer;
 
@@ -38,6 +39,7 @@ final class Application
         ];
 
         (new ShortcodeRegistrar($shortcodes))->register();
+        (new NavMenuClassEnhancer())->register();
 
         $this->booted = true;
     }
