@@ -123,10 +123,11 @@ final class HtmlDocument
 
         try {
             $document = $html5->loadHTML($html);
+            $content = $document->saveHTML();
         } catch (\Throwable $exception) {
-            $document = new \DOMDocument();
+            $content = $html;
         }
 
-        return new Crawler($document);
+        return new Crawler($content);
     }
 }
