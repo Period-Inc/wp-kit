@@ -14,8 +14,21 @@ final class MetaBoxTest extends TestCase
         parent::tearDown();
         $_POST = [];
 
-        global $METABOX_TEST_META_UPDATES;
+        global $METABOX_TEST_META_UPDATES, $PERIOD_WP_FILTER_VALUES, $PERIOD_WP_ENQUEUED_SCRIPTS;
         $METABOX_TEST_META_UPDATES = [];
+        $PERIOD_WP_FILTER_VALUES = [];
+        $PERIOD_WP_ENQUEUED_SCRIPTS = [];
+    }
+
+    private function findEnqueuedScript(string $handle): ?array
+    {
+        global $PERIOD_WP_ENQUEUED_SCRIPTS;
+        foreach ((array) $PERIOD_WP_ENQUEUED_SCRIPTS as $script) {
+            if ($script['handle'] === $handle) {
+                return $script;
+            }
+        }
+        return null;
     }
 
     public function testRegisterDoesNotFailWithoutWordPress(): void
@@ -476,6 +489,122 @@ final class MetaBoxTest extends TestCase
         $metaBox->save(1, ['my_field' => 'from_postdata']);
 
         $this->assertEmpty($METABOX_TEST_META_UPDATES);
+    }
+
+    // --- enqueueMedia() tests ---
+
+    public function testEnqueueMediaRegistersScriptWhenFilterProvidesUrl(): void
+    {
+        global $PERIOD_WP_FILTER_VALUES;
+        $PERIOD_WP_FILTER_VALUES['period_wp_metabox_js_url'] = 'https://example.com/metabox.js';
+
+        $metaBox = new MetaBox([
+            'id' => 'test_box',
+            'title' => 'Test',
+            'post_type' => 'post',
+            'fields' => [['name' => 'image_id', 'type' => 'image']],
+        ]);
+
+        $metaBox->enqueueMedia();
+
+        $script = $this->findEnqueuedScript('period-wp-metabox');
+        $this->assertNotNull($script);
+        $this->assertSame('https://example.com/metabox.js', $script['src']);
+        $this->assertTrue($script['in_footer']);
+    }
+
+    public function testEnqueueMediaSkipsScriptWhenFilterReturnsNull(): void
+    {
+        $metaBox = new MetaBox([
+            'id' => 'test_box',
+            'title' => 'Test',
+            'post_type' => 'post',
+            'fields' => [['name' => 'image_id', 'type' => 'image']],
+        ]);
+
+        $metaBox->enqueueMedia();
+
+        $this->assertNull($this->findEnqueuedScript('period-wp-metabox'));
+    }
+
+    public function testEnqueueMediaSkipsScriptWhenFilterReturnsEmptyString(): void
+    {
+        global $PERIOD_WP_FILTER_VALUES;
+        $PERIOD_WP_FILTER_VALUES['period_wp_metabox_js_url'] = '';
+
+        $metaBox = new MetaBox([
+            'id' => 'test_box',
+            'title' => 'Test',
+            'post_type' => 'post',
+            'fields' => [['name' => 'image_id', 'type' => 'image']],
+        ]);
+
+        $metaBox->enqueueMedia();
+
+        $this->assertNull($this->findEnqueuedScript('period-wp-metabox'));
+    }
+
+    public function testEnqueueMediaVersionMatchesFiletimeWhenJsFileExists(): void
+    {
+        global $PERIOD_WP_FILTER_VALUES;
+        $PERIOD_WP_FILTER_VALUES['period_wp_metabox_js_url'] = 'https://example.com/metabox.js';
+
+        $metaBox = new MetaBox([
+            'id' => 'test_box',
+            'title' => 'Test',
+            'post_type' => 'post',
+            'fields' => [['name' => 'image_id', 'type' => 'image']],
+        ]);
+
+        $metaBox->enqueueMedia();
+
+        $jsPath = dirname(__DIR__, 3) . '/assets/js/period-wp-metabox.js';
+        $script = $this->findEnqueuedScript('period-wp-metabox');
+        $this->assertNotNull($script);
+
+        $expectedVersion = file_exists($jsPath) ? (filemtime($jsPath) ?: null) : null;
+        $this->assertSame($expectedVersion, $script['ver']);
+    }
+
+    public function testEnqueueMediaDoesNotErrorWhenJsFileIsMissing(): void
+    {
+        global $PERIOD_WP_FILTER_VALUES;
+        $PERIOD_WP_FILTER_VALUES['period_wp_metabox_js_url'] = 'https://example.com/metabox.js';
+
+        $metaBox = new MetaBox([
+            'id' => 'test_box',
+            'title' => 'Test',
+            'post_type' => 'post',
+            'fields' => [['name' => 'image_id', 'type' => 'image']],
+        ]);
+
+        // enqueueMedia() は assets ファイルの有無にかかわらず例外を出さない。
+        // ファイルが存在しない場合は version = null で enqueue される。
+        $metaBox->enqueueMedia();
+
+        $script = $this->findEnqueuedScript('period-wp-metabox');
+        $this->assertNotNull($script);
+
+        $jsPath = dirname(__DIR__, 3) . '/assets/js/period-wp-metabox.js';
+        if (!file_exists($jsPath)) {
+            $this->assertNull($script['ver']);
+        }
+    }
+
+    public function testPrintMediaScriptProducesNoOutput(): void
+    {
+        $metaBox = new MetaBox([
+            'id' => 'test_box',
+            'title' => 'Test',
+            'post_type' => 'post',
+            'fields' => [],
+        ]);
+
+        ob_start();
+        $metaBox->printMediaScript();
+        $output = ob_get_clean();
+
+        $this->assertSame('', $output);
     }
 
     public function testSaveFieldValueFromPostDataTakesPrecedenceOverGlobalPost(): void
