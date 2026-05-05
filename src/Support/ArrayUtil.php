@@ -55,4 +55,22 @@ final class ArrayUtil
 
         return $result;
     }
+
+    public static function isList(array $array): bool
+    {
+        if (function_exists('array_is_list')) {
+            return array_is_list($array);
+        }
+
+        if ($array === []) {
+            return true;
+        }
+
+        return array_keys($array) === range(0, count($array) - 1);
+    }
+
+    public static function isAssociative(array $array): bool
+    {
+        return !self::isList($array);
+    }
 }

@@ -46,4 +46,46 @@ final class ArrayUtilTest extends TestCase
 
         $this->assertSame(['a' => 1, 'b' => null, 'c' => 3], ArrayUtil::makeAssociative($keys, $values));
     }
+
+    public function testIsListReturnsTrueForSequentialArray(): void
+    {
+        $this->assertTrue(ArrayUtil::isList([1, 2, 3]));
+    }
+
+    public function testIsListReturnsTrueForEmptyArray(): void
+    {
+        $this->assertTrue(ArrayUtil::isList([]));
+    }
+
+    public function testIsListReturnsFalseForAssociativeArray(): void
+    {
+        $this->assertFalse(ArrayUtil::isList(['a' => 1, 'b' => 2]));
+    }
+
+    public function testIsListReturnsFalseForGappedArray(): void
+    {
+        $this->assertFalse(ArrayUtil::isList([0 => 'a', 2 => 'b']));
+    }
+
+    public function testIsAssociativeReturnsTrueForAssociativeArray(): void
+    {
+        $this->assertTrue(ArrayUtil::isAssociative(['a' => 1, 'b' => 2]));
+    }
+
+    public function testIsAssociativeReturnsFalseForSequentialArray(): void
+    {
+        $this->assertFalse(ArrayUtil::isAssociative([1, 2, 3]));
+    }
+
+    public function testIsAssociativeReturnsFalseForEmptyArray(): void
+    {
+        $this->assertFalse(ArrayUtil::isAssociative([]));
+    }
+
+    public function testIsListThrowsTypeErrorForNonArray(): void
+    {
+        $this->expectException(\TypeError::class);
+        /** @phpstan-ignore-next-line */
+        ArrayUtil::isList('not an array');
+    }
 }
