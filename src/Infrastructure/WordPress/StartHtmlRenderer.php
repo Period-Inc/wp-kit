@@ -47,6 +47,18 @@ final class StartHtmlRenderer
             }
         }
 
+        if ($args['include_wp_head'] && function_exists('wp_head')) {
+            ob_start();
+            wp_head();
+            $wpHead = ob_get_clean();
+            if ($wpHead !== false && $wpHead !== '') {
+                $html .= $wpHead;
+                if (!str_ends_with($wpHead, $newline)) {
+                    $html .= $newline;
+                }
+            }
+        }
+
         return $html;
     }
 
@@ -57,11 +69,14 @@ final class StartHtmlRenderer
         $charset = $args['charset'] ?? null;
         $newline = $args['newline'] ?? "\n";
 
+        $includeWpHead = $args['include_wp_head'] ?? true;
+
         return [
             'version' => is_string($version) && $version !== '' ? $version : 'html5',
             'elements' => is_array($elements) ? $elements : [],
             'charset' => is_string($charset) && $charset !== '' ? $charset : null,
             'newline' => is_string($newline) ? $newline : "\n",
+            'include_wp_head' => is_bool($includeWpHead) ? $includeWpHead : true,
         ];
     }
 

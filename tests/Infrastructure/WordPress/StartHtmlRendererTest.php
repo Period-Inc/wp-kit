@@ -92,4 +92,63 @@ PHP
         $this->assertStringContainsString('<head>', $output);
         $this->assertStringContainsString('<meta charset="UTF-8">', $output);
     }
+
+    public function testWpHeadDoesNotThrowWithoutWordPress(): void
+    {
+        if (function_exists('wp_head')) {
+            $this->markTestSkipped('wp_head exists in environment');
+        }
+
+        $renderer = new StartHtmlRenderer();
+        $output = $renderer->render();
+
+        $this->assertStringContainsString('<!doctype html>', $output);
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testIncludeWpHeadFalseDoesNotCallWpHead(): void
+    {
+        if (function_exists('wp_head')) {
+            $this->markTestSkipped('wp_head exists in environment');
+        }
+
+        $called = false;
+        eval(<<<'PHP'
+function wp_head() {
+    $GLOBALS['_test_wp_head_called'] = true;
+    echo '<!-- wp_head -->';
+}
+PHP
+        );
+
+        $renderer = new StartHtmlRenderer();
+        $output = $renderer->render(['include_wp_head' => false]);
+
+        $this->assertArrayNotHasKey('_test_wp_head_called', $GLOBALS);
+        $this->assertStringNotContainsString('<!-- wp_head -->', $output);
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testIncludeWpHeadTrueCallsWpHead(): void
+    {
+        if (function_exists('wp_head')) {
+            $this->markTestSkipped('wp_head exists in environment');
+        }
+
+        eval(<<<'PHP'
+function wp_head() {
+    echo '<!-- wp_head -->';
+}
+PHP
+        );
+
+        $renderer = new StartHtmlRenderer();
+        $output = $renderer->render(['include_wp_head' => true]);
+
+        $this->assertStringContainsString('<!-- wp_head -->', $output);
+    }
 }
