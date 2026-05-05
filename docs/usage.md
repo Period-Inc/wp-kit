@@ -306,6 +306,29 @@ Element::void('img', ['src' => '/logo.png', 'alt' => 'Logo']);
 (new Element('div', ['id' => 'wrap']))->open()->render(); // → <div id="wrap">
 Element::class(['btn', null, 'btn-lg', 'btn']);           // → "btn btn-lg"
 Element::el('div', [], new RawHtml('<span>raw</span>'));
+
+// コメント / CDATA（RawHtml を返す）
+Element::comment('debug')->render();       // → <!-- debug -->
+Element::cdata('var a = 1;')->render();    // → <![CDATA[var a = 1;]]>
+
+// 空なら出力しない
+Element::elIfNotEmpty('p', [], '');        // → ''
+Element::elIfNotEmpty('p', [], 'Hello');   // → <p>Hello</p>
+
+// 複数要素の生成は array_map で行う
+echo implode('', array_map(
+    fn(string $item) => Element::el('li', [], $item),
+    ['A', 'B', 'C']
+));
+// → <li>A</li><li>B</li><li>C</li>
+```
+
+#### strip_tags 相当について
+
+HTML 生成（`Element`）の責務はタグ構造の組み立てに限定します。テキストのタグ除去が必要な場合は、呼び出し側で `strip_tags()` を使ってください。将来的に `TextUtil` として分離する可能性があります。
+
+```php
+Element::el('p', [], strip_tags($userInput));
 ```
 
 ### ArrayUtil

@@ -70,4 +70,35 @@ final class ElementTest extends TestCase
     {
         $this->assertSame('<div>&lt;strong&gt;</div>', Element::el('div', [], '<strong>'));
     }
+
+    public function testCommentReturnsRawHtml(): void
+    {
+        $result = Element::comment('debug');
+
+        $this->assertInstanceOf(\Period\WpFramework\View\RawHtml::class, $result);
+        $this->assertSame('<!-- debug -->', $result->render());
+    }
+
+    public function testCdataReturnsRawHtml(): void
+    {
+        $result = Element::cdata('var a = 1;');
+
+        $this->assertInstanceOf(\Period\WpFramework\View\RawHtml::class, $result);
+        $this->assertSame('<![CDATA[var a = 1;]]>', $result->render());
+    }
+
+    public function testElIfNotEmptyReturnsEmptyStringForEmptyContent(): void
+    {
+        $this->assertSame('', Element::elIfNotEmpty('div', [], ''));
+    }
+
+    public function testElIfNotEmptyReturnsEmptyStringForWhitespaceContent(): void
+    {
+        $this->assertSame('', Element::elIfNotEmpty('div', [], '   '));
+    }
+
+    public function testElIfNotEmptyReturnsTagForNonEmptyContent(): void
+    {
+        $this->assertSame('<div>Hello</div>', Element::elIfNotEmpty('div', [], 'Hello'));
+    }
 }

@@ -106,6 +106,25 @@ final class Element
         return new RawHtml($html);
     }
 
+    public static function comment(string $text): RawHtml
+    {
+        return new RawHtml('<!-- ' . $text . ' -->');
+    }
+
+    public static function cdata(string $text): RawHtml
+    {
+        return new RawHtml('<![CDATA[' . $text . ']]>');
+    }
+
+    public static function elIfNotEmpty(string $tag, array $attrs, string $content): string
+    {
+        if (trim($content) === '') {
+            return '';
+        }
+
+        return self::el($tag, $attrs, $content);
+    }
+
     public function attr(string $key, $value): self
     {
         $this->attrs[$key] = $value;
