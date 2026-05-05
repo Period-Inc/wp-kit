@@ -1,5 +1,36 @@
 # MetaBox Usage
 
+## PostMetaManager
+
+MetaBox が保存したデータを統一的に読み書きするユーティリティです。WordPress がない環境では noop になります。
+
+```php
+use Period\WpFramework\Infrastructure\WordPress\PostMetaManager;
+
+$meta = new PostMetaManager();
+
+// 取得（値がない場合は null）
+$value = $meta->get($postId, 'lead');
+
+// 保存
+$meta->set($postId, 'lead', 'リード文のテキスト');
+
+// キーが存在するか確認
+if ($meta->has($postId, 'lead')) {
+    // ...
+}
+```
+
+| メソッド | 戻り値 | WordPress なし |
+|---|---|---|
+| `get(int $postId, string $key)` | `mixed` | `null` |
+| `set(int $postId, string $key, mixed $value)` | `void` | noop |
+| `has(int $postId, string $key)` | `bool` | `false` |
+
+`get()` は空文字列 (`""`) を `null` に正規化します。
+
+---
+
 ## labels（ラベル指定）
 
 ボタン・操作ラベルは `labels` 配列で指定します。内部の fallback は英語固定で、翻訳は呼び出し側で行います。
@@ -130,3 +161,4 @@ new MetaBox([
     ],
 ]
 ```
+
