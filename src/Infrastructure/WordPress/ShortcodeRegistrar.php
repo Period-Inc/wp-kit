@@ -8,13 +8,10 @@ final class ShortcodeRegistrar
 {
     public function register(): void
     {
-        if (!function_exists('add_shortcode')) {
-            return;
-        }
-
-        add_shortcode('document', [$this, 'renderDocument']);
-        add_shortcode('title', [$this, 'renderTitle']);
-        add_shortcode('site_name', [$this, 'renderSiteName']);
+        $hooks = new HookRegistrar();
+        $hooks->shortcode('document', [$this, 'renderDocument']);
+        $hooks->shortcode('title', [$this, 'renderTitle']);
+        $hooks->shortcode('site_name', [$this, 'renderSiteName']);
     }
 
     public function renderDocument(array|string $atts = [], ?string $content = null): string
