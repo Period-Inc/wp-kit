@@ -28,6 +28,7 @@ final class StartHtmlRenderer
 
         $html .= (new Element('head'))->open()->render() . $newline;
         $html .= Element::el('meta', ['charset' => $charset]) . $newline;
+        $html .= Element::el('title', [], $this->resolveTitle()) . $newline;
 
         foreach ($args['elements'] as $element) {
             if (is_string($element)) {
@@ -62,6 +63,19 @@ final class StartHtmlRenderer
             'charset' => is_string($charset) && $charset !== '' ? $charset : null,
             'newline' => is_string($newline) ? $newline : "\n",
         ];
+    }
+
+    private function resolveTitle(): string
+    {
+        $siteInfo = new SiteInfo();
+        $resolver = new TitleResolver($siteInfo);
+        $formatter = new TemplateFormatter();
+
+        return $formatter->format(
+            '{{ title }}',
+            ['title' => $resolver->siteTitle()],
+            'period_wp_document_title'
+        );
     }
 
     private function resolveLanguageAttributes(string $version): string
