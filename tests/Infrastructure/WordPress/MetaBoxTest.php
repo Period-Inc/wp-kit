@@ -9,6 +9,15 @@ use Period\WpFramework\Infrastructure\WordPress\MetaBox;
 
 final class MetaBoxTest extends TestCase
 {
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        $_POST = [];
+
+        global $METABOX_TEST_META_UPDATES;
+        $METABOX_TEST_META_UPDATES = [];
+    }
+
     public function testRegisterDoesNotFailWithoutWordPress(): void
     {
         $metaBox = new MetaBox([
@@ -405,5 +414,89 @@ final class MetaBoxTest extends TestCase
 
         $this->assertSame('', $method->invoke($metaBox, $imageField));
         $this->assertSame('', $method->invoke($metaBox, $mediaField));
+    }
+
+    // --- $postData routing tests ---
+
+    public function testSanitizeFieldValueUsesPostDataWhenProvided(): void
+    {
+        $metaBox = new MetaBox([
+            'id' => 'test_box',
+            'title' => 'Test Box',
+            'post_type' => 'post',
+            'fields' => [['name' => 'my_field', 'type' => 'text']],
+        ]);
+
+        $_POST['my_field'] = 'from_global_post';
+
+        $reflection = new \ReflectionClass($metaBox);
+        $method = $reflection->getMethod('sanitizeFieldValue');
+
+        $result = $method->invoke($metaBox, ['name' => 'my_field', 'type' => 'text'], ['my_field' => 'from_postdata']);
+
+        $this->assertSame('from_postdata', $result);
+    }
+
+    public function testSanitizeFieldValueFallsBackToGlobalPostWhenPostDataIsEmpty(): void
+    {
+        $metaBox = new MetaBox([
+            'id' => 'test_box',
+            'title' => 'Test Box',
+            'post_type' => 'post',
+            'fields' => [['name' => 'my_field', 'type' => 'text']],
+        ]);
+
+        $_POST['my_field'] = 'from_global_post';
+
+        $reflection = new \ReflectionClass($metaBox);
+        $method = $reflection->getMethod('sanitizeFieldValue');
+
+        $result = $method->invoke($metaBox, ['name' => 'my_field', 'type' => 'text'], []);
+
+        $this->assertSame('from_global_post', $result);
+    }
+
+    public function testSaveNonceIsReadFromPostDataNotFromGlobalPost(): void
+    {
+        global $METABOX_TEST_META_UPDATES;
+        $METABOX_TEST_META_UPDATES = [];
+
+        $metaBox = new MetaBox([
+            'id' => 'nonce_test',
+            'title' => 'Nonce Test',
+            'post_type' => 'post',
+            'fields' => [['name' => 'my_field', 'type' => 'text']],
+        ]);
+
+        // nonce は $_POST にのみ存在。$postData にはない。
+        $_POST['nonce_test_nonce'] = 'any_value';
+        $_POST['my_field'] = 'from_post';
+
+        // $postData が非空のため $_POST は参照されず、nonce チェックが失敗して早期リターンする
+        $metaBox->save(1, ['my_field' => 'from_postdata']);
+
+        $this->assertEmpty($METABOX_TEST_META_UPDATES);
+    }
+
+    public function testSaveFieldValueFromPostDataTakesPrecedenceOverGlobalPost(): void
+    {
+        global $METABOX_TEST_META_UPDATES;
+        $METABOX_TEST_META_UPDATES = [];
+
+        $metaBox = new MetaBox([
+            'id' => 'save_test',
+            'title' => 'Save Test',
+            'post_type' => 'post',
+            'fields' => [['name' => 'my_field', 'type' => 'text']],
+        ]);
+
+        $_POST['save_test_nonce'] = 'any_value';
+        $_POST['my_field'] = 'from_post';
+
+        // $postData に nonce とフィールド値を両方渡す
+        $metaBox->save(1, ['save_test_nonce' => 'any_value', 'my_field' => 'from_postdata']);
+
+        $this->assertNotEmpty($METABOX_TEST_META_UPDATES);
+        $this->assertSame('from_postdata', $METABOX_TEST_META_UPDATES[0]['value']);
     }
 }
