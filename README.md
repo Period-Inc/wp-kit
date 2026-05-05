@@ -1,159 +1,91 @@
 # period-wp-framework
 
-`period-wp-framework` は、WordPress のテーマ制作やプラグイン開発を支援する軽量ライブラリです。
+WordPress のテーマ・プラグイン開発向け軽量ライブラリ。MetaBox、カスタム投稿タイプ、スクリプト/スタイル管理、HTML生成などの定型処理をまとめる。
 
-- entry function: `pwf()`
 - namespace: `Period\WpFramework`
-- WordPress 依存は `Infrastructure` に閉じています
+- エントリポイント: `pwf()`
+- WordPress 依存は `src/Infrastructure/WordPress/` に閉じている
 
-## 概要
-
-このライブラリは、WordPress 固有の機能と汎用的なユーティリティを分離して提供します。
-
-- `Support`: WordPress に依存しないヘルパーとユーティリティ
-- `Infrastructure`: WordPress 固有のラッパーと拡張機能
-- `Application`: ライブラリの中心となるエントリポイント
-
-## セットアップ
+## インストール
 
 ```bash
 composer install
 ```
-
-PHP ファイルに `bootstrap.php` を読み込んでください。
 
 ```php
 require_once __DIR__ . '/bootstrap.php';
 $app = pwf();
 ```
 
-## 基本構成
-
-### Support
-`Support` には、テンプレート描画、URL 操作、HTTP クライアントなどの汎用機能があります。
-
-### Infrastructure
-`Infrastructure` は WordPress 固有の機能を包含します。`MetaBox`、`PostTypeRegistrar`、`ScriptStyleRegistrar` などがここに含まれます。
-
-### Application
-`Application` は、`Support` と `Infrastructure` を結びつけるエントリポイントです。
-
-## Assets (ScriptStyleRegistrar)
-
-スクリプトとスタイルの登録をラップし、`enqueue` もサポートします。
-
-```php
-$app->assets()
-    ->script(
-        'app',
-        get_stylesheet_directory_uri() . '/assets/js/app.js',
-        [
-            'path' => get_stylesheet_directory() . '/assets/js/app.js',
-            'enqueue' => true,
-        ]
-    )
-    ->style(
-        'main',
-        get_stylesheet_directory_uri() . '/assets/css/main.css',
-        [
-            'path' => get_stylesheet_directory() . '/assets/css/main.css',
-            'enqueue' => true,
-        ]
-    );
-```
-
-## PostTypeRegistrar
-
-カスタム投稿タイプとタクソノミーをラップして登録できます。`metaBox()` を併用すると、前に登録した投稿タイプを自動的に MetaBox に設定できます。
-
-```php
-$app->posts()
-    ->register('news', [
-        'label' => 'ニュース',
-        'menu_icon' => 'dashicons-media-text',
-    ])
-    ->metaBox([
-        'id' => 'news_detail',
-        'title' => 'ニュース詳細',
-        'fields' => [
-            ['name' => 'lead', 'type' => 'textarea'],
-            ['name' => 'main_image', 'type' => 'image'],
-        ],
-    ])
-    ->registerTaxonomy('news_category', 'news', [
-        'label' => 'ニュースカテゴリー',
-    ])
-    ->boot();
-```
-
-## MetaBox
-
-WordPress のメタボックスを簡単に定義できます。
+## MetaBox の最小使用例
 
 ```php
 use Period\WpFramework\Infrastructure\WordPress\MetaBox;
 
-new MetaBox([
-    'id' => 'test',
-    'post_type' => 'post',
-    'fields' => [
-        [
-            'name' => 'title',
-            'type' => 'text',
-        ],
+$box = new MetaBox([
+    'id'        => 'news_detail',
+    'title'     => 'ニュース詳細',
+    'post_type' => 'news',
+    'fields'    => [
+        ['name' => 'lead',       'type' => 'textarea', 'label' => 'リード文'],
+        ['name' => 'main_image', 'type' => 'image',    'label' => 'メイン画像'],
+        ['name' => 'gallery',    'type' => 'gallery',  'label' => 'ギャラリー'],
     ],
 ]);
+
+$box->register();
 ```
 
-### repeater / gallery
-
-`repeater` フィールドは JSON 形式で保存され、並び替えに対応しています。
+管理画面の JS（メディアピッカー・ギャラリー・リピーター）を有効にするには、JS の URL をフィルターで注入する。
 
 ```php
-[
-    'type' => 'repeater',
-    'name' => 'items',
-    'fields' => [
-        ['name' => 'title', 'type' => 'text'],
-        ['name' => 'image', 'type' => 'image'],
-    ],
-]
+add_filter('period_wp_metabox_js_url', function () {
+    return get_stylesheet_directory_uri() . '/vendor/period/wp-framework/assets/js/period-wp-metabox.js';
+});
 ```
 
-- 保存形式: JSON
-- 並び替え可能
+詳細は [docs/js-loading.md](docs/js-loading.md) を参照。
 
-## Shortcode
+## PostTypeRegistrar
 
-`Infrastructure` には URL 取得や投稿取得を補助するショートコードがあります。
+カスタム投稿タイプ・タクソノミー・MetaBox をまとめて登録する。
 
-- `fetch_title`
-- `posts`
-- `template_url`
-
-例:
-
-```text
-[fetch_title url="https://example.com"]
+```php
+$app->posts()
+    ->register('news', ['label' => 'ニュース', 'menu_icon' => 'dashicons-media-text'])
+    ->metaBox([
+        'id'     => 'news_detail',
+        'title'  => 'ニュース詳細',
+        'fields' => [
+            ['name' => 'lead',       'type' => 'textarea'],
+            ['name' => 'main_image', 'type' => 'image'],
+        ],
+    ])
+    ->registerTaxonomy('news_category', 'news', ['label' => 'カテゴリー'])
+    ->boot();
 ```
 
-```text
-[posts tax_query='[{"taxonomy":"category","field":"slug","terms":["news"]}]']
+`metaBox()` は `post_type` を省略すると直前の `register()` で指定した投稿タイプを引き継ぐ。
+
+## ScriptStyleRegistrar
+
+```php
+$app->assets()
+    ->script('app', get_stylesheet_directory_uri() . '/assets/js/app.js', [
+        'path'    => get_stylesheet_directory() . '/assets/js/app.js',
+        'enqueue' => true,
+    ])
+    ->style('main', get_stylesheet_directory_uri() . '/assets/css/main.css', [
+        'path'    => get_stylesheet_directory() . '/assets/css/main.css',
+        'enqueue' => true,
+    ]);
 ```
 
-## docs へのリンク
+`path` を渡すと `filemtime` でバージョンハッシュが自動付与される。
 
-- `docs/usage-metabox.md`
-- `docs/usage-tax-query.md`
-- `docs/usage-page-navigation.md`
+## ドキュメント
 
-## 主な Support 機能
-
-- `HtmlTemplate`: プレーンなテンプレート描画
-- `Url`: URL 操作
-- `HttpClient`: HTTP リクエスト
-- `CssName`: CSS class / id 変換
-
----
-
-`Legacy` フォルダは旧資産の保管用です。新規コードでは直接参照しないでください。
+- [docs/metabox.md](docs/metabox.md) — MetaBox フィールド定義・save() の挙動
+- [docs/js-loading.md](docs/js-loading.md) — 管理画面 JS の読み込み方法
+- [docs/design-decisions.md](docs/design-decisions.md) — 設計判断の記録
+- [docs/testing.md](docs/testing.md) — テスト方針・モック構成
