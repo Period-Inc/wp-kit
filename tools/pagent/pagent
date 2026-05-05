@@ -1,0 +1,74 @@
+#!/usr/bin/env php
+<?php
+declare(strict_types=1);
+
+$root = realpath(__DIR__ . '/../..');
+$args = array_slice($argv, 1);
+$cmd  = $args[0] ?? 'help';
+
+function run(string $command): string {
+    $out = [];
+    $code = 0;
+    exec($command . ' 2>&1', $out, $code);
+    return implode("\n", $out);
+}
+
+function root(): string {
+    return realpath(__DIR__ . '/../..');
+}
+
+switch ($cmd) {
+    case 'scan':
+        echo "# Project scan\n\n";
+        echo "## Git status\n";
+        echo run('cd ' . escapeshellarg(root()) . ' && git status --short') . "\n\n";
+
+        echo "## Tree\n";
+        echo run('cd ' . escapeshellarg(root()) . ' && find src tests docs -maxdepth 4 -type f | sort') . "\n";
+        break;
+
+    case 'grep':
+        $q = $args[1] ?? '';
+        if ($q === '') {
+            fwrite(STDERR, "Usage: pagent grep <pattern>\n");
+            exit(1);
+        }
+        echo run('cd ' . escapeshellarg(root()) . ' && rg -n ' . escapeshellarg($q) . ' src tests docs');
+        break;
+
+    case 'pack':
+        $files = array_slice($args, 1);
+        if (!$files) {
+            fwrite(STDERR, "Usage: pagent pack <file> [file...]\n");
+            exit(1);
+        }
+
+        foreach ($files as $file) {
+            $path = root() . '/' . ltrim($file, '/');
+            if (!is_file($path)) {
+                fwrite(STDERR, "Skip missing file: {$file}\n");
+                continue;
+            }
+
+            echo "\n===== FILE: {$file} =====\n";
+            echo file_get_contents($path);
+            echo "\n===== END FILE: {$file} =====\n";
+        }
+        break;
+
+    case 'test':
+        echo run('cd ' . escapeshellarg(root()) . ' && composer test');
+        break;
+
+    default:
+        echo <<<TXT
+pagent commands:
+
+  pagent scan
+  pagent grep <pattern>
+  pagent pack <file> [file...]
+  pagent test
+
+This version is read-only except running tests.
+TXT;
+}
