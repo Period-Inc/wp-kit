@@ -1,6 +1,8 @@
 {
   "name": "period/wp-framework",
+  "description": "Lightweight utility library for WordPress theme and plugin development",
   "type": "library",
+  "minimum-stability": "stable",
   "autoload": {
     "psr-4": {
       "Period\\WpFramework\\": "src/"

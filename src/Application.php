@@ -12,6 +12,9 @@ use Period\WpFramework\Infrastructure\WordPress\NavMenuClassEnhancer;
 use Period\WpFramework\Infrastructure\WordPress\PostClassEnhancer;
 use Period\WpFramework\Infrastructure\WordPress\PostTypeRegistrar;
 use Period\WpFramework\Infrastructure\WordPress\ScriptStyleRegistrar;
+use Period\WpFramework\Infrastructure\WordPress\DocumentRenderer;
+use Period\WpFramework\Infrastructure\WordPress\SiteInfo;
+use Period\WpFramework\Infrastructure\WordPress\TitleResolver;
 use Period\WpFramework\Infrastructure\WordPress\Translator;
 use Period\WpFramework\Support\ArgsResolver;
 use Period\WpFramework\View\Renderer;
@@ -24,6 +27,9 @@ final class Application
     private ScriptStyleRegistrar $assets;
     private PostTypeRegistrar $posts;
     private ?Translator $translator = null;
+    private ?SiteInfo $siteInfo = null;
+    private ?TitleResolver $titleResolver = null;
+    private ?DocumentRenderer $documentRenderer = null;
     private bool $booted = false;
 
     public function __construct(string $basePath)
@@ -52,6 +58,33 @@ final class Application
         }
 
         return $this->translator;
+    }
+
+    public function title(): string
+    {
+        if ($this->titleResolver === null) {
+            $this->titleResolver = new TitleResolver($this->site());
+        }
+
+        return $this->titleResolver->siteTitle();
+    }
+
+    public function site(): SiteInfo
+    {
+        if ($this->siteInfo === null) {
+            $this->siteInfo = new SiteInfo();
+        }
+
+        return $this->siteInfo;
+    }
+
+    public function document(string $content = '', array $args = []): string
+    {
+        if ($this->documentRenderer === null) {
+            $this->documentRenderer = new DocumentRenderer();
+        }
+
+        return $this->documentRenderer->render($content, $args);
     }
 
     public function boot(): void

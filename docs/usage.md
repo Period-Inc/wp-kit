@@ -308,6 +308,22 @@ Element::class(['btn', null, 'btn-lg', 'btn']);           // → "btn btn-lg"
 Element::el('div', [], new RawHtml('<span>raw</span>'));
 ```
 
+### ArrayUtil
+
+配列のリスト判定と連想配列判定を提供します。
+
+```php
+use Period\WpFramework\Support\ArrayUtil;
+
+ArrayUtil::isList([1, 2, 3]);                    // → true
+ArrayUtil::isList(['a' => 1, 'b' => 2]);         // → false
+ArrayUtil::isList([0 => 'a', 2 => 'b']);         // → false（欠番あり）
+ArrayUtil::isAssociative(['a' => 1, 'b' => 2]);  // → true
+ArrayUtil::isAssociative([1, 2, 3]);             // → false
+```
+
+PHP 8.1 以上では `array_is_list()` を使用し、未満では同等の fallback を使用します。
+
 ### CssName / ImageUtil / LineEnding / Encoding
 
 ```php
@@ -324,6 +340,17 @@ ImageUtil::aspectRatio(1920, 1080);        // → "16/9"
 
 $newline = LineEnding::LF;                 // "\n"
 Encoding::decodeHtmlEntities('&lt;p&gt;'); // → "<p>"
+
+// 文字を hex 表現に変換
+Encoding::charToHex('A');            // → '\x41'
+Encoding::charToHex('A', '%');       // → '%41'
+Encoding::charToHex('\x41');         // → '\x41'（既に hex 形式ならそのまま）
+
+// Unicode コードポイントを UTF-8 文字に変換（mb_chr なしでも動作）
+Encoding::codepointToUtf8(65);       // → 'A'
+Encoding::codepointToUtf8(0xE9);     // → 'é'
+Encoding::codepointToUtf8(0x3042);   // → 'あ'
+Encoding::codepointToUtf8(0x1F600);  // → '😀'
 ```
 
 ---

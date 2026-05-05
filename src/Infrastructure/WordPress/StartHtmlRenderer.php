@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Period\WpFramework\Infrastructure\WordPress;
 
+use Period\WpFramework\Support\TemplateFormatter;
 use Period\WpFramework\View\Element;
 use Period\WpFramework\View\RawHtml;
 
@@ -86,11 +87,13 @@ final class StartHtmlRenderer
         $resolver = new TitleResolver($siteInfo);
         $formatter = new TemplateFormatter();
 
-        return $formatter->format(
-            '{{ title }}',
-            ['title' => $resolver->siteTitle()],
-            'period_wp_document_title'
-        );
+        $result = $formatter->format('{{ title }}', ['title' => $resolver->siteTitle()]);
+
+        if (function_exists('apply_filters')) {
+            $result = (string) apply_filters('period_wp_document_title', $result);
+        }
+
+        return $result;
     }
 
     private function resolveLanguageAttributes(string $version): string

@@ -304,16 +304,14 @@ final class MetaBox
         // @deprecated 'remove_label' is deprecated. Use 'labels' => ['remove' => ...] instead.
         $removeLabel = isset($field['remove_label']) && is_string($field['remove_label']) && $field['remove_label'] !== '' ? $field['remove_label'] : null;
 
-        $translator = function_exists('pwf') ? pwf()->translator() : null;
-
-        $resolve = function (string $key, ?string $legacy, string $fallback) use ($explicit, $translator): string {
+        $resolve = function (string $key, ?string $legacy, string $fallback) use ($explicit): string {
             if (isset($explicit[$key]) && is_string($explicit[$key]) && $explicit[$key] !== '') {
                 return $explicit[$key];
             }
             if ($legacy !== null) {
                 return $legacy;
             }
-            return $translator !== null ? $translator->text($fallback) : $fallback;
+            return $fallback;
         };
 
         return [
