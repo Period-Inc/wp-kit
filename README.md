@@ -91,5 +91,6 @@ $app->assets()
 - [docs/usage-title-resolver.md](docs/usage-title-resolver.md) — TitleResolver（ページタイトル取得）
 - [docs/usage-template-formatter.md](docs/usage-template-formatter.md) — TemplateFormatter（テンプレート整形）
 - [docs/usage-body-renderer.md](docs/usage-body-renderer.md) — BodyRenderer（body タグ生成・body_class / wp_body_open 統合）
+- [docs/usage-document-renderer.md](docs/usage-document-renderer.md) — DocumentRenderer（完全な HTML ドキュメント生成）
 - [docs/design-decisions.md](docs/design-decisions.md) — 設計判断の記録
 - [docs/testing.md](docs/testing.md) — テスト方針・モック構成
