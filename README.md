@@ -87,5 +87,8 @@ $app->assets()
 
 - [docs/metabox.md](docs/metabox.md) — MetaBox フィールド定義・save() の挙動
 - [docs/js-loading.md](docs/js-loading.md) — 管理画面 JS の読み込み方法
+- [docs/usage-site-info.md](docs/usage-site-info.md) — SiteInfo（サイト情報取得）
+- [docs/usage-title-resolver.md](docs/usage-title-resolver.md) — TitleResolver（ページタイトル取得）
+- [docs/usage-template-formatter.md](docs/usage-template-formatter.md) — TemplateFormatter（テンプレート整形）
 - [docs/design-decisions.md](docs/design-decisions.md) — 設計判断の記録
 - [docs/testing.md](docs/testing.md) — テスト方針・モック構成
