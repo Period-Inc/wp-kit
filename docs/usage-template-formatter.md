@@ -1,11 +1,11 @@
 # TemplateFormatter
 
-`{{ key }}` プレースホルダーを context の値で置換する整形レイヤー。WordPress の `apply_filters` を通じて最終出力をフック可能。
+`{{ key }}` プレースホルダーを context の値で置換する整形クラスです。WordPress 非依存で `Period\WpFramework\Support` に属します。
 
 ## 基本的な使い方
 
 ```php
-use Period\WpFramework\Infrastructure\WordPress\TemplateFormatter;
+use Period\WpFramework\Support\TemplateFormatter;
 
 $formatter = new TemplateFormatter();
 
@@ -32,35 +32,30 @@ $result = $formatter->format(
 
 最終結果は `trim()` される。
 
-## filter フック
+## apply_filters を使いたい場合
 
-第 3 引数に filter 名を渡すと `apply_filters` を通す。
+`TemplateFormatter` 自体は WordPress に依存しません。フィルターを適用したい場合は呼び出し側で行います。
 
 ```php
-$result = $formatter->format(
-    '{{ title }}',
-    ['title' => 'Hello'],
-    'my_plugin_title'
-);
+use Period\WpFramework\Support\TemplateFormatter;
 
-// WordPress 側
-add_filter('my_plugin_title', function (string $result, string $template, array $context): string {
-    return strtoupper($result);
-});
-// → "HELLO"
+$formatter = new TemplateFormatter();
+$result = $formatter->format('{{ title }}', ['title' => 'Hello']);
+
+if (function_exists('apply_filters')) {
+    $result = (string) apply_filters('my_plugin_title', $result);
+}
 ```
-
-`apply_filters` が存在しない場合はスキップされ、置換済みの値がそのまま返る。
 
 ## SiteInfo / TitleResolver との組み合わせ
 
 ```php
+use Period\WpFramework\Support\TemplateFormatter;
 use Period\WpFramework\Infrastructure\WordPress\SiteInfo;
 use Period\WpFramework\Infrastructure\WordPress\TitleResolver;
-use Period\WpFramework\Infrastructure\WordPress\TemplateFormatter;
 
-$info     = new SiteInfo();
-$resolver = new TitleResolver($info);
+$info      = new SiteInfo();
+$resolver  = new TitleResolver($info);
 $formatter = new TemplateFormatter();
 
 echo $formatter->format(
@@ -68,7 +63,6 @@ echo $formatter->format(
     [
         'title'     => $resolver->title(),
         'site_name' => $info->name(),
-    ],
-    'my_plugin_document_title'
+    ]
 );
 ```
