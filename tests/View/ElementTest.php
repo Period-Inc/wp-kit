@@ -101,4 +101,109 @@ final class ElementTest extends TestCase
     {
         $this->assertSame('<div>Hello</div>', Element::elIfNotEmpty('div', [], 'Hello'));
     }
+
+    public function testNormalElementShorthandReturnsString(): void
+    {
+        $this->assertSame('<p class="lead">Hello</p>', Element::p(['class' => 'lead'], 'Hello'));
+    }
+
+    public function testSectionShorthand(): void
+    {
+        $this->assertSame('<section id="main"></section>', Element::section(['id' => 'main']));
+    }
+
+    public function testH1Shorthand(): void
+    {
+        $this->assertSame('<h1>Title</h1>', Element::h1([], 'Title'));
+    }
+
+    public function testTableShorthand(): void
+    {
+        $row = Element::tr([], Element::raw(Element::td([], 'Cell')));
+        $this->assertSame('<tr><td>Cell</td></tr>', $row);
+    }
+
+    public function testScriptShorthand(): void
+    {
+        $this->assertSame('<script type="text/javascript"></script>', Element::script(['type' => 'text/javascript']));
+    }
+
+    public function testStyleShorthand(): void
+    {
+        $this->assertSame('<style>body{}</style>', Element::style([], Element::raw('body{}')));
+    }
+
+    public function testObjectTagShorthand(): void
+    {
+        $this->assertSame('<object data="/file.pdf"></object>', Element::objectTag(['data' => '/file.pdf']));
+    }
+
+    public function testVarTagShorthand(): void
+    {
+        $this->assertSame('<var>x</var>', Element::varTag([], 'x'));
+    }
+
+    public function testVoidShorthandInputReturnsStringWithNoClosingTag(): void
+    {
+        $this->assertSame('<input type="text" name="q">', Element::input(['type' => 'text', 'name' => 'q']));
+    }
+
+    public function testVoidShorthandMetaReturnsStringWithNoClosingTag(): void
+    {
+        $this->assertSame('<meta charset="UTF-8">', Element::meta(['charset' => 'UTF-8']));
+    }
+
+    public function testVoidShorthandLinkReturnsStringWithNoClosingTag(): void
+    {
+        $this->assertSame('<link rel="stylesheet" href="/app.css">', Element::link(['rel' => 'stylesheet', 'href' => '/app.css']));
+    }
+
+    public function testVoidShorthandHrReturnsStringWithNoClosingTag(): void
+    {
+        $this->assertSame('<hr>', Element::hr());
+    }
+
+    public function testVoidShorthandSourceReturnsStringWithNoClosingTag(): void
+    {
+        $this->assertSame('<source src="/v.mp4" type="video/mp4">', Element::source(['src' => '/v.mp4', 'type' => 'video/mp4']));
+    }
+
+    public function testElAcceptsArrayContent(): void
+    {
+        $result = Element::ul([], [
+            Element::li([], 'A'),
+            Element::li([], 'B'),
+        ]);
+
+        $this->assertSame('<ul><li>A</li><li>B</li></ul>', $result);
+    }
+
+    public function testElArrayContentDeepNest(): void
+    {
+        $result = Element::nav(['aria-label' => 'main'], [
+            Element::ul([], [
+                Element::li([], [
+                    Element::el('a', ['href' => '/'], 'Home'),
+                ]),
+            ]),
+        ]);
+
+        $this->assertSame('<nav aria-label="main"><ul><li><a href="/">Home</a></li></ul></nav>', $result);
+    }
+
+    public function testElArrayContentMixedTypes(): void
+    {
+        $result = Element::p([], [
+            'Before ',
+            new \Period\WpFramework\View\RawHtml('<strong>bold</strong>'),
+            ' after',
+        ]);
+
+        $this->assertSame('<p>Before <strong>bold</strong> after</p>', $result);
+    }
+
+    public function testElArrayContentEmpty(): void
+    {
+        $this->assertSame('<div></div>', Element::el('div', [], []));
+    }
 }
