@@ -241,8 +241,11 @@ final class MetaBox
         $fields = $field['fields'] ?? [];
         $description = $field['description'] ?? '';
         $placeholder = $field['placeholder'] ?? '';
+        // @deprecated Use 'labels' => ['select' => ..., 'select_image' => ..., 'select_images' => ..., 'add' => ...] instead.
         $buttonLabel = $field['button_label'] ?? '';
+        // @deprecated Use 'labels' => ['clear' => ...] instead.
         $clearLabel = $field['clear_label'] ?? '';
+        // @deprecated Use 'labels' => ['remove' => ...] instead.
         $removeLabel = $field['remove_label'] ?? '';
         $mime = $field['mime'] ?? '';
         $sortable = isset($field['sortable']) ? (bool) $field['sortable'] : true;
@@ -294,8 +297,11 @@ final class MetaBox
     private function normalizeLabels(array $field, string $type): array
     {
         $explicit = isset($field['labels']) && is_array($field['labels']) ? $field['labels'] : [];
+        // @deprecated 'button_label' is deprecated. Use 'labels' array instead.
         $buttonLabel = isset($field['button_label']) && is_string($field['button_label']) && $field['button_label'] !== '' ? $field['button_label'] : null;
+        // @deprecated 'clear_label' is deprecated. Use 'labels' => ['clear' => ...] instead.
         $clearLabel = isset($field['clear_label']) && is_string($field['clear_label']) && $field['clear_label'] !== '' ? $field['clear_label'] : null;
+        // @deprecated 'remove_label' is deprecated. Use 'labels' => ['remove' => ...] instead.
         $removeLabel = isset($field['remove_label']) && is_string($field['remove_label']) && $field['remove_label'] !== '' ? $field['remove_label'] : null;
 
         $translator = function_exists('pwf') ? pwf()->translator() : null;
