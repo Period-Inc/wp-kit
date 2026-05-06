@@ -168,3 +168,28 @@ DONE:
 - `csscode` 以外では compile しない
 - compile failure 時も MetaBox save flow は継続
 - PHPUnit integration tests 追加済み
+
+
+### DONE: period-wp-framework-agent semantic tooling
+
+Added commands:
+- roadmap
+- architecture
+- context <topic>
+- impact <topic>
+
+Current semantic topics:
+- PostAssets
+
+Capabilities:
+- project-aware context packing
+- architecture-aware impact guidance
+- AI implementation boundary guidance
+- warning continue strategy for missing files
+
+Impact guidance includes:
+- implementation files
+- integration points
+- tests
+- documentation
+- architecture constraints

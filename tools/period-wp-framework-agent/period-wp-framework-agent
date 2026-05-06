@@ -60,6 +60,129 @@ switch ($cmd) {
         echo run('cd ' . escapeshellarg(root()) . ' && composer test');
         break;
 
+    case 'roadmap':
+        $path = root() . '/docs/development-roadmap.md';
+        if (!is_file($path)) {
+            fwrite(STDERR, "Warning: docs/development-roadmap.md not found\n");
+            exit(1);
+        }
+        echo file_get_contents($path);
+        break;
+
+    case 'architecture':
+        $files = glob(root() . '/docs/architecture-*.md');
+        if (!$files) {
+            fwrite(STDERR, "Warning: no docs/architecture-*.md files found\n");
+            exit(1);
+        }
+        sort($files);
+        foreach ($files as $path) {
+            $name = basename($path);
+            echo "\n===== {$name} =====\n\n";
+            echo file_get_contents($path);
+            echo "\n===== END {$name} =====\n";
+        }
+        break;
+
+    case 'context':
+        $topic = $args[1] ?? '';
+        if ($topic === '') {
+            fwrite(STDERR, "Usage: period-wp-framework-agent context <topic>\n");
+            exit(1);
+        }
+
+        $contexts = [
+            'PostAssets' => [
+                'docs/development-roadmap.md',
+                'docs/architecture-post-assets.md',
+                'src/WordPress/PostAssets.php',
+                'src/WordPress/PostAssetsRenderer.php',
+                'src/WordPress/PostAssetsCompileResult.php',
+                'src/WordPress/PostAssetsCompilerInterface.php',
+                'src/WordPress/PostAssetsCompileService.php',
+                'src/WordPress/NullPostAssetsCompiler.php',
+                'src/WordPress/ScssPhpPostAssetsCompiler.php',
+                'src/WordPress/PostMetaManager.php',
+                'tests/WordPress/PostAssetsTest.php',
+                'tests/WordPress/PostAssetsCompileServiceTest.php',
+                'tests/WordPress/NullPostAssetsCompilerTest.php',
+                'tests/WordPress/ScssPhpPostAssetsCompilerTest.php',
+            ],
+        ];
+
+        if (!isset($contexts[$topic])) {
+            fwrite(STDERR, "Unknown topic: {$topic}\n");
+            fwrite(STDERR, "Available topics: " . implode(', ', array_keys($contexts)) . "\n");
+            exit(1);
+        }
+
+        foreach ($contexts[$topic] as $file) {
+            $path = root() . '/' . $file;
+            if (!is_file($path)) {
+                fwrite(STDERR, "Warning: missing file: {$file}\n");
+                continue;
+            }
+            echo "\n===== FILE: {$file} =====\n";
+            echo file_get_contents($path);
+            echo "\n===== END FILE: {$file} =====\n";
+        }
+        break;
+
+    case 'impact':
+        $topic = $args[1] ?? '';
+        if ($topic === '') {
+            fwrite(STDERR, "Usage: period-wp-framework-agent impact <topic>\n");
+            exit(1);
+        }
+
+        $impacts = [
+            'PostAssets' => <<<MD
+# Impact: PostAssets
+
+## Summary
+- Post-level CSS / JavaScript asset management.
+- CSS input is compiled at save time and rendered from compiled meta.
+
+## Primary implementation
+- src/WordPress/PostAssets.php
+- src/WordPress/PostAssetsRenderer.php
+- src/WordPress/PostAssetsCompileService.php
+- src/WordPress/PostAssetsCompilerInterface.php
+- src/WordPress/ScssPhpPostAssetsCompiler.php
+
+## Integration points
+- src/WordPress/MetaBox.php
+- src/WordPress/PostMetaManager.php
+- src/WordPress/ScriptStyleRegistrar.php
+
+## Tests
+- tests/WordPress/PostAssetsTest.php
+- tests/WordPress/PostAssetsCompileServiceTest.php
+- tests/WordPress/ScssPhpPostAssetsCompilerTest.php
+- tests/WordPress/MetaBoxTest.php
+
+## Documentation
+- docs/architecture-post-assets.md
+- docs/development-roadmap.md
+
+## Do not change casually
+- MetaBox save flow must remain generic.
+- Renderer must not compile assets.
+- Compiler must not enqueue or render frontend output.
+- Compile service must not hook save_post directly.
+- Runtime compile should not be introduced.
+MD,
+        ];
+
+        if (!isset($impacts[$topic])) {
+            fwrite(STDERR, "Unknown topic: {$topic}\n");
+            fwrite(STDERR, "Available topics: " . implode(', ', array_keys($impacts)) . "\n");
+            exit(1);
+        }
+
+        echo $impacts[$topic] . "\n";
+        break;
+
     default:
         echo <<<TXT
 period-wp-framework-agent commands:
@@ -68,6 +191,13 @@ period-wp-framework-agent commands:
   period-wp-framework-agent grep <pattern>
   period-wp-framework-agent pack <file> [file...]
   period-wp-framework-agent test
+  period-wp-framework-agent roadmap
+  period-wp-framework-agent architecture
+  period-wp-framework-agent context <topic>
+  period-wp-framework-agent impact <topic>
+
+Available context topics: PostAssets
+Available impact topics: PostAssets
 
 This version is read-only except running tests.
 TXT;
