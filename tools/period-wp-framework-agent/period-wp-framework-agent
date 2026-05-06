@@ -30,7 +30,7 @@ switch ($cmd) {
     case 'grep':
         $q = $args[1] ?? '';
         if ($q === '') {
-            fwrite(STDERR, "Usage: pagent grep <pattern>\n");
+            fwrite(STDERR, "Usage: period-wp-framework-agent grep <pattern>\n");
             exit(1);
         }
         echo run('cd ' . escapeshellarg(root()) . ' && rg -n ' . escapeshellarg($q) . ' src tests docs');
@@ -39,7 +39,7 @@ switch ($cmd) {
     case 'pack':
         $files = array_slice($args, 1);
         if (!$files) {
-            fwrite(STDERR, "Usage: pagent pack <file> [file...]\n");
+            fwrite(STDERR, "Usage: period-wp-framework-agent pack <file> [file...]\n");
             exit(1);
         }
 
@@ -62,12 +62,12 @@ switch ($cmd) {
 
     default:
         echo <<<TXT
-pagent commands:
+period-wp-framework-agent commands:
 
-  pagent scan
-  pagent grep <pattern>
-  pagent pack <file> [file...]
-  pagent test
+  period-wp-framework-agent scan
+  period-wp-framework-agent grep <pattern>
+  period-wp-framework-agent pack <file> [file...]
+  period-wp-framework-agent test
 
 This version is read-only except running tests.
 TXT;
