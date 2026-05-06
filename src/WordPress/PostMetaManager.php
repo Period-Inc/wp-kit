@@ -15,6 +15,15 @@ final class PostMetaManager
         return get_post_meta($postId, $key, true);
     }
 
+    public function update(int $postId, string $key, mixed $value): bool
+    {
+        if (!function_exists('update_post_meta')) {
+            return false;
+        }
+
+        return (bool) update_post_meta($postId, $key, $value);
+    }
+
     public function set(int $postId, string $key, mixed $value): void
     {
         if (!function_exists('update_post_meta')) {
