@@ -158,3 +158,13 @@ DONE:
 - enqueue / inline responsibility split
 - csscode_minified → csscode_compiled fallback
 - ScriptStyleRegistrar integration
+
+
+### DONE: MetaBox ↔ PostAssets compile integration
+
+- MetaBox save 時に `csscode` 保存後、`PostAssetsCompileService::compileCss()` を呼ぶ
+- compile source は DB 再読込ではなく、保存処理中の入力値を使う
+- `post_assets_compile_service` option 経由で任意注入
+- `csscode` 以外では compile しない
+- compile failure 時も MetaBox save flow は継続
+- PHPUnit integration tests 追加済み
