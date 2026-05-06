@@ -28,7 +28,7 @@
 
 ---
 
-## Phase 3 — WordPress Application Features
+## Phase 3 （Progress: 80%） — WordPress Application Features
 
 **Status:** In progress
 

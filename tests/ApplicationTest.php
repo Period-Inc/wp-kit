@@ -6,7 +6,7 @@ namespace Period\WpFramework\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Period\WpFramework\Application;
-use Period\WpFramework\Infrastructure\WordPress\SiteInfo;
+use Period\WpFramework\WordPress\SiteInfo;
 
 final class ApplicationTest extends TestCase
 {
