@@ -28,6 +28,59 @@
 
 ---
 
+---
+
+## Phase 2.5 — Headless WP Support
+
+**Status:** Planned
+
+### Goal
+
+WordPress を Headless CMS として使う場合に、REST API / GraphQL / frontend preview / media / revalidation を扱いやすくする。
+
+### TODO
+
+- [ ] **Headless API Profile**
+  - post_type ごとに API 出力フィールドを定義する
+  - meta / taxonomy / featured image / relation を整形する
+  - REST API の `_fields` 相当の軽量レスポンスを作る
+
+- [ ] **Media Transformer**
+  - featured image / gallery / srcset / alt / caption を JSON 化する
+  - frontend 側で扱いやすい画像オブジェクトを生成する
+
+- [ ] **Headless Preview**
+  - 下書き・予約投稿・未公開投稿の preview token を発行する
+  - frontend preview URL を生成する
+  - token の期限管理を行う
+
+- [ ] **Revalidation Hook**
+  - post 保存時に webhook を送信する
+  - Next.js / Astro / Nuxt などの再生成通知に対応する
+
+- [ ] **Relation API Adapter**
+  - `relation_parent` / `relation_children` を API 向けに展開する
+  - ID だけでなく title / slug / link などを返せるようにする
+
+- [ ] **SiteData API**
+  - headless frontend 用の共通設定 JSON を返す
+  - site name / logo / nav / snippets / theme assets を扱う
+
+- [ ] **Headless Route Helper**
+  - frontend URL と WordPress permalink の対応を管理する
+  - slug / post_type / taxonomy から frontend URL を生成する
+
+- [ ] **Auth Helper**
+  - Application Passwords 利用時の接続確認を補助する
+  - REST API 権限チェックを補助する
+
+### Notes
+
+- WordPress 本体の REST API を壊さず、必要な出力整形を追加する
+- WPGraphQL 連携は後続オプションとする
+- Headless 機能は WordPress 通常テーマ利用時にも副作用が出ないようにする
+
+
 ## Phase 3 （Progress: 80%） — WordPress Application Features
 
 **Status:** In progress
