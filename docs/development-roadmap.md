@@ -109,7 +109,7 @@ Current implementation priorities:
   - [ ] AssetAccessPolicyInterface
   - [ ] AssetAccessResult
   - [ ] AssetRequestContext
-  - [ ] AssetDeliveryInterface
+  - [x] AssetDeliveryInterface
   - [ ] AssetStorage abstraction
 
   Default policies:
