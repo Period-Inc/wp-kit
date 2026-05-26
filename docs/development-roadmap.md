@@ -126,13 +126,13 @@ Current implementation priorities:
   - [ ] multiple policy composition
 
   Delivery:
-  - [ ] PHP proxy delivery
+  - [x] PHP proxy delivery
   - [ ] signed URL strategy
   - [ ] direct file protection strategy
   - [ ] nginx / apache compatibility strategy
-  - [ ] protected image delivery
-  - [ ] protected PDF delivery
-  - [ ] protected video delivery
+  - [x] protected image delivery
+  - [x] protected PDF delivery
+  - [x] protected video delivery
 
   WordPress integration:
   - [ ] Media Library integration
@@ -349,3 +349,13 @@ WordPress を Headless CMS として使う場合に、REST API / GraphQL / front
 - WPGraphQL 連携は後続オプションとする
 - Headless 機能は WordPress 通常テーマ利用時にも副作用が出ないようにする
 - Phase 3 の Asset Access Control を優先し、Headless WP Support はその後に実装する
+
+
+### DONE: Asset Access Control streamed file delivery
+
+- FileStreamInterface を追加
+- NativeFileStream を追加
+- StreamedAssetDelivery を追加
+- AssetStorage / AssetAccessManager / Delivery を接続
+- readfile / fopen / passthru は使わず、file_get_contents ベースに限定
+- 実ファイル delivery の foundation tests 追加済み
