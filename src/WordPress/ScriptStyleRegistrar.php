@@ -43,7 +43,7 @@ final class ScriptStyleRegistrar
     /**
      * @param array{deps?: array, ver?: string|int|null, media?: string, path?: string|null, enqueue?: bool} $args
      */
-    public function style(string $handle, string $src, array $args = []): self
+    public function style(string $handle, string|false $src, array $args = []): self
     {
         $deps = $args['deps'] ?? [];
         $ver = $args['ver'] ?? null;
