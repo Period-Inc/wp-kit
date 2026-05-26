@@ -134,6 +134,14 @@ Current implementation priorities:
   - [x] protected PDF delivery
   - [x] protected video delivery
 
+  Direct access protection:
+  - `protected-uploads` に置くだけでは安全ではない
+  - protected path への直アクセスを拒否する direct access protection が必要
+  - 対応方針:
+    - rewrite interception
+    - deny direct access
+    - outside webroot
+
   WordPress integration:
   - [ ] Media Library integration
   - [ ] attachment meta integration
