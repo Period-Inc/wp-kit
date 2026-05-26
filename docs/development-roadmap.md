@@ -140,6 +140,8 @@ Current implementation priorities:
   - outside webroot strategy は最も安全な推奨構成
   - shared hosting では `protected-uploads` + deny/rewrite を fallback とする
   - VPS / 専用環境では outside webroot を推奨
+  - runtime health check layer で危険な設定を検出する
+  - rewrite-only strategy は warning として扱う
   - 対応方針:
     - rewrite interception
     - deny direct access
