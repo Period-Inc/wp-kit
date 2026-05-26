@@ -28,6 +28,277 @@
 
 ---
 
+## Phase 3 （Progress: 80%） — WordPress Application Features
+
+**Status:** In progress
+
+**Current focus:** PostAssets / Asset Access Control / Relation
+
+### Done
+
+- [x] PostMetaManager — get / set / has、WordPress なしは noop
+
+### Current Status
+
+Foundation completed:
+
+- PostMetaManager
+- PostAssets compile pipeline
+- Renderer / CompileService separation
+- semantic tooling (`context` / `impact`)
+
+Current implementation priorities:
+
+1. Asset Access Control
+2. Relation
+3. PostAssets productization
+
+### TODO
+
+#### Content / Meta
+
+- [ ] **Post Assets** — 投稿単位で CSS/JS を管理する
+
+  Foundation:
+  - [x] PostMetaManager integration
+  - [x] PostAssets accessor layer
+  - [x] PostAssetsRenderer
+  - [x] enqueue / inline responsibility split
+  - [x] csscode_minified → csscode_compiled fallback
+  - [x] PostAssetsCompilerInterface
+  - [x] NullPostAssetsCompiler
+  - [x] ScssPhpPostAssetsCompiler
+  - [x] PostAssetsCompileService
+  - [x] MetaBox save → compile integration
+  - [x] renderer / compile integration tests
+
+  Remaining:
+  - [ ] wp_head / wp_footer auto integration
+  - [ ] actual MetaBox field definitions
+  - [ ] CodeMirror editor integration
+  - [ ] compile error admin UI
+  - [ ] minify implementation
+  - [ ] asset dependency management
+  - [ ] asset version strategy
+  - [ ] frontend cache strategy
+  - [ ] asset preload / defer strategy
+  - [ ] frontend output documentation
+  - [ ] examples / starter templates
+
+- [ ] **Relation** — post type 間の親子関係
+  - 親/子 post_id を保持するメタフィールド
+  - 管理画面の親/子リンク UI
+  - 複数 post type 間の双方向参照
+
+- [ ] **SiteData** — HTML コードスニペットの挿入
+  - 別 Post やショートコードから HTML 断片を挿入
+  - head / body open / footer へのインジェクションポイント
+
+- [ ] **Featured Post** — チェックした投稿を一覧化
+  - 管理画面でチェックボックスによる「おすすめ」フラグ
+  - WP_Query 連携
+
+- [ ] **Breadcrumb** — パンくずリスト生成
+  - 投稿タイプ・taxonomy・階層ページに対応
+
+#### Access / Security
+
+- [ ] **Asset Access Control** — `wp-content` 以下のアセットアクセス制限
+
+  Architecture:
+  - [ ] AssetAccessPolicyInterface
+  - [ ] AssetAccessResult
+  - [ ] AssetRequestContext
+  - [ ] AssetDeliveryInterface
+  - [ ] AssetStorage abstraction
+
+  Default policies:
+  - [ ] WordPress role policy
+  - [ ] logged-in user policy
+  - [ ] public / private policy
+  - [ ] expiration policy
+
+  Extensibility:
+  - [ ] subscription purchaser policy
+  - [ ] paid customer policy
+  - [ ] membership status policy
+  - [ ] arbitrary callback policy
+  - [ ] multiple policy composition
+
+  Delivery:
+  - [ ] PHP proxy delivery
+  - [ ] signed URL strategy
+  - [ ] direct file protection strategy
+  - [ ] nginx / apache compatibility strategy
+  - [ ] protected image delivery
+  - [ ] protected PDF delivery
+  - [ ] protected video delivery
+
+  WordPress integration:
+  - [ ] Media Library integration
+  - [ ] attachment meta integration
+  - [ ] admin UI
+  - [ ] upload restriction support
+  - [ ] role-based configuration UI
+
+  Headless / API:
+  - [ ] headless-compatible asset access flow
+  - [ ] frontend token flow
+  - [ ] REST API integration
+
+  Constraints:
+  - [ ] Headless WP Support より優先度を高く扱う
+  - [ ] 通常テーマ利用時にも副作用が出ないようにする
+  - [ ] uploads 直接公開前提を壊さない
+  - [ ] runtime dependency を最小限に保つ
+
+#### Search / Query
+
+- [ ] **TermSearch** — taxonomy term の AND/OR 検索・絞り込み
+  - 複数 taxonomy をまたいだ絞り込み
+  - AND / OR モード切り替え
+
+- [ ] **Posts shortcode** — `[posts]` ショートコード
+  - post_type / taxonomy / 件数などをパラメータで指定
+  - 出力テンプレートを差し替え可能
+
+#### Rendering / Theme
+
+- [ ] **ThemeImage** — テーマフォルダ内アセットアクセス
+  - テーマ内画像の URL / パス解決ヘルパー
+  - 存在チェック付き
+
+- [ ] **Include shortcode** — `[include]` ショートコード
+  - テンプレートパーツをショートコードで埋め込む
+
+#### Calendar / Data
+
+- [ ] **Calendar WP 展開** — Support\Calendar をスケジュール表として WordPress で使う
+  - 投稿をカレンダー上にマッピング
+  - WP クエリと Calendar::month() の統合ヘルパー
+
+#### Admin / UX
+
+- [ ] **Admin UI** — 本機能群の管理画面 view 整理
+  - Phase 3 各機能の管理画面コンポーネントを統一
+
+- [ ] **旧 wpcf-shortcodes の再設計**
+  - Legacy ショートコード群を現行アーキテクチャに移植
+  - HookRegistrar ベースで再実装
+
+---
+
+## Notes
+
+- Phase 3 の各機能は PostMetaManager を基盤として構築する
+- WordPress なし環境での動作（noop / 空返却）を維持する
+- HTML 生成は Element / View 層に委譲し、Renderer クラスはデータのみ扱う
+- Legacy コードは編集しない（新規クラスとして並行実装）
+
+### Pending: Infrastructure/Shortcode の取捨選択
+
+`src/Infrastructure/Shortcode/*` は現時点では移動せず、後続で取捨選択する。
+
+対象:
+
+- `ButtonShortcode.php`
+- `FetchTitleShortcode.php`
+- `TemplateUrlShortcode.php`
+- `ShortcodeInterface.php`
+
+整理方針:
+
+- `ShortcodeInterface` は WordPress FW基盤として残す可能性が高い
+- `ButtonShortcode` / `FetchTitleShortcode` / `TemplateUrlShortcode` は実用ショートコード集またはサンプル扱いとして再分類する
+- 候補は `src/WordPress/Shortcodes/` または `src/Examples/Shortcodes/`
+- Relation 実装を優先し、この項目は後続タスクとする
+
+---
+
+### Pending: Editor UI strategy
+
+PostAssets の `csscode` / `jscode` 編集UIは、通常の textarea を CodeMirror 化する方針とする。
+
+対象:
+
+- `csscode`
+- `jscode`
+- Sass / SCSS 編集
+- JavaScript 編集
+
+方針:
+
+- 保存値は textarea / post meta と同期する
+- CodeMirror は編集UIとして利用し、保存形式には依存させない
+- CSS / SCSS / JavaScript の syntax highlight、indent、括弧対応、validation を検討する
+- 管理画面での読み込み負荷を抑えるため、PostAssets の編集画面に限定して enqueue する
+- リッチエディタではなくコードエディタとして扱う
+
+#### Monaco Editor Strategy
+
+WordPress 本体のメインエディターについては、ソース編集モードに Monaco Editor を導入する方向で検討する。
+
+対象:
+
+- 投稿本文の HTML / ブロックソース編集
+- テーマ制作用途での高度なソース編集
+- 将来的な validation / formatting / search / replace
+
+方針:
+
+- WordPress の通常編集体験は壊さない
+- Monaco Editor はソース編集用UIとして限定的に導入する
+- 保存データ構造には依存させない
+- Gutenberg / Classic Editor との接続方法を別途検証する
+
+---
+
+### PostAssetsRenderer foundation
+
+DONE:
+
+- PostAssetsRenderer
+- enqueue / inline responsibility split
+- csscode_minified → csscode_compiled fallback
+- ScriptStyleRegistrar integration
+
+### DONE: MetaBox ↔ PostAssets compile integration
+
+- MetaBox save 時に `csscode` 保存後、`PostAssetsCompileService::compileCss()` を呼ぶ
+- compile source は DB 再読込ではなく、保存処理中の入力値を使う
+- `post_assets_compile_service` option 経由で任意注入
+- `csscode` 以外では compile しない
+- compile failure 時も MetaBox save flow は継続
+- PHPUnit integration tests 追加済み
+
+---
+
+### DONE: period-wp-framework-agent semantic tooling
+
+Commands:
+
+- roadmap
+- architecture
+- context <topic>
+- impact <topic>
+
+Capabilities:
+
+- project-aware context packing
+- architecture-aware impact guidance
+- AI implementation boundary guidance
+- warning continue strategy for missing files
+
+Impact guidance:
+
+- implementation files
+- integration points
+- tests
+- documentation
+- architecture constraints
+
+---
+
 ## Phase 4 — Headless WP Support
 
 **Status:** Planned
@@ -78,181 +349,3 @@ WordPress を Headless CMS として使う場合に、REST API / GraphQL / front
 - WPGraphQL 連携は後続オプションとする
 - Headless 機能は WordPress 通常テーマ利用時にも副作用が出ないようにする
 - Phase 3 の Asset Access Control を優先し、Headless WP Support はその後に実装する
-
-## Phase 3 （Progress: 80%） — WordPress Application Features
-
-**Status:** In progress
-
-**Current focus:** PostAssets / Asset Access Control / Relation
-
-### Done
-
-- [x] PostMetaManager — get / set / has、WordPress なしは noop
-
-### TODO
-
-- [ ] **Post Assets** — 投稿単位で CSS/JS を管理する
-  - csscode / cssfile (インライン or ファイルパス)
-  - jscode / jsfile (インライン or ファイルパス)
-  - MetaBox フィールドとして保存、wp_head / wp_footer で出力
-
-- [ ] **Asset Access Control** — `wp-content` 以下のアセットアクセス制限
-  - 画像・PDF・動画などのアセットを公開/非公開/条件付き公開に制御する
-  - デフォルトでは WordPress user role によるアクセス制限を可能にする
-  - 管理画面でアセット制限ルールを設定できるようにする
-  - 外部条件による制御にも拡張できる設計にする
-    - サブスクリプション購入者
-    - 単発購入/決済済みユーザー
-    - 会員ステータス
-    - 任意の判定コールバック
-  - Headless WP Support より優先度を高く扱う
-  - 通常テーマ利用時にも副作用が出ないようにする
-
-- [ ] **Relation** — post type 間の親子関係
-  - 親/子 post_id を保持するメタフィールド
-  - 管理画面の親/子リンク UI
-  - 複数 post type 間の双方向参照
-
-- [ ] **SiteData** — HTML コードスニペットの挿入
-  - 別 Post やショートコードから HTML 断片を挿入
-  - head / body open / footer へのインジェクションポイント
-
-- [ ] **Calendar WP 展開** — Support\Calendar をスケジュール表として WordPress で使う
-  - 投稿をカレンダー上にマッピング
-  - WP クエリと Calendar::month() の統合ヘルパー
-
-- [ ] **Featured Post** — チェックした投稿を一覧化
-  - 管理画面でチェックボックスによる「おすすめ」フラグ
-  - WP_Query 連携
-
-- [ ] **TermSearch** — taxonomy term の AND/OR 検索・絞り込み
-  - 複数 taxonomy をまたいだ絞り込み
-  - AND / OR モード切り替え
-
-- [ ] **ThemeImage** — テーマフォルダ内アセットアクセス
-  - テーマ内画像の URL / パス解決ヘルパー
-  - 存在チェック付き
-
-- [ ] **Admin UI** — 本機能群の管理画面 view 整理
-  - Phase 3 各機能の管理画面コンポーネントを統一
-
-- [ ] **Breadcrumb** — パンくずリスト生成
-  - 投稿タイプ・taxonomy・階層ページに対応
-
-- [ ] **Posts shortcode** — `[posts]` ショートコード
-  - post_type / taxonomy / 件数などをパラメータで指定
-  - 出力テンプレートを差し替え可能
-
-- [ ] **Include shortcode** — `[include]` ショートコード
-  - テンプレートパーツをショートコードで埋め込む
-
-- [ ] **旧 wpcf-shortcodes の再設計**
-  - Legacy ショートコード群を現行アーキテクチャに移植
-  - HookRegistrar ベースで再実装
-
----
-
-## Notes
-
-- Phase 3 の各機能は PostMetaManager を基盤として構築する
-- WordPress なし環境での動作（noop / 空返却）を維持する
-- HTML 生成は Element / View 層に委譲し、Renderer クラスはデータのみ扱う
-- Legacy コードは編集しない（新規クラスとして並行実装）
-
-### Pending: Infrastructure/Shortcode の取捨選択
-
-`src/Infrastructure/Shortcode/*` は現時点では移動せず、後続で取捨選択する。
-
-対象:
-
-- `ButtonShortcode.php`
-- `FetchTitleShortcode.php`
-- `TemplateUrlShortcode.php`
-- `ShortcodeInterface.php`
-
-整理方針:
-
-- `ShortcodeInterface` は WordPress FW基盤として残す可能性が高い
-- `ButtonShortcode` / `FetchTitleShortcode` / `TemplateUrlShortcode` は実用ショートコード集またはサンプル扱いとして再分類する
-- 候補は `src/WordPress/Shortcodes/` または `src/Examples/Shortcodes/`
-- Relation 実装を優先し、この項目は後続タスクとする
-
-### Pending: Editor UI strategy
-
-PostAssets の `csscode` / `jscode` 編集UIは、通常の textarea を CodeMirror 化する方針とする。
-
-対象:
-
-- `csscode`
-- `jscode`
-- Sass / SCSS 編集
-- JavaScript 編集
-
-方針:
-
-- 保存値は textarea / post meta と同期する
-- CodeMirror は編集UIとして利用し、保存形式には依存させない
-- CSS / SCSS / JavaScript の syntax highlight、indent、括弧対応、validation を検討する
-- 管理画面での読み込み負荷を抑えるため、PostAssets の編集画面に限定して enqueue する
-- リッチエディタではなくコードエディタとして扱う
-
-WordPress 本体のメインエディターについては、ソース編集モードに Monaco Editor を導入する方向で検討する。
-
-対象:
-
-- 投稿本文の HTML / ブロックソース編集
-- テーマ制作用途での高度なソース編集
-- 将来的な validation / formatting / search / replace
-
-方針:
-
-- WordPress の通常編集体験は壊さない
-- Monaco Editor はソース編集用UIとして限定的に導入する
-- 保存データ構造には依存させない
-- Gutenberg / Classic Editor との接続方法を別途検証する
-
-### PostAssetsRenderer foundation
-
-DONE:
-
-- PostAssetsRenderer
-- enqueue / inline responsibility split
-- csscode_minified → csscode_compiled fallback
-- ScriptStyleRegistrar integration
-
-### DONE: MetaBox ↔ PostAssets compile integration
-
-- MetaBox save 時に `csscode` 保存後、`PostAssetsCompileService::compileCss()` を呼ぶ
-- compile source は DB 再読込ではなく、保存処理中の入力値を使う
-- `post_assets_compile_service` option 経由で任意注入
-- `csscode` 以外では compile しない
-- compile failure 時も MetaBox save flow は継続
-- PHPUnit integration tests 追加済み
-
-### DONE: period-wp-framework-agent semantic tooling
-
-Added commands:
-
-- roadmap
-- architecture
-- context <topic>
-- impact <topic>
-
-Current semantic topics:
-
-- PostAssets
-
-Capabilities:
-
-- project-aware context packing
-- architecture-aware impact guidance
-- AI implementation boundary guidance
-- warning continue strategy for missing files
-
-Impact guidance includes:
-
-- implementation files
-- integration points
-- tests
-- documentation
-- architecture constraints
