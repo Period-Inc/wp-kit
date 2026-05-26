@@ -137,6 +137,9 @@ Current implementation priorities:
   Direct access protection:
   - `protected-uploads` に置くだけでは安全ではない
   - protected path への直アクセスを拒否する direct access protection が必要
+  - outside webroot strategy は最も安全な推奨構成
+  - shared hosting では `protected-uploads` + deny/rewrite を fallback とする
+  - VPS / 専用環境では outside webroot を推奨
   - 対応方針:
     - rewrite interception
     - deny direct access
