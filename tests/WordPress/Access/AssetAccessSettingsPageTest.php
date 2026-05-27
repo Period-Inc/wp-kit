@@ -5,6 +5,11 @@ declare(strict_types=1);
 namespace Period\WpFramework\Tests\WordPress\Access;
 
 use PHPUnit\Framework\TestCase;
+use Period\WpFramework\WordPress\Access\AssetAccessHealthCheckInterface;
+use Period\WpFramework\WordPress\Access\AssetAccessHealthReporter;
+use Period\WpFramework\WordPress\Access\AssetAccessHealthSettingsSection;
+use Period\WpFramework\WordPress\Access\AssetAccessHealthStatus;
+use Period\WpFramework\WordPress\Access\AssetAccessHealthStatusRenderer;
 use Period\WpFramework\WordPress\Access\AssetAccessSettings;
 use Period\WpFramework\WordPress\Access\AssetAccessSettingsFormHandler;
 use Period\WpFramework\WordPress\Access\AssetAccessSettingsPageRenderer;
@@ -60,6 +65,7 @@ final class AssetAccessSettingsPageTest extends TestCase
         bool $userCanManage                              = true,
         ?AssetAccessSettingsRepositoryInterface $repo    = null,
         array $availableRoles                            = [],
+        ?AssetAccessHealthSettingsSection $healthSection = null,
     ): WordPressAssetAccessSettingsPage {
         return new WordPressAssetAccessSettingsPage(
             $repo ?? $this->makeRepository(),
@@ -67,6 +73,22 @@ final class AssetAccessSettingsPageTest extends TestCase
             new AssetAccessSettingsFormHandler($repo ?? $this->makeRepository()),
             fn(string $cap): bool => $userCanManage && $cap === 'manage_options',
             fn(): array => $availableRoles,
+            $healthSection,
+        );
+    }
+
+    private function makeHealthSection(): AssetAccessHealthSettingsSection
+    {
+        return new AssetAccessHealthSettingsSection(
+            new AssetAccessHealthReporter([
+                new class implements AssetAccessHealthCheckInterface {
+                    public function check(): array
+                    {
+                        return [AssetAccessHealthStatus::info('health_ok', 'health ok')];
+                    }
+                },
+            ]),
+            new AssetAccessHealthStatusRenderer(),
         );
     }
 
@@ -315,6 +337,32 @@ final class AssetAccessSettingsPageTest extends TestCase
         $this->assertStringContainsString(' checked', $html);
     }
 
+    public function testRenderIncludesHealthSectionWhenProvided(): void
+    {
+        $page = $this->makePage(healthSection: $this->makeHealthSection());
+
+        $html = $page->render();
+
+        $this->assertStringContainsString('health_ok', $html);
+        $this->assertStringContainsString('health ok', $html);
+    }
+
+    public function testRenderOutputUnchangedWhenHealthSectionIsNull(): void
+    {
+        $repo = $this->makeRepository();
+        $page = $this->makePage(repo: $repo, healthSection: null);
+        $expected = (new AssetAccessSettingsPageRenderer())->render($repo->get(), []);
+
+        $this->assertSame($expected, $page->render());
+    }
+
+    public function testUnauthorizedUserDoesNotRenderHealthSection(): void
+    {
+        $page = $this->makePage(userCanManage: false, healthSection: $this->makeHealthSection());
+
+        $this->assertSame('', $page->render());
+    }
+
     // -----------------------------------------------------------------------
     // WordPressAssetAccessSettingsPage — handlePost
     // -----------------------------------------------------------------------
@@ -349,6 +397,15 @@ final class AssetAccessSettingsPageTest extends TestCase
         $this->assertTrue($result->isEnabled());
         $this->assertSame(['editor'], $result->protectedRoles());
         $this->assertSame('private', $result->defaultVisibility());
+    }
+
+    public function testHandlePostIsUnchangedWhenHealthSectionExists(): void
+    {
+        $page = $this->makePage(userCanManage: true, healthSection: $this->makeHealthSection());
+        $result = $page->handlePost(['period_asset_access' => ['enabled' => '1']]);
+
+        $this->assertInstanceOf(AssetAccessSettings::class, $result);
+        $this->assertTrue($result->isEnabled());
     }
 
     public function testHandlePostCallsCurrentUserCan(): void

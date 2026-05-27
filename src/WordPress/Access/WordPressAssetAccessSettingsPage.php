@@ -22,6 +22,7 @@ final class WordPressAssetAccessSettingsPage
         private readonly AssetAccessSettingsFormHandler $handler,
         callable $currentUserCan,
         callable $getRoles,
+        private readonly ?AssetAccessHealthSettingsSection $healthSection = null,
     ) {
         $this->currentUserCan = $currentUserCan;
         $this->getRoles       = $getRoles;
@@ -35,8 +36,13 @@ final class WordPressAssetAccessSettingsPage
 
         $settings       = $this->repository->get();
         $availableRoles = ($this->getRoles)();
+        $html           = $this->renderer->render($settings, $availableRoles);
 
-        return $this->renderer->render($settings, $availableRoles);
+        if ($this->healthSection === null) {
+            return $html;
+        }
+
+        return $html . $this->healthSection->render();
     }
 
     /** @param array<string,mixed> $postData */
