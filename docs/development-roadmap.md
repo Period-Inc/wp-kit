@@ -105,36 +105,18 @@ Current implementation priorities:
 
 - [ ] **Asset Access Control** — `wp-content` 以下のアセットアクセス制限
 
-  Architecture:
-  - [ ] AssetAccessPolicyInterface
-  - [ ] AssetAccessResult
-  - [ ] AssetRequestContext
+  Foundation:
+  - [x] AssetAccessPolicyInterface
+  - [x] AssetAccessResult
+  - [x] AssetRequestContext
   - [x] AssetDeliveryInterface
-  - [ ] AssetStorage abstraction
+  - [x] AssetStorage abstraction
+  - [x] AssetAccessManager / policy factory composition
+  - [x] Settings repository / form handler / settings page renderer
+  - [x] WordPress hook registrar / runtime installer foundation
+  - [x] Runtime defaults / plugin bootstrap composition
 
-  Default policies:
-  - [ ] WordPress role policy
-  - [ ] logged-in user policy
-  - [ ] public / private policy
-  - [ ] expiration policy
-
-  Extensibility:
-  - [ ] subscription purchaser policy
-  - [ ] paid customer policy
-  - [ ] membership status policy
-  - [ ] arbitrary callback policy
-  - [ ] multiple policy composition
-
-  Delivery:
-  - [x] PHP proxy delivery
-  - [ ] signed URL strategy
-  - [ ] direct file protection strategy
-  - [ ] nginx / apache compatibility strategy
-  - [x] protected image delivery
-  - [x] protected PDF delivery
-  - [x] protected video delivery
-
-  Direct access protection:
+  Runtime safety notes:
   - `protected-uploads` に置くだけでは安全ではない
   - protected path への直アクセスを拒否する direct access protection が必要
   - outside webroot strategy は最も安全な推奨構成
@@ -147,17 +129,93 @@ Current implementation priorities:
     - deny direct access
     - outside webroot
 
-  WordPress integration:
-  - [ ] Media Library integration
-  - [ ] attachment meta integration
-  - [ ] admin UI
-  - [ ] upload restriction support
-  - [ ] role-based configuration UI
+  Runtime diagnostics:
+  - [x] Direct access protection health check
+  - [x] Outside webroot strategy health check
+  - [x] Filesystem inspector abstraction
+  - [x] private asset root diagnostics
+  - [x] health reporter runtime composition
+  - [x] settings page health section rendering
 
-  Headless / API:
-  - [ ] headless-compatible asset access flow
-  - [ ] frontend token flow
-  - [ ] REST API integration
+  Default policies:
+  - [x] WordPress role policy
+  - [x] logged-in user policy
+  - [x] public / private policy
+  - [x] expiration policy
+  - [x] arbitrary callback policy
+  - [x] multiple policy composition
+
+  Delivery:
+  - [x] PHP proxy delivery
+  - [x] protected image delivery
+  - [x] protected PDF delivery
+  - [x] protected video delivery
+  - [x] streamed file delivery foundation
+  - [ ] signed URL strategy production integration
+  - [ ] direct file protection strategy production integration
+  - [ ] nginx / apache compatibility strategy production integration
+
+  Production Delivery Backend:
+  - [ ] X-Sendfile support
+  - [ ] X-Accel-Redirect support
+  - [ ] large PDF/video delivery optimization
+  - [ ] streaming backend abstraction
+  - [ ] PHP body delivery fallback
+
+  Filesystem Auto Repair:
+  - [ ] dry-run / execution mode separation
+  - [ ] private root creation plan
+  - [ ] permission diagnostics
+  - [ ] explicit execution only
+  - [ ] no automatic destructive operations
+
+  Rewrite Guide Output:
+  - rewrite auto-write は行わない
+  - [ ] `.htaccess` guide output
+  - [ ] nginx config guide output
+  - [ ] copy/paste install flow
+  - [ ] diff/review based operation
+
+  Upload Channel Policy:
+  - [ ] Public Upload
+  - [ ] Protected Upload
+  - [ ] upload channel based policy
+  - [ ] upload workflow separation
+
+  Media Category Access Policy:
+  - [ ] attachment taxonomy integration
+  - [ ] category based access policy
+  - [ ] role-based category access
+  - [ ] reserved protected media category
+  - [ ] protected category internal slug reservation
+
+  Policy Resolution Priority:
+  1. attachment explicit
+  2. upload channel
+  3. media category
+  4. global default
+
+  WordPress integration:
+  - [x] Media Library protected state column foundation
+  - [x] attachment meta integration foundation
+  - [x] settings admin page foundation
+  - [x] upload interception pipeline foundation
+  - [ ] upload restriction production support
+  - [ ] role-based configuration UI polish
+
+  REST API Integration:
+  - [ ] protected media API
+  - [ ] signed URL issuance
+  - [ ] headless integration
+  - [ ] JWT/session integration possibility
+  - [ ] REST adapter layer
+
+  External Auth / Subscription Integration:
+  - Status: deferred / pending
+  - [ ] WooCommerce
+  - [ ] Stripe
+  - [ ] membership plugins
+  - [ ] external identity provider
 
   Constraints:
   - [ ] Headless WP Support より優先度を高く扱う
