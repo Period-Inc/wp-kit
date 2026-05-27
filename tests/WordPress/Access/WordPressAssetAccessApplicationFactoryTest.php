@@ -6,6 +6,8 @@ namespace Period\WpFramework\Tests\WordPress\Access;
 
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
+use Period\WpFramework\WordPress\Access\AssetAccessHealthReporter;
+use Period\WpFramework\WordPress\Access\AssetAccessHealthStatus;
 use Period\WpFramework\WordPress\Access\AssetAccessManager;
 use Period\WpFramework\WordPress\Access\AssetAccessPolicyFactory;
 use Period\WpFramework\WordPress\Access\AssetAccessSettingsRepositoryInterface;
@@ -18,6 +20,9 @@ use Period\WpFramework\WordPress\Access\AssetResponseEmitterInterface;
 use Period\WpFramework\WordPress\Access\AssetStorageInterface;
 use Period\WpFramework\WordPress\Access\AssetStorageItem;
 use Period\WpFramework\WordPress\Access\CallableAssetAccessSettingsRepository;
+use Period\WpFramework\WordPress\Access\DirectAccessProtectionStrategy;
+use Period\WpFramework\WordPress\Access\OutsideWebrootAssetPathStrategy;
+use Period\WpFramework\WordPress\Access\ProtectedAssetPathStrategyInterface;
 use Period\WpFramework\WordPress\Access\RequestContextFactoryInterface;
 use Period\WpFramework\WordPress\Access\WordPressAssetAccessApplicationFactory;
 use Period\WpFramework\WordPress\Access\WordPressAssetAccessBootstrap;
@@ -124,6 +129,8 @@ final class WordPressAssetAccessApplicationFactoryTest extends TestCase
         ?callable $addAction = null,
         ?callable $addFilter = null,
         ?callable $addOptionsPage = null,
+        ?ProtectedAssetPathStrategyInterface $protectedPathStrategy = null,
+        ?DirectAccessProtectionStrategy $directAccessProtectionStrategy = null,
     ): WordPressAssetAccessApplicationFactory {
         return new WordPressAssetAccessApplicationFactory(
             $this->makeRepository($getCalls),
@@ -136,6 +143,8 @@ final class WordPressAssetAccessApplicationFactoryTest extends TestCase
             $addAction,
             $addFilter,
             $addOptionsPage,
+            protectedPathStrategy: $protectedPathStrategy,
+            directAccessProtectionStrategy: $directAccessProtectionStrategy,
         );
     }
 
@@ -176,6 +185,46 @@ final class WordPressAssetAccessApplicationFactoryTest extends TestCase
         );
 
         $this->assertInstanceOf(WordPressAssetAccessRuntimeInstaller::class, $installer);
+    }
+
+    public function testCreateHealthReporterReturnsReporter(): void
+    {
+        $reporter = $this->makeFactory()->createHealthReporter();
+
+        $this->assertInstanceOf(AssetAccessHealthReporter::class, $reporter);
+    }
+
+    public function testHealthReporterContainsExpectedChecks(): void
+    {
+        $reporter = $this->makeFactory(
+            protectedPathStrategy: new OutsideWebrootAssetPathStrategy('/var/private-assets'),
+            directAccessProtectionStrategy: DirectAccessProtectionStrategy::deny(),
+        )->createHealthReporter();
+
+        $codes = array_map(
+            static fn(AssetAccessHealthStatus $status): string => $status->code(),
+            $reporter->report(),
+        );
+
+        $this->assertSame([
+            'direct_access_deny_enabled',
+            'outside_webroot_active',
+        ], $codes);
+    }
+
+    public function testHealthReporterOrderIsDeterministic(): void
+    {
+        $reporter = $this->makeFactory()->createHealthReporter();
+
+        $codes = array_map(
+            static fn(AssetAccessHealthStatus $status): string => $status->code(),
+            $reporter->report(),
+        );
+
+        $this->assertSame([
+            'direct_access_rewrite_only',
+            'outside_webroot_not_enabled',
+        ], $codes);
     }
 
     public function testEachRegistrarFactoryReturnsExpectedClass(): void
@@ -234,6 +283,10 @@ final class WordPressAssetAccessApplicationFactoryTest extends TestCase
         $this->assertNotSame(
             $factory->createRuntimeInstaller(fn(): string => '/wp-content/uploads/file.pdf'),
             $factory->createRuntimeInstaller(fn(): string => '/wp-content/uploads/file.pdf'),
+        );
+        $this->assertNotSame(
+            $factory->createHealthReporter(),
+            $factory->createHealthReporter(),
         );
         $this->assertNotSame(
             $factory->createUploadPipelineHookRegistrar(),

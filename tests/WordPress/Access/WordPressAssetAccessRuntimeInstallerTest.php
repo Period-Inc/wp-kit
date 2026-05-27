@@ -6,6 +6,9 @@ namespace Period\WpFramework\Tests\WordPress\Access;
 
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
+use Period\WpFramework\WordPress\Access\AssetAccessHealthCheckInterface;
+use Period\WpFramework\WordPress\Access\AssetAccessHealthReporter;
+use Period\WpFramework\WordPress\Access\AssetAccessHealthStatus;
 use Period\WpFramework\WordPress\Access\AssetAccessPolicyFactory;
 use Period\WpFramework\WordPress\Access\AssetAccessSettingsFormHandler;
 use Period\WpFramework\WordPress\Access\AssetAccessSettingsPageRenderer;
@@ -406,6 +409,87 @@ final class WordPressAssetAccessRuntimeInstallerTest extends TestCase
         $this->assertSame(1, $actionCalls);
         $this->assertSame(0, $filterCalls);
         $this->assertSame(0, $requestUriCalls);
+    }
+
+    public function testHealthReportReturnsEmptyArrayWithoutReporter(): void
+    {
+        $installer = new WordPressAssetAccessRuntimeInstaller(
+            $this->makeFactory(),
+            fn(): null => null,
+            fn(): null => null,
+            fn(): string => '/wp-content/uploads/file.pdf',
+        );
+
+        $this->assertSame([], $installer->healthReport());
+    }
+
+    public function testHealthReportDelegatesToReporter(): void
+    {
+        $reporter = new AssetAccessHealthReporter([
+            new class implements AssetAccessHealthCheckInterface {
+                public function check(): array
+                {
+                    return [AssetAccessHealthStatus::info('runtime_ok', 'runtime ok')];
+                }
+            },
+        ]);
+        $installer = new WordPressAssetAccessRuntimeInstaller(
+            $this->makeFactory(),
+            fn(): null => null,
+            fn(): null => null,
+            fn(): string => '/wp-content/uploads/file.pdf',
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            $reporter,
+        );
+
+        $statuses = $installer->healthReport();
+
+        $this->assertCount(1, $statuses);
+        $this->assertSame('runtime_ok', $statuses[0]->code());
+    }
+
+    public function testInstallDoesNotRunHealthReport(): void
+    {
+        $checkCalls = 0;
+        $reporter = new AssetAccessHealthReporter([
+            new class($checkCalls) implements AssetAccessHealthCheckInterface {
+                public function __construct(private int &$checkCalls) {}
+
+                public function check(): array
+                {
+                    $this->checkCalls++;
+                    return [AssetAccessHealthStatus::info('runtime_ok', 'runtime ok')];
+                }
+            },
+        ]);
+        $installer = new WordPressAssetAccessRuntimeInstaller(
+            $this->makeFactory(),
+            fn(): null => null,
+            fn(): null => null,
+            fn(): string => '/wp-content/uploads/file.pdf',
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            $reporter,
+        );
+
+        $installer->install();
+
+        $this->assertSame(0, $checkCalls);
     }
 
     public function testNullOptionalRegistrarsAreIgnored(): void

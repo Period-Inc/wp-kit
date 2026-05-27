@@ -34,6 +34,7 @@ final class WordPressAssetAccessRuntimeInstaller
         private readonly ?WordPressAssetAttachmentEditFieldHookRegistrar $attachmentEditFieldHookRegistrar = null,
         private readonly ?WordPressAssetAccessSettingsMenuRegistrar $settingsMenuRegistrar = null,
         private readonly ?WordPressAssetAccessSettingsSaveHookRegistrar $settingsSaveHookRegistrar = null,
+        private readonly ?AssetAccessHealthReporter $healthReporter = null,
     ) {
         $this->addAction          = $addAction;
         $this->addFilter          = $addFilter;
@@ -58,5 +59,10 @@ final class WordPressAssetAccessRuntimeInstaller
         $this->attachmentEditFieldHookRegistrar?->register();
         $this->settingsMenuRegistrar?->register();
         $this->settingsSaveHookRegistrar?->register();
+    }
+
+    public function healthReport(): array
+    {
+        return $this->healthReporter?->report() ?? [];
     }
 }

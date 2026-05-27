@@ -55,6 +55,7 @@ final class WordPressAssetAccessApplicationFactory
         private readonly ?AssetFileMoverInterface $fileMover = null,
         private readonly ?AssetUrlRewriteStrategyInterface $urlRewriteStrategy = null,
         private readonly ?AttachmentFingerprintResolverInterface $fingerprintResolver = null,
+        private readonly ?DirectAccessProtectionStrategy $directAccessProtectionStrategy = null,
     ) {
         $this->addAction      = $addAction      ?? static fn(mixed ...$args): null => null;
         $this->addFilter      = $addFilter      ?? static fn(mixed ...$args): null => null;
@@ -120,7 +121,20 @@ final class WordPressAssetAccessApplicationFactory
             $this->createAttachmentEditFieldHookRegistrar(),
             $this->createSettingsMenuRegistrar(),
             $this->createSettingsSaveHookRegistrar(),
+            $this->createHealthReporter(),
         );
+    }
+
+    public function createHealthReporter(): AssetAccessHealthReporter
+    {
+        return new AssetAccessHealthReporter([
+            new DirectAccessProtectionHealthCheck(
+                $this->directAccessProtectionStrategy ?? DirectAccessProtectionStrategy::rewrite(),
+            ),
+            new OutsideWebrootHealthCheck(
+                $this->protectedPathStrategy ?? $this->createNeutralPathStrategy(),
+            ),
+        ]);
     }
 
     public function createUploadPipelineHookRegistrar(): WordPressAssetUploadPipelineHookRegistrar
