@@ -36,10 +36,11 @@ final class WordPressAssetAccessBootstrapFactory
         );
     }
 
-    public function createInstaller(): WordPressAssetAccessRuntimeInstaller
+    /** @param null|callable(): string $requestUriResolver */
+    public function createInstaller(?callable $requestUriResolver = null): WordPressAssetAccessRuntimeInstaller
     {
         return $this->createFactory()->createRuntimeInstaller(
-            static fn(): string => '',
+            $requestUriResolver ?? static fn(): string => '',
         );
     }
 }
