@@ -7,6 +7,7 @@ namespace Period\WpFramework\Tests\WordPress\Access;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 use Period\WpFramework\WordPress\Access\AssetAccessHealthReporter;
+use Period\WpFramework\WordPress\Access\AssetAccessHealthSettingsSection;
 use Period\WpFramework\WordPress\Access\AssetAccessHealthStatus;
 use Period\WpFramework\WordPress\Access\AssetAccessManager;
 use Period\WpFramework\WordPress\Access\AssetAccessPolicyFactory;
@@ -21,6 +22,7 @@ use Period\WpFramework\WordPress\Access\AssetStorageInterface;
 use Period\WpFramework\WordPress\Access\AssetStorageItem;
 use Period\WpFramework\WordPress\Access\CallableAssetAccessSettingsRepository;
 use Period\WpFramework\WordPress\Access\DirectAccessProtectionStrategy;
+use Period\WpFramework\WordPress\Access\FilesystemInspectorInterface;
 use Period\WpFramework\WordPress\Access\OutsideWebrootAssetPathStrategy;
 use Period\WpFramework\WordPress\Access\ProtectedAssetPathStrategyInterface;
 use Period\WpFramework\WordPress\Access\RequestContextFactoryInterface;
@@ -129,8 +131,11 @@ final class WordPressAssetAccessApplicationFactoryTest extends TestCase
         ?callable $addAction = null,
         ?callable $addFilter = null,
         ?callable $addOptionsPage = null,
+        ?callable $currentUserCan = null,
         ?ProtectedAssetPathStrategyInterface $protectedPathStrategy = null,
         ?DirectAccessProtectionStrategy $directAccessProtectionStrategy = null,
+        ?FilesystemInspectorInterface $filesystemInspector = null,
+        ?string $privateAssetRoot = null,
     ): WordPressAssetAccessApplicationFactory {
         return new WordPressAssetAccessApplicationFactory(
             $this->makeRepository($getCalls),
@@ -143,9 +148,37 @@ final class WordPressAssetAccessApplicationFactoryTest extends TestCase
             $addAction,
             $addFilter,
             $addOptionsPage,
+            currentUserCan: $currentUserCan,
             protectedPathStrategy: $protectedPathStrategy,
             directAccessProtectionStrategy: $directAccessProtectionStrategy,
+            filesystemInspector: $filesystemInspector,
+            privateAssetRoot: $privateAssetRoot,
         );
+    }
+
+    private function makeFilesystemInspector(bool $exists = true, bool $readable = true): FilesystemInspectorInterface
+    {
+        return new class($exists, $readable) implements FilesystemInspectorInterface {
+            public function __construct(
+                private readonly bool $exists,
+                private readonly bool $readable,
+            ) {}
+
+            public function exists(string $path): bool
+            {
+                return $this->exists;
+            }
+
+            public function isReadable(string $path): bool
+            {
+                return $this->readable;
+            }
+
+            public function isWritable(string $path): bool
+            {
+                return true;
+            }
+        };
     }
 
     public function testCreateManagerReturnsAssetAccessManager(): void
@@ -194,11 +227,20 @@ final class WordPressAssetAccessApplicationFactoryTest extends TestCase
         $this->assertInstanceOf(AssetAccessHealthReporter::class, $reporter);
     }
 
+    public function testCreateHealthSettingsSectionReturnsSection(): void
+    {
+        $section = $this->makeFactory()->createHealthSettingsSection();
+
+        $this->assertInstanceOf(AssetAccessHealthSettingsSection::class, $section);
+    }
+
     public function testHealthReporterContainsExpectedChecks(): void
     {
         $reporter = $this->makeFactory(
             protectedPathStrategy: new OutsideWebrootAssetPathStrategy('/var/private-assets'),
             directAccessProtectionStrategy: DirectAccessProtectionStrategy::deny(),
+            filesystemInspector: $this->makeFilesystemInspector(),
+            privateAssetRoot: '/var/private-assets',
         )->createHealthReporter();
 
         $codes = array_map(
@@ -209,12 +251,16 @@ final class WordPressAssetAccessApplicationFactoryTest extends TestCase
         $this->assertSame([
             'direct_access_deny_enabled',
             'outside_webroot_active',
+            'private_asset_root_exists',
         ], $codes);
     }
 
     public function testHealthReporterOrderIsDeterministic(): void
     {
-        $reporter = $this->makeFactory()->createHealthReporter();
+        $reporter = $this->makeFactory(
+            filesystemInspector: $this->makeFilesystemInspector(exists: true, readable: false),
+            privateAssetRoot: '/var/private-assets',
+        )->createHealthReporter();
 
         $codes = array_map(
             static fn(AssetAccessHealthStatus $status): string => $status->code(),
@@ -224,7 +270,53 @@ final class WordPressAssetAccessApplicationFactoryTest extends TestCase
         $this->assertSame([
             'direct_access_rewrite_only',
             'outside_webroot_not_enabled',
+            'private_asset_root_exists',
+            'private_asset_root_not_readable',
         ], $codes);
+    }
+
+    public function testHealthReporterContainsFilesystemCheckWhenDependenciesExist(): void
+    {
+        $reporter = $this->makeFactory(
+            filesystemInspector: $this->makeFilesystemInspector(exists: false),
+            privateAssetRoot: '/var/private-assets',
+        )->createHealthReporter();
+
+        $codes = array_map(
+            static fn(AssetAccessHealthStatus $status): string => $status->code(),
+            $reporter->report(),
+        );
+
+        $this->assertSame([
+            'direct_access_rewrite_only',
+            'outside_webroot_not_enabled',
+            'private_asset_root_missing',
+        ], $codes);
+    }
+
+    public function testHealthReporterOmitsFilesystemCheckWhenDependenciesAreMissing(): void
+    {
+        $withoutInspector = $this->makeFactory(
+            privateAssetRoot: '/var/private-assets',
+        )->createHealthReporter();
+        $withoutRoot = $this->makeFactory(
+            filesystemInspector: $this->makeFilesystemInspector(),
+        )->createHealthReporter();
+
+        $withoutInspectorCodes = array_map(
+            static fn(AssetAccessHealthStatus $status): string => $status->code(),
+            $withoutInspector->report(),
+        );
+        $withoutRootCodes = array_map(
+            static fn(AssetAccessHealthStatus $status): string => $status->code(),
+            $withoutRoot->report(),
+        );
+
+        $this->assertSame([
+            'direct_access_rewrite_only',
+            'outside_webroot_not_enabled',
+        ], $withoutInspectorCodes);
+        $this->assertSame($withoutInspectorCodes, $withoutRootCodes);
     }
 
     public function testEachRegistrarFactoryReturnsExpectedClass(): void
@@ -387,6 +479,29 @@ final class WordPressAssetAccessApplicationFactoryTest extends TestCase
         $this->assertContains('bulk_actions-upload', $filterHooks);
         $this->assertContains('attachment_fields_to_edit', $filterHooks);
         $this->assertCount(1, $optionsPages);
+    }
+
+    public function testFactoryWiresHealthSectionIntoSettingsPageMenuPath(): void
+    {
+        $calls = [];
+        $factory = $this->makeFactory(
+            addOptionsPage: function () use (&$calls): void {
+                $calls[] = func_get_args();
+            },
+            currentUserCan: fn(string $cap): bool => $cap === 'manage_options',
+        );
+        $registrar = $factory->createSettingsMenuRegistrar();
+
+        $registrar->register();
+
+        $callback = $calls[0][4];
+        ob_start();
+        $callback();
+        $output = ob_get_clean();
+
+        $this->assertIsString($output);
+        $this->assertStringContainsString('direct_access_rewrite_only', $output);
+        $this->assertStringContainsString('outside_webroot_not_enabled', $output);
     }
 
     public function testMissingOptionalDependenciesDoNotBreakFactory(): void

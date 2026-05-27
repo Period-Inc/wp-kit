@@ -56,6 +56,8 @@ final class WordPressAssetAccessApplicationFactory
         private readonly ?AssetUrlRewriteStrategyInterface $urlRewriteStrategy = null,
         private readonly ?AttachmentFingerprintResolverInterface $fingerprintResolver = null,
         private readonly ?DirectAccessProtectionStrategy $directAccessProtectionStrategy = null,
+        private readonly ?FilesystemInspectorInterface $filesystemInspector = null,
+        private readonly ?string $privateAssetRoot = null,
     ) {
         $this->addAction      = $addAction      ?? static fn(mixed ...$args): null => null;
         $this->addFilter      = $addFilter      ?? static fn(mixed ...$args): null => null;
@@ -127,14 +129,32 @@ final class WordPressAssetAccessApplicationFactory
 
     public function createHealthReporter(): AssetAccessHealthReporter
     {
-        return new AssetAccessHealthReporter([
+        $checks = [
             new DirectAccessProtectionHealthCheck(
                 $this->directAccessProtectionStrategy ?? DirectAccessProtectionStrategy::rewrite(),
             ),
             new OutsideWebrootHealthCheck(
                 $this->protectedPathStrategy ?? $this->createNeutralPathStrategy(),
             ),
-        ]);
+        ];
+
+        if ($this->filesystemInspector !== null && $this->privateAssetRoot !== null) {
+            $checks[] = new FilesystemPathHealthCheck(
+                $this->filesystemInspector,
+                $this->privateAssetRoot,
+                'private asset root',
+            );
+        }
+
+        return new AssetAccessHealthReporter($checks);
+    }
+
+    public function createHealthSettingsSection(): AssetAccessHealthSettingsSection
+    {
+        return new AssetAccessHealthSettingsSection(
+            $this->createHealthReporter(),
+            new AssetAccessHealthStatusRenderer(),
+        );
     }
 
     public function createUploadPipelineHookRegistrar(): WordPressAssetUploadPipelineHookRegistrar
@@ -252,6 +272,7 @@ final class WordPressAssetAccessApplicationFactory
             new AssetAccessSettingsFormHandler($this->settingsRepository),
             $this->currentUserCan,
             $this->getRoles,
+            $this->createHealthSettingsSection(),
         );
     }
 
