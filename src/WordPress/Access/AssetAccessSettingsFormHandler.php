@@ -20,8 +20,9 @@ final class AssetAccessSettingsFormHandler
         $enabled    = isset($raw['enabled']) && $raw['enabled'] === '1';
         $roles      = $this->normalizeRoles($raw['protected_roles'] ?? []);
         $visibility = $this->normalizeVisibility((string) ($raw['default_visibility'] ?? ''));
+        $privateAssetRoot = $this->normalizePrivateAssetRoot($raw['private_asset_root'] ?? null);
 
-        $settings = new AssetAccessSettings($enabled, $roles, $visibility);
+        $settings = new AssetAccessSettings($enabled, $roles, $visibility, $privateAssetRoot);
         $this->repository->save($settings);
 
         return $settings;
@@ -55,5 +56,16 @@ final class AssetAccessSettingsFormHandler
             AssetAccessSettings::VISIBILITY_PRIVATE => $raw,
             default                                 => AssetAccessSettings::VISIBILITY_PUBLIC,
         };
+    }
+
+    private function normalizePrivateAssetRoot(mixed $raw): ?string
+    {
+        if (!is_string($raw)) {
+            return null;
+        }
+
+        $trimmed = trim($raw);
+
+        return $trimmed === '' ? null : $trimmed;
     }
 }

@@ -20,8 +20,9 @@ final class AssetAccessSettingsTest extends TestCase
         bool $enabled         = false,
         array $protectedRoles = [],
         string $visibility    = AssetAccessSettings::VISIBILITY_PUBLIC,
+        ?string $privateAssetRoot = null,
     ): AssetAccessSettings {
-        return new AssetAccessSettings($enabled, $protectedRoles, $visibility);
+        return new AssetAccessSettings($enabled, $protectedRoles, $visibility, $privateAssetRoot);
     }
 
     /**
@@ -108,6 +109,24 @@ final class AssetAccessSettingsTest extends TestCase
         $this->assertSame(AssetAccessSettings::VISIBILITY_PUBLIC, AssetAccessSettings::default()->defaultVisibility());
     }
 
+    public function testPrivateAssetRootReturnsStoredValue(): void
+    {
+        $settings = $this->makeSettings(privateAssetRoot: '/var/private-assets');
+
+        $this->assertSame('/var/private-assets', $settings->privateAssetRoot());
+    }
+
+    public function testSettingsNormalizesEmptyPrivateRootToNull(): void
+    {
+        $this->assertNull($this->makeSettings(privateAssetRoot: '')->privateAssetRoot());
+        $this->assertNull($this->makeSettings(privateAssetRoot: '   ')->privateAssetRoot());
+    }
+
+    public function testDefaultFactoryReturnsNullPrivateAssetRoot(): void
+    {
+        $this->assertNull(AssetAccessSettings::default()->privateAssetRoot());
+    }
+
     public function testWithEnabledProducesNewInstance(): void
     {
         $original = $this->makeSettings(enabled: false);
@@ -133,6 +152,15 @@ final class AssetAccessSettingsTest extends TestCase
 
         $this->assertSame(AssetAccessSettings::VISIBILITY_PUBLIC, $original->defaultVisibility());
         $this->assertSame(AssetAccessSettings::VISIBILITY_PRIVATE, $modified->defaultVisibility());
+    }
+
+    public function testWithPrivateAssetRootProducesNewInstance(): void
+    {
+        $original = $this->makeSettings(privateAssetRoot: null);
+        $modified = $original->withPrivateAssetRoot('/var/private-assets');
+
+        $this->assertNull($original->privateAssetRoot());
+        $this->assertSame('/var/private-assets', $modified->privateAssetRoot());
     }
 
     // -----------------------------------------------------------------------
@@ -200,6 +228,30 @@ final class AssetAccessSettingsTest extends TestCase
         $this->assertSame('private', $this->makeRepository($raw)->get()->defaultVisibility());
     }
 
+    public function testGetDeserializesPrivateAssetRoot(): void
+    {
+        $raw = [
+            'enabled'            => false,
+            'protected_roles'    => [],
+            'default_visibility' => 'public',
+            'private_asset_root' => '/var/private-assets',
+        ];
+
+        $this->assertSame('/var/private-assets', $this->makeRepository($raw)->get()->privateAssetRoot());
+    }
+
+    public function testGetNormalizesEmptyPrivateAssetRootToNull(): void
+    {
+        $raw = [
+            'enabled'            => false,
+            'protected_roles'    => [],
+            'default_visibility' => 'public',
+            'private_asset_root' => '',
+        ];
+
+        $this->assertNull($this->makeRepository($raw)->get()->privateAssetRoot());
+    }
+
     public function testGetOptionIsCalledWithCorrectKey(): void
     {
         $capturedKey = null;
@@ -265,6 +317,15 @@ final class AssetAccessSettingsTest extends TestCase
         $this->assertSame('private', $saveCalls[0][1]['default_visibility']);
     }
 
+    public function testSaveSerializesPrivateAssetRoot(): void
+    {
+        $saveCalls = [];
+        $repo      = $this->makeRepository([], $saveCalls);
+        $repo->save($this->makeSettings(privateAssetRoot: '/var/private-assets'));
+
+        $this->assertSame('/var/private-assets', $saveCalls[0][1]['private_asset_root']);
+    }
+
     public function testSaveMakesExactlyOneUpdateCall(): void
     {
         $saveCalls = [];
@@ -312,6 +373,7 @@ final class AssetAccessSettingsTest extends TestCase
                 'enabled'            => true,
                 'protected_roles'    => ['subscriber'],
                 'default_visibility' => 'private',
+                'private_asset_root' => '/var/private-assets',
             ],
         ];
 
@@ -331,6 +393,7 @@ final class AssetAccessSettingsTest extends TestCase
         $this->assertTrue($reloaded->isEnabled());
         $this->assertSame(['subscriber'], $reloaded->protectedRoles());
         $this->assertSame('private', $reloaded->defaultVisibility());
+        $this->assertSame('/var/private-assets', $reloaded->privateAssetRoot());
     }
 
     // -----------------------------------------------------------------------
@@ -467,6 +530,19 @@ final class AssetAccessSettingsTest extends TestCase
         $this->assertStringContainsString('value="private"', $html);
     }
 
+    public function testRenderOutputsPrivateAssetRootInput(): void
+    {
+        $html = $this->makeRenderer()->render(
+            $this->makeSettings(privateAssetRoot: '/var/private-assets'),
+            [],
+        );
+
+        $this->assertStringContainsString('Private asset root', $html);
+        $this->assertStringContainsString('type="text"', $html);
+        $this->assertStringContainsString('period_asset_access[private_asset_root]', $html);
+        $this->assertStringContainsString('value="/var/private-assets"', $html);
+    }
+
     // -----------------------------------------------------------------------
     // AssetAccessSettingsPageRenderer — HTML escaping
     // -----------------------------------------------------------------------
@@ -485,6 +561,17 @@ final class AssetAccessSettingsTest extends TestCase
 
         $this->assertStringNotContainsString('"onload="', $html);
         $this->assertStringContainsString('&quot;onload=', $html);
+    }
+
+    public function testRenderEscapesPrivateAssetRoot(): void
+    {
+        $html = $this->makeRenderer()->render(
+            $this->makeSettings(privateAssetRoot: '"><script>alert(1)</script>'),
+            [],
+        );
+
+        $this->assertStringNotContainsString('<script>', $html);
+        $this->assertStringContainsString('&quot;&gt;&lt;script&gt;', $html);
     }
 
     // -----------------------------------------------------------------------

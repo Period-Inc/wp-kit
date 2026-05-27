@@ -41,6 +41,9 @@ final class CallableAssetAccessSettingsRepository implements AssetAccessSettings
             enabled:           (bool) ($raw['enabled'] ?? false),
             protectedRoles:    $roles,
             defaultVisibility: (string) ($raw['default_visibility'] ?? AssetAccessSettings::VISIBILITY_PUBLIC),
+            privateAssetRoot:  isset($raw['private_asset_root']) && is_string($raw['private_asset_root'])
+                ? $raw['private_asset_root']
+                : null,
         );
     }
 
@@ -50,6 +53,7 @@ final class CallableAssetAccessSettingsRepository implements AssetAccessSettings
             'enabled'            => $settings->isEnabled(),
             'protected_roles'    => $settings->protectedRoles(),
             'default_visibility' => $settings->defaultVisibility(),
+            'private_asset_root' => $settings->privateAssetRoot(),
         ]);
     }
 }

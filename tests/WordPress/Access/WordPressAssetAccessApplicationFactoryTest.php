@@ -43,13 +43,19 @@ use Period\WpFramework\WordPress\Access\WordPressMediaLibraryProtectedColumnHook
 
 final class WordPressAssetAccessApplicationFactoryTest extends TestCase
 {
-    private function makeRepository(int &$getCalls = 0): AssetAccessSettingsRepositoryInterface
-    {
+    private function makeRepository(
+        int &$getCalls = 0,
+        ?string $privateAssetRoot = null,
+    ): AssetAccessSettingsRepositoryInterface {
         $stored = [
             'enabled'            => true,
             'protected_roles'    => ['subscriber'],
             'default_visibility' => 'private',
         ];
+
+        if ($privateAssetRoot !== null) {
+            $stored['private_asset_root'] = $privateAssetRoot;
+        }
 
         return new CallableAssetAccessSettingsRepository(
             function (string $key, mixed $default) use (&$getCalls, $stored): mixed {
@@ -136,9 +142,10 @@ final class WordPressAssetAccessApplicationFactoryTest extends TestCase
         ?DirectAccessProtectionStrategy $directAccessProtectionStrategy = null,
         ?FilesystemInspectorInterface $filesystemInspector = null,
         ?string $privateAssetRoot = null,
+        ?string $settingsPrivateAssetRoot = null,
     ): WordPressAssetAccessApplicationFactory {
         return new WordPressAssetAccessApplicationFactory(
-            $this->makeRepository($getCalls),
+            $this->makeRepository($getCalls, $settingsPrivateAssetRoot),
             new AssetAccessPolicyFactory(),
             $this->makeStorage(),
             $this->makeDelivery($deliverCalls),
@@ -176,6 +183,33 @@ final class WordPressAssetAccessApplicationFactoryTest extends TestCase
 
             public function isWritable(string $path): bool
             {
+                return true;
+            }
+        };
+    }
+
+    /** @param \ArrayObject<int, string> $paths */
+    private function makeCapturingFilesystemInspector(\ArrayObject $paths): FilesystemInspectorInterface
+    {
+        return new class($paths) implements FilesystemInspectorInterface {
+            /** @param \ArrayObject<int, string> $paths */
+            public function __construct(private readonly \ArrayObject $paths) {}
+
+            public function exists(string $path): bool
+            {
+                $this->paths->append($path);
+                return true;
+            }
+
+            public function isReadable(string $path): bool
+            {
+                $this->paths->append($path);
+                return true;
+            }
+
+            public function isWritable(string $path): bool
+            {
+                $this->paths->append($path);
                 return true;
             }
         };
@@ -292,6 +326,39 @@ final class WordPressAssetAccessApplicationFactoryTest extends TestCase
             'outside_webroot_not_enabled',
             'private_asset_root_missing',
         ], $codes);
+    }
+
+    public function testHealthReporterUsesSettingsPrivateRootBeforeConstructorFallback(): void
+    {
+        $paths = new \ArrayObject();
+        $reporter = $this->makeFactory(
+            filesystemInspector: $this->makeCapturingFilesystemInspector($paths),
+            privateAssetRoot: '/fallback-private-assets',
+            settingsPrivateAssetRoot: '/settings-private-assets',
+        )->createHealthReporter();
+
+        $reporter->report();
+
+        $this->assertSame([
+            '/settings-private-assets',
+            '/settings-private-assets',
+        ], $paths->getArrayCopy());
+    }
+
+    public function testHealthReporterUsesConstructorFallbackRootWhenSettingsRootIsNull(): void
+    {
+        $paths = new \ArrayObject();
+        $reporter = $this->makeFactory(
+            filesystemInspector: $this->makeCapturingFilesystemInspector($paths),
+            privateAssetRoot: '/fallback-private-assets',
+        )->createHealthReporter();
+
+        $reporter->report();
+
+        $this->assertSame([
+            '/fallback-private-assets',
+            '/fallback-private-assets',
+        ], $paths->getArrayCopy());
     }
 
     public function testHealthReporterOmitsFilesystemCheckWhenDependenciesAreMissing(): void

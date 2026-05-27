@@ -247,6 +247,36 @@ final class AssetAccessSettingsPageTest extends TestCase
         $this->assertSame('public', $settings->defaultVisibility());
     }
 
+    public function testHandleSavesPrivateAssetRoot(): void
+    {
+        $saveCalls = [];
+        $repo      = $this->makeRepository([], $saveCalls);
+        $handler   = $this->makeHandlerWith($repo);
+
+        $settings = $handler->handle([
+            'period_asset_access' => [
+                'private_asset_root' => '  /var/private-assets  ',
+            ],
+        ]);
+
+        $this->assertSame('/var/private-assets', $settings->privateAssetRoot());
+        $this->assertSame('/var/private-assets', $saveCalls[0][1]['private_asset_root']);
+    }
+
+    public function testHandleNormalizesEmptyPrivateAssetRootToNull(): void
+    {
+        $repo    = $this->makeRepository();
+        $handler = $this->makeHandlerWith($repo);
+
+        $settings = $handler->handle([
+            'period_asset_access' => [
+                'private_asset_root' => '   ',
+            ],
+        ]);
+
+        $this->assertNull($settings->privateAssetRoot());
+    }
+
     // -----------------------------------------------------------------------
     // AssetAccessSettingsFormHandler — repository interaction
     // -----------------------------------------------------------------------

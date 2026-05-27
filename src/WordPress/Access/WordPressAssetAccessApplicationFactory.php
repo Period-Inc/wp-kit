@@ -138,10 +138,12 @@ final class WordPressAssetAccessApplicationFactory
             ),
         ];
 
-        if ($this->filesystemInspector !== null && $this->privateAssetRoot !== null) {
+        $privateAssetRoot = $this->settingsRepository->get()->privateAssetRoot() ?? $this->privateAssetRoot;
+
+        if ($this->filesystemInspector !== null && $privateAssetRoot !== null) {
             $checks[] = new FilesystemPathHealthCheck(
                 $this->filesystemInspector,
-                $this->privateAssetRoot,
+                $privateAssetRoot,
                 'private asset root',
             );
         }

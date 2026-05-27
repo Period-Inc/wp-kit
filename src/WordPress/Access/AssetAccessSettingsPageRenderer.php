@@ -13,7 +13,8 @@ final class AssetAccessSettingsPageRenderer
     {
         return $this->renderEnabledField($settings)
             . $this->renderRolesField($settings, $availableRoles)
-            . $this->renderVisibilityField($settings);
+            . $this->renderVisibilityField($settings)
+            . $this->renderPrivateAssetRootField($settings);
     }
 
     private function renderEnabledField(AssetAccessSettings $settings): string
@@ -79,5 +80,19 @@ final class AssetAccessSettingsPageRenderer
         }
 
         return sprintf('<p><select name="%s">%s</select></p>', $name, $optionsHtml);
+    }
+
+    private function renderPrivateAssetRootField(AssetAccessSettings $settings): string
+    {
+        $name  = htmlspecialchars('period_asset_access[private_asset_root]', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        $label = htmlspecialchars('Private asset root', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        $value = htmlspecialchars((string) $settings->privateAssetRoot(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+
+        return sprintf(
+            '<p><label>%s <input type="text" name="%s" value="%s"></label></p>',
+            $label,
+            $name,
+            $value,
+        );
     }
 }
