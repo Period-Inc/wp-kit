@@ -11,6 +11,9 @@ use Period\WpFramework\WordPress\Access\AssetAccessHealthSettingsSection;
 use Period\WpFramework\WordPress\Access\AssetAccessHealthStatus;
 use Period\WpFramework\WordPress\Access\AssetAccessHealthStatusRenderer;
 use Period\WpFramework\WordPress\Access\AssetAccessRepairPlanRenderer;
+use Period\WpFramework\WordPress\Access\AssetAccessRepairExecutionController;
+use Period\WpFramework\WordPress\Access\AssetAccessRepairExecutionRenderer;
+use Period\WpFramework\WordPress\Access\AssetAccessRepairRequest;
 use Period\WpFramework\WordPress\Access\AssetAccessRepairSection;
 use Period\WpFramework\WordPress\Access\AssetAccessSettings;
 use Period\WpFramework\WordPress\Access\AssetAccessSettingsFormHandler;
@@ -18,6 +21,8 @@ use Period\WpFramework\WordPress\Access\AssetAccessSettingsPageRenderer;
 use Period\WpFramework\WordPress\Access\AssetAccessSettingsRepositoryInterface;
 use Period\WpFramework\WordPress\Access\CallableAssetAccessSettingsRepository;
 use Period\WpFramework\WordPress\Access\FilesystemInspectorInterface;
+use Period\WpFramework\WordPress\Access\FilesystemOperatorInterface;
+use Period\WpFramework\WordPress\Access\FilesystemRepairExecutor;
 use Period\WpFramework\WordPress\Access\FilesystemRepairPlanner;
 use Period\WpFramework\WordPress\Access\WordPressAssetAccessSettingsMenuRegistrar;
 use Period\WpFramework\WordPress\Access\WordPressAssetAccessSettingsPage;
@@ -71,6 +76,8 @@ final class AssetAccessSettingsPageTest extends TestCase
         array $availableRoles                            = [],
         ?AssetAccessHealthSettingsSection $healthSection = null,
         ?AssetAccessRepairSection $repairSection = null,
+        ?AssetAccessRepairExecutionController $repairExecutionController = null,
+        ?AssetAccessRepairExecutionRenderer $repairExecutionRenderer = null,
     ): WordPressAssetAccessSettingsPage {
         return new WordPressAssetAccessSettingsPage(
             $repo ?? $this->makeRepository(),
@@ -80,6 +87,8 @@ final class AssetAccessSettingsPageTest extends TestCase
             fn(): array => $availableRoles,
             $healthSection,
             $repairSection,
+            $repairExecutionController,
+            $repairExecutionRenderer,
         );
     }
 
@@ -121,6 +130,46 @@ final class AssetAccessSettingsPageTest extends TestCase
                 '/private-assets',
             ),
             new AssetAccessRepairPlanRenderer(),
+        );
+    }
+
+    private function makeRepairExecutionController(): AssetAccessRepairExecutionController
+    {
+        return new AssetAccessRepairExecutionController(
+            new FilesystemRepairPlanner(
+                new class implements FilesystemInspectorInterface {
+                    public function exists(string $path): bool
+                    {
+                        return false;
+                    }
+
+                    public function isReadable(string $path): bool
+                    {
+                        return true;
+                    }
+
+                    public function isWritable(string $path): bool
+                    {
+                        return true;
+                    }
+                },
+                '/private-assets',
+            ),
+            new FilesystemRepairExecutor(
+                new class implements FilesystemOperatorInterface {
+                    public function createDirectory(string $path): bool
+                    {
+                        return true;
+                    }
+
+                    public function setPermissions(string $path, int $mode): bool
+                    {
+                        return true;
+                    }
+                },
+            ),
+            static fn(string $nonce): bool => $nonce === 'valid',
+            new AssetAccessRepairRequest(true, 'valid', true),
         );
     }
 
@@ -456,6 +505,45 @@ final class AssetAccessSettingsPageTest extends TestCase
         $page = $this->makePage(userCanManage: false, repairSection: $this->makeRepairSection());
 
         $this->assertSame('', $page->render());
+    }
+
+    public function testRenderIncludesRepairExecuteForm(): void
+    {
+        $page = $this->makePage(
+            repairExecutionController: $this->makeRepairExecutionController(),
+            repairExecutionRenderer: new AssetAccessRepairExecutionRenderer(),
+        );
+
+        $html = $page->render();
+
+        $this->assertStringContainsString('asset_access_repair_execute', $html);
+        $this->assertStringContainsString('asset_access_repair_nonce', $html);
+        $this->assertStringContainsString('Execute repair plan', $html);
+    }
+
+    public function testUnauthorizedUserDoesNotRenderRepairExecuteForm(): void
+    {
+        $page = $this->makePage(
+            userCanManage: false,
+            repairExecutionController: $this->makeRepairExecutionController(),
+            repairExecutionRenderer: new AssetAccessRepairExecutionRenderer(),
+        );
+
+        $this->assertSame('', $page->render());
+    }
+
+    public function testHandlePostCanExecuteRepairExplicitly(): void
+    {
+        $page = $this->makePage(
+            repairExecutionController: $this->makeRepairExecutionController(),
+            repairExecutionRenderer: new AssetAccessRepairExecutionRenderer(),
+        );
+
+        $page->handlePost(['asset_access_repair_execute' => '1']);
+        $html = $page->render();
+
+        $this->assertStringContainsString('create_directory', $html);
+        $this->assertStringContainsString('create directory executed', $html);
     }
 
     // -----------------------------------------------------------------------

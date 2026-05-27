@@ -24,10 +24,15 @@ final class WordPressAssetAccessSettingsPage
         callable $getRoles,
         private readonly ?AssetAccessHealthSettingsSection $healthSection = null,
         private readonly ?AssetAccessRepairSection $repairSection = null,
+        private readonly ?AssetAccessRepairExecutionController $repairExecutionController = null,
+        private readonly ?AssetAccessRepairExecutionRenderer $repairExecutionRenderer = null,
     ) {
         $this->currentUserCan = $currentUserCan;
         $this->getRoles       = $getRoles;
     }
+
+    /** @var AssetAccessRepairExecutionResult[] */
+    private array $repairExecutionResults = [];
 
     public function render(): string
     {
@@ -47,6 +52,11 @@ final class WordPressAssetAccessSettingsPage
             $html .= $this->repairSection->render();
         }
 
+        if ($this->repairExecutionController !== null && $this->repairExecutionRenderer !== null) {
+            $html .= $this->renderRepairExecutionForm();
+            $html .= $this->repairExecutionRenderer->render($this->repairExecutionResults);
+        }
+
         return $html;
     }
 
@@ -57,6 +67,21 @@ final class WordPressAssetAccessSettingsPage
             return null;
         }
 
+        if (isset($postData['asset_access_repair_execute']) && $postData['asset_access_repair_execute'] === '1') {
+            $this->repairExecutionResults = $this->repairExecutionController?->execute() ?? [];
+
+            return $this->repository->get();
+        }
+
         return $this->handler->handle($postData);
+    }
+
+    private function renderRepairExecutionForm(): string
+    {
+        return '<form method="post" class="period-asset-access-repair-execute">'
+            . '<input type="hidden" name="asset_access_repair_execute" value="1">'
+            . '<input type="hidden" name="asset_access_repair_nonce" value="">'
+            . '<button type="submit">Execute repair plan</button>'
+            . '</form>';
     }
 }
