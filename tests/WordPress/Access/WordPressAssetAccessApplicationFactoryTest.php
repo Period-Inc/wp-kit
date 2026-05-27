@@ -11,6 +11,7 @@ use Period\WpFramework\WordPress\Access\AssetAccessHealthSettingsSection;
 use Period\WpFramework\WordPress\Access\AssetAccessHealthStatus;
 use Period\WpFramework\WordPress\Access\AssetAccessManager;
 use Period\WpFramework\WordPress\Access\AssetAccessPolicyFactory;
+use Period\WpFramework\WordPress\Access\AssetAccessRepairSection;
 use Period\WpFramework\WordPress\Access\AssetAccessSettingsRepositoryInterface;
 use Period\WpFramework\WordPress\Access\AssetDeliveryInterface;
 use Period\WpFramework\WordPress\Access\AssetDeliveryResult;
@@ -163,12 +164,17 @@ final class WordPressAssetAccessApplicationFactoryTest extends TestCase
         );
     }
 
-    private function makeFilesystemInspector(bool $exists = true, bool $readable = true): FilesystemInspectorInterface
+    private function makeFilesystemInspector(
+        bool $exists = true,
+        bool $readable = true,
+        bool $writable = true,
+    ): FilesystemInspectorInterface
     {
-        return new class($exists, $readable) implements FilesystemInspectorInterface {
+        return new class($exists, $readable, $writable) implements FilesystemInspectorInterface {
             public function __construct(
                 private readonly bool $exists,
                 private readonly bool $readable,
+                private readonly bool $writable,
             ) {}
 
             public function exists(string $path): bool
@@ -183,7 +189,7 @@ final class WordPressAssetAccessApplicationFactoryTest extends TestCase
 
             public function isWritable(string $path): bool
             {
-                return true;
+                return $this->writable;
             }
         };
     }
@@ -266,6 +272,26 @@ final class WordPressAssetAccessApplicationFactoryTest extends TestCase
         $section = $this->makeFactory()->createHealthSettingsSection();
 
         $this->assertInstanceOf(AssetAccessHealthSettingsSection::class, $section);
+    }
+
+    public function testCreateRepairSectionReturnsSectionWhenDependenciesExist(): void
+    {
+        $section = $this->makeFactory(
+            filesystemInspector: $this->makeFilesystemInspector(),
+            privateAssetRoot: '/var/private-assets',
+        )->createRepairSection();
+
+        $this->assertInstanceOf(AssetAccessRepairSection::class, $section);
+    }
+
+    public function testCreateRepairSectionReturnsNullWhenDependenciesAreMissing(): void
+    {
+        $this->assertNull($this->makeFactory(
+            privateAssetRoot: '/var/private-assets',
+        )->createRepairSection());
+        $this->assertNull($this->makeFactory(
+            filesystemInspector: $this->makeFilesystemInspector(),
+        )->createRepairSection());
     }
 
     public function testHealthReporterContainsExpectedChecks(): void
@@ -569,6 +595,30 @@ final class WordPressAssetAccessApplicationFactoryTest extends TestCase
         $this->assertIsString($output);
         $this->assertStringContainsString('direct_access_rewrite_only', $output);
         $this->assertStringContainsString('outside_webroot_not_enabled', $output);
+    }
+
+    public function testFactoryWiresRepairSectionIntoSettingsPageMenuPathWhenPossible(): void
+    {
+        $calls = [];
+        $factory = $this->makeFactory(
+            addOptionsPage: function () use (&$calls): void {
+                $calls[] = func_get_args();
+            },
+            currentUserCan: fn(string $cap): bool => $cap === 'manage_options',
+            filesystemInspector: $this->makeFilesystemInspector(exists: false),
+            privateAssetRoot: '/var/private-assets',
+        );
+        $registrar = $factory->createSettingsMenuRegistrar();
+
+        $registrar->register();
+
+        $callback = $calls[0][4];
+        ob_start();
+        $callback();
+        $output = ob_get_clean();
+
+        $this->assertIsString($output);
+        $this->assertStringContainsString('create_directory', $output);
     }
 
     public function testMissingOptionalDependenciesDoNotBreakFactory(): void

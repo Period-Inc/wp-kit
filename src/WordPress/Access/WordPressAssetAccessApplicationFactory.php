@@ -138,7 +138,7 @@ final class WordPressAssetAccessApplicationFactory
             ),
         ];
 
-        $privateAssetRoot = $this->settingsRepository->get()->privateAssetRoot() ?? $this->privateAssetRoot;
+        $privateAssetRoot = $this->privateAssetRoot();
 
         if ($this->filesystemInspector !== null && $privateAssetRoot !== null) {
             $checks[] = new FilesystemPathHealthCheck(
@@ -156,6 +156,20 @@ final class WordPressAssetAccessApplicationFactory
         return new AssetAccessHealthSettingsSection(
             $this->createHealthReporter(),
             new AssetAccessHealthStatusRenderer(),
+        );
+    }
+
+    public function createRepairSection(): ?AssetAccessRepairSection
+    {
+        $privateAssetRoot = $this->privateAssetRoot();
+
+        if ($this->filesystemInspector === null || $privateAssetRoot === null) {
+            return null;
+        }
+
+        return new AssetAccessRepairSection(
+            new FilesystemRepairPlanner($this->filesystemInspector, $privateAssetRoot),
+            new AssetAccessRepairPlanRenderer(),
         );
     }
 
@@ -275,7 +289,13 @@ final class WordPressAssetAccessApplicationFactory
             $this->currentUserCan,
             $this->getRoles,
             $this->createHealthSettingsSection(),
+            $this->createRepairSection(),
         );
+    }
+
+    private function privateAssetRoot(): ?string
+    {
+        return $this->settingsRepository->get()->privateAssetRoot() ?? $this->privateAssetRoot;
     }
 
     private function createMetaReader(): AssetAttachmentMetaReader

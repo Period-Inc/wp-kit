@@ -10,11 +10,15 @@ use Period\WpFramework\WordPress\Access\AssetAccessHealthReporter;
 use Period\WpFramework\WordPress\Access\AssetAccessHealthSettingsSection;
 use Period\WpFramework\WordPress\Access\AssetAccessHealthStatus;
 use Period\WpFramework\WordPress\Access\AssetAccessHealthStatusRenderer;
+use Period\WpFramework\WordPress\Access\AssetAccessRepairPlanRenderer;
+use Period\WpFramework\WordPress\Access\AssetAccessRepairSection;
 use Period\WpFramework\WordPress\Access\AssetAccessSettings;
 use Period\WpFramework\WordPress\Access\AssetAccessSettingsFormHandler;
 use Period\WpFramework\WordPress\Access\AssetAccessSettingsPageRenderer;
 use Period\WpFramework\WordPress\Access\AssetAccessSettingsRepositoryInterface;
 use Period\WpFramework\WordPress\Access\CallableAssetAccessSettingsRepository;
+use Period\WpFramework\WordPress\Access\FilesystemInspectorInterface;
+use Period\WpFramework\WordPress\Access\FilesystemRepairPlanner;
 use Period\WpFramework\WordPress\Access\WordPressAssetAccessSettingsMenuRegistrar;
 use Period\WpFramework\WordPress\Access\WordPressAssetAccessSettingsPage;
 
@@ -66,6 +70,7 @@ final class AssetAccessSettingsPageTest extends TestCase
         ?AssetAccessSettingsRepositoryInterface $repo    = null,
         array $availableRoles                            = [],
         ?AssetAccessHealthSettingsSection $healthSection = null,
+        ?AssetAccessRepairSection $repairSection = null,
     ): WordPressAssetAccessSettingsPage {
         return new WordPressAssetAccessSettingsPage(
             $repo ?? $this->makeRepository(),
@@ -74,6 +79,7 @@ final class AssetAccessSettingsPageTest extends TestCase
             fn(string $cap): bool => $userCanManage && $cap === 'manage_options',
             fn(): array => $availableRoles,
             $healthSection,
+            $repairSection,
         );
     }
 
@@ -89,6 +95,32 @@ final class AssetAccessSettingsPageTest extends TestCase
                 },
             ]),
             new AssetAccessHealthStatusRenderer(),
+        );
+    }
+
+    private function makeRepairSection(): AssetAccessRepairSection
+    {
+        return new AssetAccessRepairSection(
+            new FilesystemRepairPlanner(
+                new class implements FilesystemInspectorInterface {
+                    public function exists(string $path): bool
+                    {
+                        return false;
+                    }
+
+                    public function isReadable(string $path): bool
+                    {
+                        return true;
+                    }
+
+                    public function isWritable(string $path): bool
+                    {
+                        return true;
+                    }
+                },
+                '/private-assets',
+            ),
+            new AssetAccessRepairPlanRenderer(),
         );
     }
 
@@ -389,6 +421,39 @@ final class AssetAccessSettingsPageTest extends TestCase
     public function testUnauthorizedUserDoesNotRenderHealthSection(): void
     {
         $page = $this->makePage(userCanManage: false, healthSection: $this->makeHealthSection());
+
+        $this->assertSame('', $page->render());
+    }
+
+    public function testRenderIncludesRepairSectionWhenProvided(): void
+    {
+        $page = $this->makePage(
+            healthSection: $this->makeHealthSection(),
+            repairSection: $this->makeRepairSection(),
+        );
+
+        $html = $page->render();
+
+        $this->assertStringContainsString('health_ok', $html);
+        $this->assertStringContainsString('create_directory', $html);
+        $this->assertLessThan(
+            strpos($html, 'create_directory'),
+            strpos($html, 'health_ok'),
+        );
+    }
+
+    public function testRenderOutputUnchangedWhenRepairSectionIsNull(): void
+    {
+        $repo = $this->makeRepository();
+        $page = $this->makePage(repo: $repo, repairSection: null);
+        $expected = (new AssetAccessSettingsPageRenderer())->render($repo->get(), []);
+
+        $this->assertSame($expected, $page->render());
+    }
+
+    public function testUnauthorizedUserDoesNotRenderRepairSection(): void
+    {
+        $page = $this->makePage(userCanManage: false, repairSection: $this->makeRepairSection());
 
         $this->assertSame('', $page->render());
     }
