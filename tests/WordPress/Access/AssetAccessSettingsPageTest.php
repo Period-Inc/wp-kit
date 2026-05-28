@@ -13,6 +13,7 @@ use Period\WpFramework\WordPress\Access\AssetAccessHealthStatusRenderer;
 use Period\WpFramework\WordPress\Access\AssetAccessRepairPlanRenderer;
 use Period\WpFramework\WordPress\Access\AssetAccessRepairExecutionController;
 use Period\WpFramework\WordPress\Access\AssetAccessRepairExecutionRenderer;
+use Period\WpFramework\WordPress\Access\AssetAccessRepairNonceFieldRenderer;
 use Period\WpFramework\WordPress\Access\AssetAccessRepairRequest;
 use Period\WpFramework\WordPress\Access\AssetAccessRepairSection;
 use Period\WpFramework\WordPress\Access\AssetAccessSettings;
@@ -78,6 +79,7 @@ final class AssetAccessSettingsPageTest extends TestCase
         ?AssetAccessRepairSection $repairSection = null,
         ?AssetAccessRepairExecutionController $repairExecutionController = null,
         ?AssetAccessRepairExecutionRenderer $repairExecutionRenderer = null,
+        ?AssetAccessRepairNonceFieldRenderer $repairNonceFieldRenderer = null,
     ): WordPressAssetAccessSettingsPage {
         return new WordPressAssetAccessSettingsPage(
             $repo ?? $this->makeRepository(),
@@ -89,6 +91,7 @@ final class AssetAccessSettingsPageTest extends TestCase
             $repairSection,
             $repairExecutionController,
             $repairExecutionRenderer,
+            $repairNonceFieldRenderer,
         );
     }
 
@@ -519,6 +522,36 @@ final class AssetAccessSettingsPageTest extends TestCase
         $this->assertStringContainsString('asset_access_repair_execute', $html);
         $this->assertStringContainsString('asset_access_repair_nonce', $html);
         $this->assertStringContainsString('Execute repair plan', $html);
+    }
+
+    public function testRenderIncludesRepairNonceFieldWhenProvided(): void
+    {
+        $page = $this->makePage(
+            repairExecutionController: $this->makeRepairExecutionController(),
+            repairExecutionRenderer: new AssetAccessRepairExecutionRenderer(),
+            repairNonceFieldRenderer: new AssetAccessRepairNonceFieldRenderer(
+                static fn(string $action): string => '<input type="hidden" name="_wpnonce" value="nonce-html">',
+            ),
+        );
+
+        $html = $page->render();
+
+        $this->assertStringContainsString('name="_wpnonce"', $html);
+        $this->assertStringContainsString('value="nonce-html"', $html);
+        $this->assertStringNotContainsString('name="asset_access_repair_nonce" value=""', $html);
+    }
+
+    public function testNullRepairNonceRendererKeepsExistingOutput(): void
+    {
+        $page = $this->makePage(
+            repairExecutionController: $this->makeRepairExecutionController(),
+            repairExecutionRenderer: new AssetAccessRepairExecutionRenderer(),
+            repairNonceFieldRenderer: null,
+        );
+
+        $html = $page->render();
+
+        $this->assertStringContainsString('name="asset_access_repair_nonce" value=""', $html);
     }
 
     public function testUnauthorizedUserDoesNotRenderRepairExecuteForm(): void

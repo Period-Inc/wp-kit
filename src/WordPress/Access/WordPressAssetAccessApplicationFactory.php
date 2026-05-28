@@ -58,6 +58,7 @@ final class WordPressAssetAccessApplicationFactory
         private readonly ?DirectAccessProtectionStrategy $directAccessProtectionStrategy = null,
         private readonly ?FilesystemInspectorInterface $filesystemInspector = null,
         private readonly ?string $privateAssetRoot = null,
+        private readonly mixed $nonceField = null,
     ) {
         $this->addAction      = $addAction      ?? static fn(mixed ...$args): null => null;
         $this->addFilter      = $addFilter      ?? static fn(mixed ...$args): null => null;
@@ -290,12 +291,22 @@ final class WordPressAssetAccessApplicationFactory
             $this->getRoles,
             $this->createHealthSettingsSection(),
             $this->createRepairSection(),
+            repairNonceFieldRenderer: $this->createRepairNonceFieldRenderer(),
         );
     }
 
     private function privateAssetRoot(): ?string
     {
         return $this->settingsRepository->get()->privateAssetRoot() ?? $this->privateAssetRoot;
+    }
+
+    private function createRepairNonceFieldRenderer(): ?AssetAccessRepairNonceFieldRenderer
+    {
+        if (!is_callable($this->nonceField)) {
+            return null;
+        }
+
+        return new AssetAccessRepairNonceFieldRenderer($this->nonceField);
     }
 
     private function createMetaReader(): AssetAttachmentMetaReader

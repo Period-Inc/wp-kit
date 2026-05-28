@@ -26,6 +26,7 @@ final class WordPressAssetAccessSettingsPage
         private readonly ?AssetAccessRepairSection $repairSection = null,
         private readonly ?AssetAccessRepairExecutionController $repairExecutionController = null,
         private readonly ?AssetAccessRepairExecutionRenderer $repairExecutionRenderer = null,
+        private readonly ?AssetAccessRepairNonceFieldRenderer $repairNonceFieldRenderer = null,
     ) {
         $this->currentUserCan = $currentUserCan;
         $this->getRoles       = $getRoles;
@@ -52,8 +53,11 @@ final class WordPressAssetAccessSettingsPage
             $html .= $this->repairSection->render();
         }
 
-        if ($this->repairExecutionController !== null && $this->repairExecutionRenderer !== null) {
+        if ($this->repairExecutionController !== null || $this->repairNonceFieldRenderer !== null) {
             $html .= $this->renderRepairExecutionForm();
+        }
+
+        if ($this->repairExecutionController !== null && $this->repairExecutionRenderer !== null) {
             $html .= $this->repairExecutionRenderer->render($this->repairExecutionResults);
         }
 
@@ -80,8 +84,14 @@ final class WordPressAssetAccessSettingsPage
     {
         return '<form method="post" class="period-asset-access-repair-execute">'
             . '<input type="hidden" name="asset_access_repair_execute" value="1">'
-            . '<input type="hidden" name="asset_access_repair_nonce" value="">'
+            . $this->renderRepairNonceField()
             . '<button type="submit">Execute repair plan</button>'
             . '</form>';
+    }
+
+    private function renderRepairNonceField(): string
+    {
+        return $this->repairNonceFieldRenderer?->render()
+            ?? '<input type="hidden" name="asset_access_repair_nonce" value="">';
     }
 }

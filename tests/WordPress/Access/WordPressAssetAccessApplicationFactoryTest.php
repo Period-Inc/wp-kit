@@ -144,6 +144,7 @@ final class WordPressAssetAccessApplicationFactoryTest extends TestCase
         ?FilesystemInspectorInterface $filesystemInspector = null,
         ?string $privateAssetRoot = null,
         ?string $settingsPrivateAssetRoot = null,
+        ?callable $nonceField = null,
     ): WordPressAssetAccessApplicationFactory {
         return new WordPressAssetAccessApplicationFactory(
             $this->makeRepository($getCalls, $settingsPrivateAssetRoot),
@@ -161,6 +162,7 @@ final class WordPressAssetAccessApplicationFactoryTest extends TestCase
             directAccessProtectionStrategy: $directAccessProtectionStrategy,
             filesystemInspector: $filesystemInspector,
             privateAssetRoot: $privateAssetRoot,
+            nonceField: $nonceField,
         );
     }
 
@@ -619,6 +621,35 @@ final class WordPressAssetAccessApplicationFactoryTest extends TestCase
 
         $this->assertIsString($output);
         $this->assertStringContainsString('create_directory', $output);
+    }
+
+    public function testFactoryWiresNonceRendererWhenCallableExists(): void
+    {
+        $calls = [];
+        $nonceCalls = [];
+        $factory = $this->makeFactory(
+            addOptionsPage: function () use (&$calls): void {
+                $calls[] = func_get_args();
+            },
+            currentUserCan: fn(string $cap): bool => $cap === 'manage_options',
+            nonceField: function (string $action) use (&$nonceCalls): string {
+                $nonceCalls[] = $action;
+
+                return '<input type="hidden" name="_wpnonce" value="factory-nonce">';
+            },
+        );
+        $registrar = $factory->createSettingsMenuRegistrar();
+
+        $registrar->register();
+
+        $callback = $calls[0][4];
+        ob_start();
+        $callback();
+        $output = ob_get_clean();
+
+        $this->assertIsString($output);
+        $this->assertStringContainsString('factory-nonce', $output);
+        $this->assertSame(['period_asset_access_repair'], $nonceCalls);
     }
 
     public function testMissingOptionalDependenciesDoNotBreakFactory(): void
