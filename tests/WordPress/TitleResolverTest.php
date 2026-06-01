@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress;
+namespace Period\WpKit\Tests\WordPress;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\SiteInfo;
-use Period\WpFramework\WordPress\TitleResolver;
+use Period\WpKit\WordPress\SiteInfo;
+use Period\WpKit\WordPress\TitleResolver;
 
 final class TitleResolverTest extends TestCase
 {

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AssetAttachmentMetaReader;
-use Period\WpFramework\WordPress\Access\AssetProtectedStateBadgeRenderer;
-use Period\WpFramework\WordPress\Access\MediaLibraryProtectedColumnProvider;
-use Period\WpFramework\WordPress\Access\WordPressMediaLibraryProtectedColumnHookRegistrar;
+use Period\WpKit\WordPress\Access\AssetAttachmentMetaReader;
+use Period\WpKit\WordPress\Access\AssetProtectedStateBadgeRenderer;
+use Period\WpKit\WordPress\Access\MediaLibraryProtectedColumnProvider;
+use Period\WpKit\WordPress\Access\WordPressMediaLibraryProtectedColumnHookRegistrar;
 
 final class MediaLibraryProtectedColumnTest extends TestCase
 {

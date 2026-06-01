@@ -5,7 +5,7 @@
 ### 使用例
 
 ```php
-use Period\WpFramework\Infrastructure\WordPress\StartHtmlRenderer;
+use Period\WpKit\Infrastructure\WordPress\StartHtmlRenderer;
 
 $renderer = new StartHtmlRenderer();
 echo $renderer->render([

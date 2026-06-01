@@ -1,11 +1,11 @@
 # TemplateFormatter
 
-`{{ key }}` プレースホルダーを context の値で置換する整形クラスです。WordPress 非依存で `Period\WpFramework\Support` に属します。
+`{{ key }}` プレースホルダーを context の値で置換する整形クラスです。WordPress 非依存で `Period\WpKit\Support` に属します。
 
 ## 基本的な使い方
 
 ```php
-use Period\WpFramework\Support\TemplateFormatter;
+use Period\WpKit\Support\TemplateFormatter;
 
 $formatter = new TemplateFormatter();
 
@@ -37,7 +37,7 @@ $result = $formatter->format(
 `TemplateFormatter` 自体は WordPress に依存しません。フィルターを適用したい場合は呼び出し側で行います。
 
 ```php
-use Period\WpFramework\Support\TemplateFormatter;
+use Period\WpKit\Support\TemplateFormatter;
 
 $formatter = new TemplateFormatter();
 $result = $formatter->format('{{ title }}', ['title' => 'Hello']);
@@ -50,9 +50,9 @@ if (function_exists('apply_filters')) {
 ## SiteInfo / TitleResolver との組み合わせ
 
 ```php
-use Period\WpFramework\Support\TemplateFormatter;
-use Period\WpFramework\Infrastructure\WordPress\SiteInfo;
-use Period\WpFramework\Infrastructure\WordPress\TitleResolver;
+use Period\WpKit\Support\TemplateFormatter;
+use Period\WpKit\Infrastructure\WordPress\SiteInfo;
+use Period\WpKit\Infrastructure\WordPress\TitleResolver;
 
 $info      = new SiteInfo();
 $resolver  = new TitleResolver($info);

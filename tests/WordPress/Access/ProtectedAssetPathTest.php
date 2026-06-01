@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AssetPathNormalizer;
-use Period\WpFramework\WordPress\Access\DefaultProtectedAssetPathStrategy;
-use Period\WpFramework\WordPress\Access\ProtectedAssetPathStrategyInterface;
+use Period\WpKit\WordPress\Access\AssetPathNormalizer;
+use Period\WpKit\WordPress\Access\DefaultProtectedAssetPathStrategy;
+use Period\WpKit\WordPress\Access\ProtectedAssetPathStrategyInterface;
 
 final class ProtectedAssetPathTest extends TestCase
 {

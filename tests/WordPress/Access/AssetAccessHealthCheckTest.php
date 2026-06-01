@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AssetAccessHealthCheckInterface;
-use Period\WpFramework\WordPress\Access\AssetAccessHealthReporter;
-use Period\WpFramework\WordPress\Access\AssetAccessHealthStatus;
-use Period\WpFramework\WordPress\Access\DefaultProtectedAssetPathStrategy;
-use Period\WpFramework\WordPress\Access\DirectAccessProtectionHealthCheck;
-use Period\WpFramework\WordPress\Access\DirectAccessProtectionStrategy;
-use Period\WpFramework\WordPress\Access\OutsideWebrootAssetPathStrategy;
-use Period\WpFramework\WordPress\Access\OutsideWebrootHealthCheck;
+use Period\WpKit\WordPress\Access\AssetAccessHealthCheckInterface;
+use Period\WpKit\WordPress\Access\AssetAccessHealthReporter;
+use Period\WpKit\WordPress\Access\AssetAccessHealthStatus;
+use Period\WpKit\WordPress\Access\DefaultProtectedAssetPathStrategy;
+use Period\WpKit\WordPress\Access\DirectAccessProtectionHealthCheck;
+use Period\WpKit\WordPress\Access\DirectAccessProtectionStrategy;
+use Period\WpKit\WordPress\Access\OutsideWebrootAssetPathStrategy;
+use Period\WpKit\WordPress\Access\OutsideWebrootHealthCheck;
 
 final class AssetAccessHealthCheckTest extends TestCase
 {

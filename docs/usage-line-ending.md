@@ -7,7 +7,7 @@
 ## 基本
 
 ```php
-use Period\WpFramework\Support\LineEnding;
+use Period\WpKit\Support\LineEnding;
 ```
 
 ---
@@ -33,7 +33,7 @@ LineEnding::CRLF   // "\r\n"
 ## Encoding
 
 ```php
-use Period\WpFramework\Support\Encoding;
+use Period\WpKit\Support\Encoding;
 ```
 
 ```php

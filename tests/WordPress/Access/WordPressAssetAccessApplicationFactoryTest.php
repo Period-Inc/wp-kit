@@ -2,45 +2,48 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AssetAccessHealthReporter;
-use Period\WpFramework\WordPress\Access\AssetAccessHealthSettingsSection;
-use Period\WpFramework\WordPress\Access\AssetAccessHealthStatus;
-use Period\WpFramework\WordPress\Access\AssetAccessManager;
-use Period\WpFramework\WordPress\Access\AssetAccessPolicyFactory;
-use Period\WpFramework\WordPress\Access\AssetAccessRepairSection;
-use Period\WpFramework\WordPress\Access\AssetAccessSettingsRepositoryInterface;
-use Period\WpFramework\WordPress\Access\AssetDeliveryInterface;
-use Period\WpFramework\WordPress\Access\AssetDeliveryResult;
-use Period\WpFramework\WordPress\Access\AssetEmitResult;
-use Period\WpFramework\WordPress\Access\AssetRequestContext;
-use Period\WpFramework\WordPress\Access\AssetRequestMatcher;
-use Period\WpFramework\WordPress\Access\AssetResponseEmitterInterface;
-use Period\WpFramework\WordPress\Access\AssetStorageInterface;
-use Period\WpFramework\WordPress\Access\AssetStorageItem;
-use Period\WpFramework\WordPress\Access\CallableAssetAccessSettingsRepository;
-use Period\WpFramework\WordPress\Access\DirectAccessProtectionStrategy;
-use Period\WpFramework\WordPress\Access\FilesystemInspectorInterface;
-use Period\WpFramework\WordPress\Access\OutsideWebrootAssetPathStrategy;
-use Period\WpFramework\WordPress\Access\ProtectedAssetPathStrategyInterface;
-use Period\WpFramework\WordPress\Access\RequestContextFactoryInterface;
-use Period\WpFramework\WordPress\Access\WordPressAssetAccessApplicationFactory;
-use Period\WpFramework\WordPress\Access\WordPressAssetAccessBootstrap;
-use Period\WpFramework\WordPress\Access\WordPressAssetAccessController;
-use Period\WpFramework\WordPress\Access\WordPressAssetAccessKernel;
-use Period\WpFramework\WordPress\Access\WordPressAssetAccessRuntimeInstaller;
-use Period\WpFramework\WordPress\Access\WordPressAssetAccessSettingsMenuRegistrar;
-use Period\WpFramework\WordPress\Access\WordPressAssetAccessSettingsSaveHookRegistrar;
-use Period\WpFramework\WordPress\Access\WordPressAssetAttachmentDerivedFilterHookRegistrar;
-use Period\WpFramework\WordPress\Access\WordPressAssetAttachmentEditFieldHookRegistrar;
-use Period\WpFramework\WordPress\Access\WordPressAssetAttachmentMetaBridgeHookRegistrar;
-use Period\WpFramework\WordPress\Access\WordPressAssetAttachmentUrlFilterHookRegistrar;
-use Period\WpFramework\WordPress\Access\WordPressAssetUploadPipelineHookRegistrar;
-use Period\WpFramework\WordPress\Access\WordPressMediaLibraryBulkActionHookRegistrar;
-use Period\WpFramework\WordPress\Access\WordPressMediaLibraryProtectedColumnHookRegistrar;
+use Period\WpKit\WordPress\Access\AssetAccessHealthReporter;
+use Period\WpKit\WordPress\Access\AssetAccessHealthSettingsSection;
+use Period\WpKit\WordPress\Access\AssetAccessHealthStatus;
+use Period\WpKit\WordPress\Access\AssetAccessManager;
+use Period\WpKit\WordPress\Access\AssetAccessPolicyFactory;
+use Period\WpKit\WordPress\Access\AssetAccessRepairAdminPostRegistrar;
+use Period\WpKit\WordPress\Access\AssetAccessRepairRequest;
+use Period\WpKit\WordPress\Access\AssetAccessRepairSection;
+use Period\WpKit\WordPress\Access\AssetAccessSettingsRepositoryInterface;
+use Period\WpKit\WordPress\Access\AssetDeliveryInterface;
+use Period\WpKit\WordPress\Access\AssetDeliveryResult;
+use Period\WpKit\WordPress\Access\AssetEmitResult;
+use Period\WpKit\WordPress\Access\AssetRequestContext;
+use Period\WpKit\WordPress\Access\AssetRequestMatcher;
+use Period\WpKit\WordPress\Access\AssetResponseEmitterInterface;
+use Period\WpKit\WordPress\Access\AssetStorageInterface;
+use Period\WpKit\WordPress\Access\AssetStorageItem;
+use Period\WpKit\WordPress\Access\CallableAssetAccessSettingsRepository;
+use Period\WpKit\WordPress\Access\DirectAccessProtectionStrategy;
+use Period\WpKit\WordPress\Access\FilesystemInspectorInterface;
+use Period\WpKit\WordPress\Access\FilesystemOperatorInterface;
+use Period\WpKit\WordPress\Access\OutsideWebrootAssetPathStrategy;
+use Period\WpKit\WordPress\Access\ProtectedAssetPathStrategyInterface;
+use Period\WpKit\WordPress\Access\RequestContextFactoryInterface;
+use Period\WpKit\WordPress\Access\WordPressAssetAccessApplicationFactory;
+use Period\WpKit\WordPress\Access\WordPressAssetAccessBootstrap;
+use Period\WpKit\WordPress\Access\WordPressAssetAccessController;
+use Period\WpKit\WordPress\Access\WordPressAssetAccessKernel;
+use Period\WpKit\WordPress\Access\WordPressAssetAccessRuntimeInstaller;
+use Period\WpKit\WordPress\Access\WordPressAssetAccessSettingsMenuRegistrar;
+use Period\WpKit\WordPress\Access\WordPressAssetAccessSettingsSaveHookRegistrar;
+use Period\WpKit\WordPress\Access\WordPressAssetAttachmentDerivedFilterHookRegistrar;
+use Period\WpKit\WordPress\Access\WordPressAssetAttachmentEditFieldHookRegistrar;
+use Period\WpKit\WordPress\Access\WordPressAssetAttachmentMetaBridgeHookRegistrar;
+use Period\WpKit\WordPress\Access\WordPressAssetAttachmentUrlFilterHookRegistrar;
+use Period\WpKit\WordPress\Access\WordPressAssetUploadPipelineHookRegistrar;
+use Period\WpKit\WordPress\Access\WordPressMediaLibraryBulkActionHookRegistrar;
+use Period\WpKit\WordPress\Access\WordPressMediaLibraryProtectedColumnHookRegistrar;
 
 final class WordPressAssetAccessApplicationFactoryTest extends TestCase
 {
@@ -145,6 +148,10 @@ final class WordPressAssetAccessApplicationFactoryTest extends TestCase
         ?string $privateAssetRoot = null,
         ?string $settingsPrivateAssetRoot = null,
         ?callable $nonceField = null,
+        ?FilesystemOperatorInterface $repairFilesystemOperator = null,
+        ?callable $repairNonceVerifier = null,
+        ?AssetAccessRepairRequest $repairRequest = null,
+        ?callable $repairRedirectUrlResolver = null,
     ): WordPressAssetAccessApplicationFactory {
         return new WordPressAssetAccessApplicationFactory(
             $this->makeRepository($getCalls, $settingsPrivateAssetRoot),
@@ -163,7 +170,26 @@ final class WordPressAssetAccessApplicationFactoryTest extends TestCase
             filesystemInspector: $filesystemInspector,
             privateAssetRoot: $privateAssetRoot,
             nonceField: $nonceField,
+            repairFilesystemOperator: $repairFilesystemOperator,
+            repairNonceVerifier: $repairNonceVerifier,
+            repairRequest: $repairRequest,
+            repairRedirectUrlResolver: $repairRedirectUrlResolver,
         );
+    }
+
+    private function makeFilesystemOperator(): FilesystemOperatorInterface
+    {
+        return new class implements FilesystemOperatorInterface {
+            public function createDirectory(string $path): bool
+            {
+                return true;
+            }
+
+            public function setPermissions(string $path, int $mode): bool
+            {
+                return true;
+            }
+        };
     }
 
     private function makeFilesystemInspector(
@@ -294,6 +320,28 @@ final class WordPressAssetAccessApplicationFactoryTest extends TestCase
         $this->assertNull($this->makeFactory(
             filesystemInspector: $this->makeFilesystemInspector(),
         )->createRepairSection());
+    }
+
+    public function testCreateRepairAdminPostRegistrarReturnsRegistrarWhenPossible(): void
+    {
+        $registrar = $this->makeFactory(
+            filesystemInspector: $this->makeFilesystemInspector(exists: false),
+            privateAssetRoot: '/var/private-assets',
+            repairFilesystemOperator: $this->makeFilesystemOperator(),
+            repairNonceVerifier: static fn(string $nonce): bool => true,
+            repairRequest: new AssetAccessRepairRequest(true, 'nonce', true),
+            repairRedirectUrlResolver: static fn(): string => '/redirect-target',
+        )->createRepairAdminPostRegistrar();
+
+        $this->assertInstanceOf(AssetAccessRepairAdminPostRegistrar::class, $registrar);
+    }
+
+    public function testCreateRepairAdminPostRegistrarReturnsNullWhenDependenciesAreMissing(): void
+    {
+        $this->assertNull($this->makeFactory(
+            filesystemInspector: $this->makeFilesystemInspector(),
+            privateAssetRoot: '/var/private-assets',
+        )->createRepairAdminPostRegistrar());
     }
 
     public function testHealthReporterContainsExpectedChecks(): void
@@ -621,6 +669,26 @@ final class WordPressAssetAccessApplicationFactoryTest extends TestCase
 
         $this->assertIsString($output);
         $this->assertStringContainsString('create_directory', $output);
+    }
+
+    public function testFactoryWiresRepairAdminPostRegistrarIntoRuntimeInstaller(): void
+    {
+        $actions = [];
+        $factory = $this->makeFactory(
+            addAction: function (string $hook, callable $callback, int $priority) use (&$actions): void {
+                $actions[] = [$hook, $priority];
+            },
+            filesystemInspector: $this->makeFilesystemInspector(exists: false),
+            privateAssetRoot: '/var/private-assets',
+            repairFilesystemOperator: $this->makeFilesystemOperator(),
+            repairNonceVerifier: static fn(string $nonce): bool => true,
+            repairRequest: new AssetAccessRepairRequest(true, 'nonce', true),
+            repairRedirectUrlResolver: static fn(): string => '/redirect-target',
+        );
+
+        $factory->createRuntimeInstaller(fn(): string => '/wp-content/uploads/file.pdf')->install();
+
+        $this->assertContains('admin_post_period_asset_access_repair_execute', array_column($actions, 0));
     }
 
     public function testFactoryWiresNonceRendererWhenCallableExists(): void

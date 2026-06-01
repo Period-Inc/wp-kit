@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Infrastructure;
+namespace Period\WpKit\Infrastructure;
 
-use Period\WpFramework\Infrastructure\Shortcode\ShortcodeInterface;
+use Period\WpKit\Infrastructure\Shortcode\ShortcodeInterface;
 
 final class ShortcodeRegistrar
 {

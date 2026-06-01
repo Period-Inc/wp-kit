@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AssetRequestContext;
+use Period\WpKit\WordPress\Access\AssetRequestContext;
 
 final class AssetRequestContextTest extends TestCase
 {

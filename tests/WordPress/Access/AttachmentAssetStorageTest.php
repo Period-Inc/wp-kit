@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use DateTime;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AssetStorageInterface;
-use Period\WpFramework\WordPress\Access\AssetStorageItem;
-use Period\WpFramework\WordPress\Access\AssetStorageItemFactory;
-use Period\WpFramework\WordPress\Access\AttachmentAssetStorage;
+use Period\WpKit\WordPress\Access\AssetStorageInterface;
+use Period\WpKit\WordPress\Access\AssetStorageItem;
+use Period\WpKit\WordPress\Access\AssetStorageItemFactory;
+use Period\WpKit\WordPress\Access\AttachmentAssetStorage;
 
 final class AttachmentAssetStorageTest extends TestCase
 {

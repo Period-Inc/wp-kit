@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AssetAttachmentMetaReader;
-use Period\WpFramework\WordPress\Access\AssetStorageInterface;
-use Period\WpFramework\WordPress\Access\AssetStorageItem;
-use Period\WpFramework\WordPress\Access\AttachmentMetaAssetStorage;
+use Period\WpKit\WordPress\Access\AssetAttachmentMetaReader;
+use Period\WpKit\WordPress\Access\AssetStorageInterface;
+use Period\WpKit\WordPress\Access\AssetStorageItem;
+use Period\WpKit\WordPress\Access\AttachmentMetaAssetStorage;
 
 final class AttachmentMetaAssetStorageTest extends TestCase
 {

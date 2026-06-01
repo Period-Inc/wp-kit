@@ -5,7 +5,7 @@
 ### 使用例
 
 ```php
-use Period\WpFramework\Infrastructure\WordPress\ImageTagRenderer;
+use Period\WpKit\Infrastructure\WordPress\ImageTagRenderer;
 
 $renderer = new ImageTagRenderer();
 echo $renderer->render(123, [
@@ -40,8 +40,8 @@ echo $renderer->render(123, [
 
 ```php
 // deprecated
-use Period\WpFramework\Infrastructure\WordPress\ImageRenderer;
+use Period\WpKit\Infrastructure\WordPress\ImageRenderer;
 
 // 推奨
-use Period\WpFramework\Infrastructure\WordPress\ImageTagRenderer;
+use Period\WpKit\Infrastructure\WordPress\ImageTagRenderer;
 ```

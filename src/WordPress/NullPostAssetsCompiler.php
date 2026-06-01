@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\WordPress;
+namespace Period\WpKit\WordPress;
 
 final class NullPostAssetsCompiler implements PostAssetsCompilerInterface
 {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress;
+namespace Period\WpKit\Tests\WordPress;
 
-use Period\WpFramework\WordPress\NullPostAssetsCompiler;
+use Period\WpKit\WordPress\NullPostAssetsCompiler;
 use PHPUnit\Framework\TestCase;
 
 final class NullPostAssetsCompilerTest extends TestCase

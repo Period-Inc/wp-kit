@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AssetAttachmentUrlFilter;
-use Period\WpFramework\WordPress\Access\AssetUrlRewriteStrategyInterface;
-use Period\WpFramework\WordPress\Access\ProxyAssetUrlRewriteStrategy;
-use Period\WpFramework\WordPress\Access\WordPressAssetAttachmentUrlFilterHookRegistrar;
+use Period\WpKit\WordPress\Access\AssetAttachmentUrlFilter;
+use Period\WpKit\WordPress\Access\AssetUrlRewriteStrategyInterface;
+use Period\WpKit\WordPress\Access\ProxyAssetUrlRewriteStrategy;
+use Period\WpKit\WordPress\Access\WordPressAssetAttachmentUrlFilterHookRegistrar;
 
 final class AssetAttachmentUrlFilterTest extends TestCase
 {

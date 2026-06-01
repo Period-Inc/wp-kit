@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress;
+namespace Period\WpKit\Tests\WordPress;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\DocumentRenderer;
+use Period\WpKit\WordPress\DocumentRenderer;
 
 final class DocumentRendererTest extends TestCase
 {

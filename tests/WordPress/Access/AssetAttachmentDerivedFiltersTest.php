@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AssetAttachmentImageSrcFilter;
-use Period\WpFramework\WordPress\Access\AssetAttachmentJsPrepareFilter;
-use Period\WpFramework\WordPress\Access\AssetAttachmentMetaReader;
-use Period\WpFramework\WordPress\Access\AssetUrlRewriteStrategyInterface;
-use Period\WpFramework\WordPress\Access\WordPressAssetAttachmentDerivedFilterHookRegistrar;
+use Period\WpKit\WordPress\Access\AssetAttachmentImageSrcFilter;
+use Period\WpKit\WordPress\Access\AssetAttachmentJsPrepareFilter;
+use Period\WpKit\WordPress\Access\AssetAttachmentMetaReader;
+use Period\WpKit\WordPress\Access\AssetUrlRewriteStrategyInterface;
+use Period\WpKit\WordPress\Access\WordPressAssetAttachmentDerivedFilterHookRegistrar;
 
 final class AssetAttachmentDerivedFiltersTest extends TestCase
 {

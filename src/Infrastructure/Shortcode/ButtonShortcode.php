@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Infrastructure\Shortcode;
+namespace Period\WpKit\Infrastructure\Shortcode;
 
-use Period\WpFramework\Application;
+use Period\WpKit\Application;
 
 final class ButtonShortcode implements ShortcodeInterface
 {

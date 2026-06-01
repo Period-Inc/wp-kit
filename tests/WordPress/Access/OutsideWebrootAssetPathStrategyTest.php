@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\OutsideWebrootAssetPathStrategy;
-use Period\WpFramework\WordPress\Access\ProtectedAssetPathStrategyInterface;
+use Period\WpKit\WordPress\Access\OutsideWebrootAssetPathStrategy;
+use Period\WpKit\WordPress\Access\ProtectedAssetPathStrategyInterface;
 
 final class OutsideWebrootAssetPathStrategyTest extends TestCase
 {

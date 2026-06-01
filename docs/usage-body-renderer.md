@@ -5,7 +5,7 @@
 ### 使用例
 
 ```php
-use Period\WpFramework\Infrastructure\WordPress\BodyRenderer;
+use Period\WpKit\Infrastructure\WordPress\BodyRenderer;
 
 $renderer = new BodyRenderer();
 echo $renderer->render([

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AssetUrlRewriteStrategyInterface;
-use Period\WpFramework\WordPress\Access\SignedAssetUrlGenerator;
-use Period\WpFramework\WordPress\Access\SignedAssetUrlRewriteStrategy;
+use Period\WpKit\WordPress\Access\AssetUrlRewriteStrategyInterface;
+use Period\WpKit\WordPress\Access\SignedAssetUrlGenerator;
+use Period\WpKit\WordPress\Access\SignedAssetUrlRewriteStrategy;
 
 final class SignedAssetUrlRewriteStrategyTest extends TestCase
 {

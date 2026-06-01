@@ -2,66 +2,73 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AssetAccessHealthCheckInterface;
-use Period\WpFramework\WordPress\Access\AssetAccessHealthReporter;
-use Period\WpFramework\WordPress\Access\AssetAccessHealthStatus;
-use Period\WpFramework\WordPress\Access\AssetAccessPolicyFactory;
-use Period\WpFramework\WordPress\Access\AssetAccessSettingsFormHandler;
-use Period\WpFramework\WordPress\Access\AssetAccessSettingsPageRenderer;
-use Period\WpFramework\WordPress\Access\AssetAccessSettingsRepositoryInterface;
-use Period\WpFramework\WordPress\Access\AssetAttachmentEditFieldRenderer;
-use Period\WpFramework\WordPress\Access\AssetAttachmentEditFieldSaver;
-use Period\WpFramework\WordPress\Access\AssetAttachmentImageSrcFilter;
-use Period\WpFramework\WordPress\Access\AssetAttachmentJsPrepareFilter;
-use Period\WpFramework\WordPress\Access\AssetAttachmentMetaBridge;
-use Period\WpFramework\WordPress\Access\AssetAttachmentMetaReader;
-use Period\WpFramework\WordPress\Access\AssetAttachmentMetaUpdater;
-use Period\WpFramework\WordPress\Access\AssetAttachmentUrlFilter;
-use Period\WpFramework\WordPress\Access\AssetBulkProtectionActionProvider;
-use Period\WpFramework\WordPress\Access\AssetBulkProtectionProcessor;
-use Period\WpFramework\WordPress\Access\AssetDeliveryInterface;
-use Period\WpFramework\WordPress\Access\AssetDeliveryResult;
-use Period\WpFramework\WordPress\Access\AssetEmitResult;
-use Period\WpFramework\WordPress\Access\AssetFileMoveResult;
-use Period\WpFramework\WordPress\Access\AssetFileMoverInterface;
-use Period\WpFramework\WordPress\Access\AssetProtectedStateBadgeRenderer;
-use Period\WpFramework\WordPress\Access\AssetRequestContext;
-use Period\WpFramework\WordPress\Access\AssetRequestMatcher;
-use Period\WpFramework\WordPress\Access\AssetResponseEmitterInterface;
-use Period\WpFramework\WordPress\Access\AssetStorageInterface;
-use Period\WpFramework\WordPress\Access\AssetStorageItem;
-use Period\WpFramework\WordPress\Access\AssetUploadDecision;
-use Period\WpFramework\WordPress\Access\AssetUploadFingerprintGenerator;
-use Period\WpFramework\WordPress\Access\AssetUploadInterceptor;
-use Period\WpFramework\WordPress\Access\AssetUploadMoveProcessor;
-use Period\WpFramework\WordPress\Access\AssetUploadPathResolver;
-use Period\WpFramework\WordPress\Access\AssetUploadPipelineCoordinator;
-use Period\WpFramework\WordPress\Access\AssetUploadPolicyInterface;
-use Period\WpFramework\WordPress\Access\AssetUploadUrlRewriteProcessor;
-use Period\WpFramework\WordPress\Access\AssetUrlRewriteStrategyInterface;
-use Period\WpFramework\WordPress\Access\AttachmentFingerprintResolverInterface;
-use Period\WpFramework\WordPress\Access\CallableAssetAccessSettingsRepository;
-use Period\WpFramework\WordPress\Access\MediaLibraryProtectedColumnProvider;
-use Period\WpFramework\WordPress\Access\ProtectedAssetPathStrategyInterface;
-use Period\WpFramework\WordPress\Access\RequestContextFactoryInterface;
-use Period\WpFramework\WordPress\Access\WordPressAssetAccessApplicationFactory;
-use Period\WpFramework\WordPress\Access\WordPressAssetAccessController;
-use Period\WpFramework\WordPress\Access\WordPressAssetAccessRuntimeInstaller;
-use Period\WpFramework\WordPress\Access\WordPressAssetAccessSettingsMenuRegistrar;
-use Period\WpFramework\WordPress\Access\WordPressAssetAccessSettingsPage;
-use Period\WpFramework\WordPress\Access\WordPressAssetAccessSettingsSaveController;
-use Period\WpFramework\WordPress\Access\WordPressAssetAccessSettingsSaveHookRegistrar;
-use Period\WpFramework\WordPress\Access\WordPressAssetAttachmentDerivedFilterHookRegistrar;
-use Period\WpFramework\WordPress\Access\WordPressAssetAttachmentEditFieldHookRegistrar;
-use Period\WpFramework\WordPress\Access\WordPressAssetAttachmentMetaBridgeHookRegistrar;
-use Period\WpFramework\WordPress\Access\WordPressAssetAttachmentUrlFilterHookRegistrar;
-use Period\WpFramework\WordPress\Access\WordPressAssetUploadPipelineHookRegistrar;
-use Period\WpFramework\WordPress\Access\WordPressMediaLibraryBulkActionHookRegistrar;
-use Period\WpFramework\WordPress\Access\WordPressMediaLibraryProtectedColumnHookRegistrar;
+use Period\WpKit\WordPress\Access\AssetAccessHealthCheckInterface;
+use Period\WpKit\WordPress\Access\AssetAccessHealthReporter;
+use Period\WpKit\WordPress\Access\AssetAccessHealthStatus;
+use Period\WpKit\WordPress\Access\AssetAccessRepairAdminPostAction;
+use Period\WpKit\WordPress\Access\AssetAccessRepairAdminPostRegistrar;
+use Period\WpKit\WordPress\Access\AssetAccessRepairRequest;
+use Period\WpKit\WordPress\Access\AssetAccessPolicyFactory;
+use Period\WpKit\WordPress\Access\AssetAccessSettingsFormHandler;
+use Period\WpKit\WordPress\Access\AssetAccessSettingsPageRenderer;
+use Period\WpKit\WordPress\Access\AssetAccessSettingsRepositoryInterface;
+use Period\WpKit\WordPress\Access\AssetAttachmentEditFieldRenderer;
+use Period\WpKit\WordPress\Access\AssetAttachmentEditFieldSaver;
+use Period\WpKit\WordPress\Access\AssetAttachmentImageSrcFilter;
+use Period\WpKit\WordPress\Access\AssetAttachmentJsPrepareFilter;
+use Period\WpKit\WordPress\Access\AssetAttachmentMetaBridge;
+use Period\WpKit\WordPress\Access\AssetAttachmentMetaReader;
+use Period\WpKit\WordPress\Access\AssetAttachmentMetaUpdater;
+use Period\WpKit\WordPress\Access\AssetAttachmentUrlFilter;
+use Period\WpKit\WordPress\Access\AssetBulkProtectionActionProvider;
+use Period\WpKit\WordPress\Access\AssetBulkProtectionProcessor;
+use Period\WpKit\WordPress\Access\AssetDeliveryInterface;
+use Period\WpKit\WordPress\Access\AssetDeliveryResult;
+use Period\WpKit\WordPress\Access\AssetEmitResult;
+use Period\WpKit\WordPress\Access\AssetFileMoveResult;
+use Period\WpKit\WordPress\Access\AssetFileMoverInterface;
+use Period\WpKit\WordPress\Access\AssetProtectedStateBadgeRenderer;
+use Period\WpKit\WordPress\Access\AssetRequestContext;
+use Period\WpKit\WordPress\Access\AssetRequestMatcher;
+use Period\WpKit\WordPress\Access\AssetResponseEmitterInterface;
+use Period\WpKit\WordPress\Access\AssetStorageInterface;
+use Period\WpKit\WordPress\Access\AssetStorageItem;
+use Period\WpKit\WordPress\Access\AssetUploadDecision;
+use Period\WpKit\WordPress\Access\AssetUploadFingerprintGenerator;
+use Period\WpKit\WordPress\Access\AssetUploadInterceptor;
+use Period\WpKit\WordPress\Access\AssetUploadMoveProcessor;
+use Period\WpKit\WordPress\Access\AssetUploadPathResolver;
+use Period\WpKit\WordPress\Access\AssetUploadPipelineCoordinator;
+use Period\WpKit\WordPress\Access\AssetUploadPolicyInterface;
+use Period\WpKit\WordPress\Access\AssetUploadUrlRewriteProcessor;
+use Period\WpKit\WordPress\Access\AssetUrlRewriteStrategyInterface;
+use Period\WpKit\WordPress\Access\AttachmentFingerprintResolverInterface;
+use Period\WpKit\WordPress\Access\CallableAssetAccessSettingsRepository;
+use Period\WpKit\WordPress\Access\FilesystemInspectorInterface;
+use Period\WpKit\WordPress\Access\FilesystemOperatorInterface;
+use Period\WpKit\WordPress\Access\FilesystemRepairExecutor;
+use Period\WpKit\WordPress\Access\FilesystemRepairPlanner;
+use Period\WpKit\WordPress\Access\MediaLibraryProtectedColumnProvider;
+use Period\WpKit\WordPress\Access\ProtectedAssetPathStrategyInterface;
+use Period\WpKit\WordPress\Access\RequestContextFactoryInterface;
+use Period\WpKit\WordPress\Access\WordPressAssetAccessApplicationFactory;
+use Period\WpKit\WordPress\Access\WordPressAssetAccessController;
+use Period\WpKit\WordPress\Access\WordPressAssetAccessRuntimeInstaller;
+use Period\WpKit\WordPress\Access\WordPressAssetAccessSettingsMenuRegistrar;
+use Period\WpKit\WordPress\Access\WordPressAssetAccessSettingsPage;
+use Period\WpKit\WordPress\Access\WordPressAssetAccessSettingsSaveController;
+use Period\WpKit\WordPress\Access\WordPressAssetAccessSettingsSaveHookRegistrar;
+use Period\WpKit\WordPress\Access\WordPressAssetAttachmentDerivedFilterHookRegistrar;
+use Period\WpKit\WordPress\Access\WordPressAssetAttachmentEditFieldHookRegistrar;
+use Period\WpKit\WordPress\Access\WordPressAssetAttachmentMetaBridgeHookRegistrar;
+use Period\WpKit\WordPress\Access\WordPressAssetAttachmentUrlFilterHookRegistrar;
+use Period\WpKit\WordPress\Access\WordPressAssetUploadPipelineHookRegistrar;
+use Period\WpKit\WordPress\Access\WordPressMediaLibraryBulkActionHookRegistrar;
+use Period\WpKit\WordPress\Access\WordPressMediaLibraryProtectedColumnHookRegistrar;
 
 final class WordPressAssetAccessRuntimeInstallerTest extends TestCase
 {
@@ -166,6 +173,53 @@ final class WordPressAssetAccessRuntimeInstallerTest extends TestCase
                 return str_starts_with($path, '/protected/');
             }
         };
+    }
+
+    private function makeRepairAdminPostRegistrar(array &$order): AssetAccessRepairAdminPostRegistrar
+    {
+        return new AssetAccessRepairAdminPostRegistrar(
+            function () use (&$order): void {
+                $order[] = 'repair-admin-post';
+            },
+            new AssetAccessRepairAdminPostAction(
+                'period_asset_access_repair_execute',
+                new \Period\WpKit\WordPress\Access\AssetAccessRepairExecutionController(
+                    new FilesystemRepairPlanner(
+                        new class implements FilesystemInspectorInterface {
+                            public function exists(string $path): bool
+                            {
+                                return false;
+                            }
+
+                            public function isReadable(string $path): bool
+                            {
+                                return true;
+                            }
+
+                            public function isWritable(string $path): bool
+                            {
+                                return true;
+                            }
+                        },
+                        '/private-assets',
+                    ),
+                    new FilesystemRepairExecutor(new class implements FilesystemOperatorInterface {
+                        public function createDirectory(string $path): bool
+                        {
+                            return true;
+                        }
+
+                        public function setPermissions(string $path, int $mode): bool
+                        {
+                            return true;
+                        }
+                    }),
+                    static fn(string $nonce): bool => true,
+                    new AssetAccessRepairRequest(true, 'nonce', true),
+                ),
+                static fn(): string => '/redirect-target',
+            ),
+        );
     }
 
     /** @return array<string,mixed> */
@@ -555,6 +609,34 @@ final class WordPressAssetAccessRuntimeInstallerTest extends TestCase
         $this->assertContains('edit-field-filter', $order);
         $this->assertContains('settings-menu', $order);
         $this->assertContains('settings-save', $order);
+    }
+
+    public function testRuntimeInstallerRegistersRepairAdminPostRegistrar(): void
+    {
+        $order = [];
+        $installer = new WordPressAssetAccessRuntimeInstaller(
+            $this->makeFactory(),
+            function () use (&$order): void {
+                $order[] = 'request-access';
+            },
+            fn(): null => null,
+            fn(): string => '/wp-content/uploads/file.pdf',
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            $this->makeRepairAdminPostRegistrar($order),
+        );
+
+        $installer->install();
+
+        $this->assertContains('repair-admin-post', $order);
     }
 
     public function testRegisterOrderIsDeterministic(): void

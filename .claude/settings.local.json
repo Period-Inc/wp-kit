@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php *)",
+      "Bash(composer test *)",
+      "Bash(xargs cat *)",
+      "Bash(./vendor/bin/phpunit *)",
+      "Bash(./tools/period-wp-kit-agent/period-wp-kit-agent architecture *)",
+      "Bash(./tools/period-wp-kit-agent/period-wp-kit-agent context *)",
+      "Bash(/Users/agent/Documents/dev/period-wp-kit/tools/period-wp-kit-agent/period-wp-kit-agent impact *)",
+      "Bash(period-wp-kit-agent context *)",
+      "Bash(period-wp-kit-agent impact *)",
+      "Bash(period-wp-kit-agent roadmap *)",
+      "Bash(period-wp-kit-agent architecture *)"
+    ]
+  }
+}

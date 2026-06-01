@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AssetAttachmentMetaUpdater;
-use Period\WpFramework\WordPress\Access\AssetFileMoveResult;
-use Period\WpFramework\WordPress\Access\WordPressAssetAttachmentMetaHookRegistrar;
+use Period\WpKit\WordPress\Access\AssetAttachmentMetaUpdater;
+use Period\WpKit\WordPress\Access\AssetFileMoveResult;
+use Period\WpKit\WordPress\Access\WordPressAssetAttachmentMetaHookRegistrar;
 
 final class AssetAttachmentMetaUpdaterTest extends TestCase
 {

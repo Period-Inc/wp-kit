@@ -5,7 +5,7 @@
 MetaBox が保存したデータを統一的に読み書きするユーティリティです。WordPress がない環境では noop になります。
 
 ```php
-use Period\WpFramework\Infrastructure\WordPress\PostMetaManager;
+use Period\WpKit\Infrastructure\WordPress\PostMetaManager;
 
 $meta = new PostMetaManager();
 
@@ -36,7 +36,7 @@ if ($meta->has($postId, 'lead')) {
 ボタン・操作ラベルは `labels` 配列で指定します。内部の fallback は英語固定で、翻訳は呼び出し側で行います。
 
 ```php
-use Period\WpFramework\Infrastructure\WordPress\MetaBox;
+use Period\WpKit\Infrastructure\WordPress\MetaBox;
 
 new MetaBox([
     'id'       => 'sample',
@@ -69,10 +69,10 @@ new MetaBox([
 
 ### Translator との組み合わせ
 
-翻訳したい場合は `pwf()->translator()` を呼び出し側で使います。
+翻訳したい場合は `pwk()->translator()` を呼び出し側で使います。
 
 ```php
-$t = pwf()->translator();
+$t = pwk()->translator();
 
 new MetaBox([
     'id'       => 'sample',

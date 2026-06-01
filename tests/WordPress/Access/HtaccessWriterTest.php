@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\HtaccessWriteResult;
-use Period\WpFramework\WordPress\Access\HtaccessWriterInterface;
-use Period\WpFramework\WordPress\Access\NativeHtaccessWriter;
+use Period\WpKit\WordPress\Access\HtaccessWriteResult;
+use Period\WpKit\WordPress\Access\HtaccessWriterInterface;
+use Period\WpKit\WordPress\Access\NativeHtaccessWriter;
 
 final class HtaccessWriterTest extends TestCase
 {

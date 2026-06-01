@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress;
+namespace Period\WpKit\Tests\WordPress;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\StartHtmlRenderer;
-use Period\WpFramework\View\Element;
-use Period\WpFramework\View\RawHtml;
+use Period\WpKit\WordPress\StartHtmlRenderer;
+use Period\WpKit\View\Element;
+use Period\WpKit\View\RawHtml;
 
 final class StartHtmlRendererTest extends TestCase
 {

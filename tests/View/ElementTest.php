@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\View;
+namespace Period\WpKit\Tests\View;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\View\Element;
+use Period\WpKit\View\Element;
 
 final class ElementTest extends TestCase
 {
@@ -75,7 +75,7 @@ final class ElementTest extends TestCase
     {
         $result = Element::comment('debug');
 
-        $this->assertInstanceOf(\Period\WpFramework\View\RawHtml::class, $result);
+        $this->assertInstanceOf(\Period\WpKit\View\RawHtml::class, $result);
         $this->assertSame('<!-- debug -->', $result->render());
     }
 
@@ -83,7 +83,7 @@ final class ElementTest extends TestCase
     {
         $result = Element::cdata('var a = 1;');
 
-        $this->assertInstanceOf(\Period\WpFramework\View\RawHtml::class, $result);
+        $this->assertInstanceOf(\Period\WpKit\View\RawHtml::class, $result);
         $this->assertSame('<![CDATA[var a = 1;]]>', $result->render());
     }
 
@@ -195,7 +195,7 @@ final class ElementTest extends TestCase
     {
         $result = Element::p([], [
             'Before ',
-            new \Period\WpFramework\View\RawHtml('<strong>bold</strong>'),
+            new \Period\WpKit\View\RawHtml('<strong>bold</strong>'),
             ' after',
         ]);
 

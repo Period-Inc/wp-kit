@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AssetFileMoveResult;
-use Period\WpFramework\WordPress\Access\AssetFileMoverInterface;
-use Period\WpFramework\WordPress\Access\AssetUploadMoveProcessor;
-use Period\WpFramework\WordPress\Access\NativeAssetFileMover;
+use Period\WpKit\WordPress\Access\AssetFileMoveResult;
+use Period\WpKit\WordPress\Access\AssetFileMoverInterface;
+use Period\WpKit\WordPress\Access\AssetUploadMoveProcessor;
+use Period\WpKit\WordPress\Access\NativeAssetFileMover;
 
 final class AssetFileMoveTest extends TestCase
 {
@@ -62,7 +62,7 @@ final class AssetFileMoveTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->tmpDir = sys_get_temp_dir() . '/pwf_mover_test_' . uniqid();
+        $this->tmpDir = sys_get_temp_dir() . '/pwk_mover_test_' . uniqid();
         mkdir($this->tmpDir, 0755, true);
     }
 

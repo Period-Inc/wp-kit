@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AssetAttachmentMeta;
-use Period\WpFramework\WordPress\Access\AssetAttachmentMetaReader;
+use Period\WpKit\WordPress\Access\AssetAttachmentMeta;
+use Period\WpKit\WordPress\Access\AssetAttachmentMetaReader;
 
 final class AssetAttachmentMetaReaderTest extends TestCase
 {

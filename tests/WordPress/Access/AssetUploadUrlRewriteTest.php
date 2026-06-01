@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AssetUploadUrlRewriteProcessor;
-use Period\WpFramework\WordPress\Access\AssetUrlRewriteStrategyInterface;
-use Period\WpFramework\WordPress\Access\ProxyAssetUrlRewriteStrategy;
+use Period\WpKit\WordPress\Access\AssetUploadUrlRewriteProcessor;
+use Period\WpKit\WordPress\Access\AssetUrlRewriteStrategyInterface;
+use Period\WpKit\WordPress\Access\ProxyAssetUrlRewriteStrategy;
 
 final class AssetUploadUrlRewriteTest extends TestCase
 {

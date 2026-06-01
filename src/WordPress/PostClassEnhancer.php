@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\WordPress;
+namespace Period\WpKit\WordPress;
 
-use Period\WpFramework\Support\CssName;
+use Period\WpKit\Support\CssName;
 
 final class PostClassEnhancer
 {

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress;
+namespace Period\WpKit\Tests\WordPress;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Condition;
+use Period\WpKit\WordPress\Condition;
 
 final class ConditionTest extends TestCase
 {

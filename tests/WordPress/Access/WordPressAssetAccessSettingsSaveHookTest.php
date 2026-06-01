@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AssetAccessSettingsFormHandler;
-use Period\WpFramework\WordPress\Access\AssetAccessSettingsPageRenderer;
-use Period\WpFramework\WordPress\Access\AssetAccessSettingsRepositoryInterface;
-use Period\WpFramework\WordPress\Access\CallableAssetAccessSettingsRepository;
-use Period\WpFramework\WordPress\Access\WordPressAssetAccessSettingsPage;
-use Period\WpFramework\WordPress\Access\WordPressAssetAccessSettingsSaveController;
-use Period\WpFramework\WordPress\Access\WordPressAssetAccessSettingsSaveHookRegistrar;
+use Period\WpKit\WordPress\Access\AssetAccessSettingsFormHandler;
+use Period\WpKit\WordPress\Access\AssetAccessSettingsPageRenderer;
+use Period\WpKit\WordPress\Access\AssetAccessSettingsRepositoryInterface;
+use Period\WpKit\WordPress\Access\CallableAssetAccessSettingsRepository;
+use Period\WpKit\WordPress\Access\WordPressAssetAccessSettingsPage;
+use Period\WpKit\WordPress\Access\WordPressAssetAccessSettingsSaveController;
+use Period\WpKit\WordPress\Access\WordPressAssetAccessSettingsSaveHookRegistrar;
 
 final class WordPressAssetAccessSettingsSaveHookTest extends TestCase
 {

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AssetAccessHealthCheckInterface;
-use Period\WpFramework\WordPress\Access\AssetAccessHealthReporter;
-use Period\WpFramework\WordPress\Access\AssetAccessHealthSettingsSection;
-use Period\WpFramework\WordPress\Access\AssetAccessHealthStatus;
-use Period\WpFramework\WordPress\Access\AssetAccessHealthStatusRenderer;
+use Period\WpKit\WordPress\Access\AssetAccessHealthCheckInterface;
+use Period\WpKit\WordPress\Access\AssetAccessHealthReporter;
+use Period\WpKit\WordPress\Access\AssetAccessHealthSettingsSection;
+use Period\WpKit\WordPress\Access\AssetAccessHealthStatus;
+use Period\WpKit\WordPress\Access\AssetAccessHealthStatusRenderer;
 
 final class AssetAccessHealthStatusRendererTest extends TestCase
 {

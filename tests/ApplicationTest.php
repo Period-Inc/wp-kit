@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests;
+namespace Period\WpKit\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\Application;
-use Period\WpFramework\WordPress\SiteInfo;
+use Period\WpKit\Application;
+use Period\WpKit\WordPress\SiteInfo;
 
 final class ApplicationTest extends TestCase
 {

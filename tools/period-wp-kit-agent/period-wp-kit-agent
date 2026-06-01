@@ -30,7 +30,7 @@ switch ($cmd) {
     case 'grep':
         $q = $args[1] ?? '';
         if ($q === '') {
-            fwrite(STDERR, "Usage: period-wp-framework-agent grep <pattern>\n");
+            fwrite(STDERR, "Usage: period-wp-kit-agent grep <pattern>\n");
             exit(1);
         }
         echo run('cd ' . escapeshellarg(root()) . ' && rg -n ' . escapeshellarg($q) . ' src tests docs');
@@ -39,7 +39,7 @@ switch ($cmd) {
     case 'pack':
         $files = array_slice($args, 1);
         if (!$files) {
-            fwrite(STDERR, "Usage: period-wp-framework-agent pack <file> [file...]\n");
+            fwrite(STDERR, "Usage: period-wp-kit-agent pack <file> [file...]\n");
             exit(1);
         }
 
@@ -87,7 +87,7 @@ switch ($cmd) {
     case 'context':
         $topic = $args[1] ?? '';
         if ($topic === '') {
-            fwrite(STDERR, "Usage: period-wp-framework-agent context <topic>\n");
+            fwrite(STDERR, "Usage: period-wp-kit-agent context <topic>\n");
             exit(1);
         }
 
@@ -131,7 +131,7 @@ switch ($cmd) {
     case 'impact':
         $topic = $args[1] ?? '';
         if ($topic === '') {
-            fwrite(STDERR, "Usage: period-wp-framework-agent impact <topic>\n");
+            fwrite(STDERR, "Usage: period-wp-kit-agent impact <topic>\n");
             exit(1);
         }
 
@@ -185,16 +185,16 @@ MD,
 
     default:
         echo <<<TXT
-period-wp-framework-agent commands:
+period-wp-kit-agent commands:
 
-  period-wp-framework-agent scan
-  period-wp-framework-agent grep <pattern>
-  period-wp-framework-agent pack <file> [file...]
-  period-wp-framework-agent test
-  period-wp-framework-agent roadmap
-  period-wp-framework-agent architecture
-  period-wp-framework-agent context <topic>
-  period-wp-framework-agent impact <topic>
+  period-wp-kit-agent scan
+  period-wp-kit-agent grep <pattern>
+  period-wp-kit-agent pack <file> [file...]
+  period-wp-kit-agent test
+  period-wp-kit-agent roadmap
+  period-wp-kit-agent architecture
+  period-wp-kit-agent context <topic>
+  period-wp-kit-agent impact <topic>
 
 Available context topics: PostAssets
 Available impact topics: PostAssets

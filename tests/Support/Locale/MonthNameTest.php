@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\Support\Locale;
+namespace Period\WpKit\Tests\Support\Locale;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\Support\Locale\MonthName;
+use Period\WpKit\Support\Locale\MonthName;
 
 final class MonthNameTest extends TestCase
 {

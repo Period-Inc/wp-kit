@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Support;
+namespace Period\WpKit\Support;
 
-use Period\WpFramework\Support\Locale\WeekdayName;
+use Period\WpKit\Support\Locale\WeekdayName;
 
 final class Calendar
 {

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AssetAttachmentEditFieldRenderer;
-use Period\WpFramework\WordPress\Access\AssetAttachmentEditFieldSaver;
-use Period\WpFramework\WordPress\Access\AssetAttachmentMetaReader;
-use Period\WpFramework\WordPress\Access\WordPressAssetAttachmentEditFieldHookRegistrar;
+use Period\WpKit\WordPress\Access\AssetAttachmentEditFieldRenderer;
+use Period\WpKit\WordPress\Access\AssetAttachmentEditFieldSaver;
+use Period\WpKit\WordPress\Access\AssetAttachmentMetaReader;
+use Period\WpKit\WordPress\Access\WordPressAssetAttachmentEditFieldHookRegistrar;
 
 final class AssetAttachmentEditFieldTest extends TestCase
 {

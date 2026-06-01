@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\FilesystemInspectorInterface;
-use Period\WpFramework\WordPress\Access\WordPressAssetAccessApplicationFactory;
-use Period\WpFramework\WordPress\Access\WordPressAssetAccessBootstrapFactory;
-use Period\WpFramework\WordPress\Access\WordPressAssetAccessRuntimeDefaults;
-use Period\WpFramework\WordPress\Access\WordPressAssetAccessRuntimeInstaller;
+use Period\WpKit\WordPress\Access\FilesystemInspectorInterface;
+use Period\WpKit\WordPress\Access\WordPressAssetAccessApplicationFactory;
+use Period\WpKit\WordPress\Access\WordPressAssetAccessBootstrapFactory;
+use Period\WpKit\WordPress\Access\WordPressAssetAccessRuntimeDefaults;
+use Period\WpKit\WordPress\Access\WordPressAssetAccessRuntimeInstaller;
 
 final class WordPressAssetAccessBootstrapFactoryTest extends TestCase
 {

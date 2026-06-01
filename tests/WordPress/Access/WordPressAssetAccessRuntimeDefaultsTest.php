@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\NativeFilesystemInspector;
-use Period\WpFramework\WordPress\Access\WordPressAssetAccessRuntimeDefaults;
-use Period\WpFramework\WordPress\Access\WordPressAssetAccessRuntimeDefaultsFactory;
+use Period\WpKit\WordPress\Access\NativeFilesystemInspector;
+use Period\WpKit\WordPress\Access\WordPressAssetAccessRuntimeDefaults;
+use Period\WpKit\WordPress\Access\WordPressAssetAccessRuntimeDefaultsFactory;
 
 final class WordPressAssetAccessRuntimeDefaultsTest extends TestCase
 {

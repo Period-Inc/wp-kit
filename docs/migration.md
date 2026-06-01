@@ -49,19 +49,19 @@
 
 ### 2. title / site / document の新API
 
-v2 では `pwf()` に Template Tags が追加されました。
+v2 では `pwk()` に Template Tags が追加されました。
 
 ```php
 // タイトル取得
-echo pwf()->title();
+echo pwk()->title();
 
 // サイト情報
-$site = pwf()->site();
+$site = pwk()->site();
 echo $site->name();
 echo $site->url();
 
 // HTML ドキュメント生成
-echo pwf()->document($content, [
+echo pwk()->document($content, [
     'body_class'        => ['home'],
     'head_elements'     => ['<meta name="robots" content="noindex">'],
     'include_wp_head'   => true,

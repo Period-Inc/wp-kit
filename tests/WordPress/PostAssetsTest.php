@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress;
+namespace Period\WpKit\Tests\WordPress;
 
-use Period\WpFramework\WordPress\PostAssets;
-use Period\WpFramework\WordPress\PostMetaManager;
+use Period\WpKit\WordPress\PostAssets;
+use Period\WpKit\WordPress\PostMetaManager;
 use PHPUnit\Framework\TestCase;
 
 final class PostAssetsTest extends TestCase

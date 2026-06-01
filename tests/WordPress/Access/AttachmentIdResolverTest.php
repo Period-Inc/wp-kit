@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AttachmentIdResolverInterface;
-use Period\WpFramework\WordPress\Access\AttachmentMetaAssetStorageResolverAdapter;
-use Period\WpFramework\WordPress\Access\WordPressAttachmentIdResolver;
+use Period\WpKit\WordPress\Access\AttachmentIdResolverInterface;
+use Period\WpKit\WordPress\Access\AttachmentMetaAssetStorageResolverAdapter;
+use Period\WpKit\WordPress\Access\WordPressAttachmentIdResolver;
 
 final class AttachmentIdResolverTest extends TestCase
 {

@@ -14,14 +14,14 @@ No linting toolchain is configured.
 
 ## Architecture
 
-**Period WP Framework** is a WordPress utility library. All classes use `declare(strict_types=1)` and PSR-4 under the `Period\WpFramework` namespace.
+**Period WP Framework** is a WordPress utility library. All classes use `declare(strict_types=1)` and PSR-4 under the `Period\WpKit` namespace.
 
 ### Layer structure
 
 - **`src/Support/`** — WordPress-agnostic utilities (string, array, URL, HTTP, date, encoding, HTML template). No WordPress function calls here.
 - **`src/Infrastructure/WordPress/`** — WordPress-specific wrappers. Each class guards all WordPress calls with `function_exists()` / `class_exists()` so the code loads and tests pass without WordPress.
 - **`src/View/`** — HTML generation (`Element`, `RawHtml`, `Renderer`).
-- **`src/Application.php`** — Entry point; coordinates `ScriptStyleRegistrar`, `PostTypeRegistrar`, shortcodes, and class enhancers. Accessed via the `pwf()` singleton defined in `bootstrap.php`.
+- **`src/Application.php`** — Entry point; coordinates `ScriptStyleRegistrar`, `PostTypeRegistrar`, shortcodes, and class enhancers. Accessed via the `pwk()` singleton defined in `bootstrap.php`.
 
 ### Key classes
 

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress;
+namespace Period\WpKit\Tests\WordPress;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\ImageTagRenderer;
+use Period\WpKit\WordPress\ImageTagRenderer;
 
 final class ImageTagRendererTest extends TestCase
 {
@@ -48,7 +48,7 @@ PHP
 
     public function testImageRendererIsAliasOfImageTagRenderer(): void
     {
-        $imageRenderer = new \Period\WpFramework\WordPress\ImageRenderer();
+        $imageRenderer = new \Period\WpKit\WordPress\ImageRenderer();
 
         $this->assertInstanceOf(ImageTagRenderer::class, $imageRenderer);
     }

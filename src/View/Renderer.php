@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\View;
+namespace Period\WpKit\View;
 
 final class Renderer
 {

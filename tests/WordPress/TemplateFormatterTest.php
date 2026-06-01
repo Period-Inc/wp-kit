@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress;
+namespace Period\WpKit\Tests\WordPress;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\TemplateFormatter;
-use Period\WpFramework\Support\TemplateFormatter as BaseTemplateFormatter;
+use Period\WpKit\WordPress\TemplateFormatter;
+use Period\WpKit\Support\TemplateFormatter as BaseTemplateFormatter;
 
 final class TemplateFormatterTest extends TestCase
 {

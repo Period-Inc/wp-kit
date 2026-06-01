@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Support;
+namespace Period\WpKit\Support;
 
 use Masterminds\HTML5;
 use Symfony\Component\DomCrawler\Crawler;

@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AssetAttachmentMetaBridge;
-use Period\WpFramework\WordPress\Access\AssetAttachmentMetaUpdater;
-use Period\WpFramework\WordPress\Access\AssetFileMoveResult;
-use Period\WpFramework\WordPress\Access\AssetUploadFingerprintGenerator;
-use Period\WpFramework\WordPress\Access\AttachmentFingerprintResolverInterface;
-use Period\WpFramework\WordPress\Access\CallableAttachmentFingerprintResolver;
-use Period\WpFramework\WordPress\Access\WordPressAssetAttachmentMetaBridgeHookRegistrar;
+use Period\WpKit\WordPress\Access\AssetAttachmentMetaBridge;
+use Period\WpKit\WordPress\Access\AssetAttachmentMetaUpdater;
+use Period\WpKit\WordPress\Access\AssetFileMoveResult;
+use Period\WpKit\WordPress\Access\AssetUploadFingerprintGenerator;
+use Period\WpKit\WordPress\Access\AttachmentFingerprintResolverInterface;
+use Period\WpKit\WordPress\Access\CallableAttachmentFingerprintResolver;
+use Period\WpKit\WordPress\Access\WordPressAssetAttachmentMetaBridgeHookRegistrar;
 
 final class AssetAttachmentMetaBridgeTest extends TestCase
 {

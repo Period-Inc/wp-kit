@@ -2,22 +2,22 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AssetFileMoveResult;
-use Period\WpFramework\WordPress\Access\AssetFileMoverInterface;
-use Period\WpFramework\WordPress\Access\AssetRequestContext;
-use Period\WpFramework\WordPress\Access\AssetUploadInterceptor;
-use Period\WpFramework\WordPress\Access\AssetUploadMoveProcessor;
-use Period\WpFramework\WordPress\Access\AssetUploadPathResolver;
-use Period\WpFramework\WordPress\Access\AssetUploadPipelineCoordinator;
-use Period\WpFramework\WordPress\Access\AssetUploadUrlRewriteProcessor;
-use Period\WpFramework\WordPress\Access\DefaultProtectedAssetPathStrategy;
-use Period\WpFramework\WordPress\Access\ProxyAssetUrlRewriteStrategy;
-use Period\WpFramework\WordPress\Access\RoleBasedAssetUploadPolicy;
-use Period\WpFramework\WordPress\Access\WordPressAssetUploadPipelineHookRegistrar;
+use Period\WpKit\WordPress\Access\AssetFileMoveResult;
+use Period\WpKit\WordPress\Access\AssetFileMoverInterface;
+use Period\WpKit\WordPress\Access\AssetRequestContext;
+use Period\WpKit\WordPress\Access\AssetUploadInterceptor;
+use Period\WpKit\WordPress\Access\AssetUploadMoveProcessor;
+use Period\WpKit\WordPress\Access\AssetUploadPathResolver;
+use Period\WpKit\WordPress\Access\AssetUploadPipelineCoordinator;
+use Period\WpKit\WordPress\Access\AssetUploadUrlRewriteProcessor;
+use Period\WpKit\WordPress\Access\DefaultProtectedAssetPathStrategy;
+use Period\WpKit\WordPress\Access\ProxyAssetUrlRewriteStrategy;
+use Period\WpKit\WordPress\Access\RoleBasedAssetUploadPolicy;
+use Period\WpKit\WordPress\Access\WordPressAssetUploadPipelineHookRegistrar;
 
 final class WordPressAssetUploadPipelineHookRegistrarTest extends TestCase
 {

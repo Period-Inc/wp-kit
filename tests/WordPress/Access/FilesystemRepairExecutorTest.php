@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AssetAccessRepairAction;
-use Period\WpFramework\WordPress\Access\AssetAccessRepairExecutionResult;
-use Period\WpFramework\WordPress\Access\AssetAccessRepairPlan;
-use Period\WpFramework\WordPress\Access\FilesystemOperatorInterface;
-use Period\WpFramework\WordPress\Access\FilesystemRepairExecutor;
-use Period\WpFramework\WordPress\Access\NativeFilesystemOperator;
+use Period\WpKit\WordPress\Access\AssetAccessRepairAction;
+use Period\WpKit\WordPress\Access\AssetAccessRepairExecutionResult;
+use Period\WpKit\WordPress\Access\AssetAccessRepairPlan;
+use Period\WpKit\WordPress\Access\FilesystemOperatorInterface;
+use Period\WpKit\WordPress\Access\FilesystemRepairExecutor;
+use Period\WpKit\WordPress\Access\NativeFilesystemOperator;
 
 final class FilesystemRepairExecutorTest extends TestCase
 {
@@ -90,7 +90,7 @@ final class FilesystemRepairExecutorTest extends TestCase
 
     public function testNativeFilesystemOperatorCreatesDirectory(): void
     {
-        $path = sys_get_temp_dir() . '/pwf-access-repair-' . bin2hex(random_bytes(6));
+        $path = sys_get_temp_dir() . '/pwk-access-repair-' . bin2hex(random_bytes(6));
         $operator = new NativeFilesystemOperator();
 
         try {

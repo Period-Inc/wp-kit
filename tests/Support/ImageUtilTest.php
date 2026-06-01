@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\Support;
+namespace Period\WpKit\Tests\Support;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\Support\ImageUtil;
+use Period\WpKit\Support\ImageUtil;
 
 final class ImageUtilTest extends TestCase
 {

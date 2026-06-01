@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\ApacheDirectAccessDenyRuleGenerator;
-use Period\WpFramework\WordPress\Access\DirectAccessProtectionStrategy;
-use Period\WpFramework\WordPress\Access\NginxDirectAccessDenyRuleGenerator;
+use Period\WpKit\WordPress\Access\ApacheDirectAccessDenyRuleGenerator;
+use Period\WpKit\WordPress\Access\DirectAccessProtectionStrategy;
+use Period\WpKit\WordPress\Access\NginxDirectAccessDenyRuleGenerator;
 
 final class DirectAccessProtectionTest extends TestCase
 {

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\SignedAssetToken;
-use Period\WpFramework\WordPress\Access\SignedAssetUrlGenerator;
-use Period\WpFramework\WordPress\Access\SignedAssetUrlValidator;
+use Period\WpKit\WordPress\Access\SignedAssetToken;
+use Period\WpKit\WordPress\Access\SignedAssetUrlGenerator;
+use Period\WpKit\WordPress\Access\SignedAssetUrlValidator;
 
 final class SignedAssetUrlTest extends TestCase
 {

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AssetDeliveryResult;
-use Period\WpFramework\WordPress\Access\AssetResponseEmitterInterface;
-use Period\WpFramework\WordPress\Access\HttpAssetResponseEmitter;
-use Period\WpFramework\WordPress\Access\HttpEmitterInterface;
-use Period\WpFramework\WordPress\Access\MemoryHttpEmitter;
-use Period\WpFramework\WordPress\Access\NativePhpHttpEmitter;
+use Period\WpKit\WordPress\Access\AssetDeliveryResult;
+use Period\WpKit\WordPress\Access\AssetResponseEmitterInterface;
+use Period\WpKit\WordPress\Access\HttpAssetResponseEmitter;
+use Period\WpKit\WordPress\Access\HttpEmitterInterface;
+use Period\WpKit\WordPress\Access\MemoryHttpEmitter;
+use Period\WpKit\WordPress\Access\NativePhpHttpEmitter;
 
 final class HttpAssetResponseEmitterTest extends TestCase
 {

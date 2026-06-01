@@ -22,7 +22,7 @@ assets/js/period-wp-metabox.js
 
 ```php
 add_filter('period_wp_metabox_js_url', function (): string {
-    return get_stylesheet_directory_uri() . '/vendor/period/wp-framework/assets/js/period-wp-metabox.js';
+    return get_stylesheet_directory_uri() . '/vendor/period/wp-kit/assets/js/period-wp-metabox.js';
 });
 ```
 

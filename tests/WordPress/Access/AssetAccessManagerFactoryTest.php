@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AssetAccessManagerFactory;
-use Period\WpFramework\WordPress\Access\AssetAccessPolicyFactory;
-use Period\WpFramework\WordPress\Access\AssetAccessSettings;
-use Period\WpFramework\WordPress\Access\AssetAccessSettingsRepositoryInterface;
-use Period\WpFramework\WordPress\Access\AssetRequestContext;
-use Period\WpFramework\WordPress\Access\CallableAssetAccessSettingsRepository;
+use Period\WpKit\WordPress\Access\AssetAccessManagerFactory;
+use Period\WpKit\WordPress\Access\AssetAccessPolicyFactory;
+use Period\WpKit\WordPress\Access\AssetAccessSettings;
+use Period\WpKit\WordPress\Access\AssetAccessSettingsRepositoryInterface;
+use Period\WpKit\WordPress\Access\AssetRequestContext;
+use Period\WpKit\WordPress\Access\CallableAssetAccessSettingsRepository;
 
 final class AssetAccessManagerFactoryTest extends TestCase
 {
@@ -101,7 +101,7 @@ final class AssetAccessManagerFactoryTest extends TestCase
     {
         $manager = $this->makeFactory()->create();
 
-        $this->assertInstanceOf(\Period\WpFramework\WordPress\Access\AssetAccessManager::class, $manager);
+        $this->assertInstanceOf(\Period\WpKit\WordPress\Access\AssetAccessManager::class, $manager);
     }
 
     public function testCreateReturnsNewInstanceEachTime(): void

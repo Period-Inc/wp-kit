@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AssetRequestContext;
-use Period\WpFramework\WordPress\Access\AssetUploadDecision;
-use Period\WpFramework\WordPress\Access\AssetUploadInterceptor;
-use Period\WpFramework\WordPress\Access\AssetUploadPathResolver;
-use Period\WpFramework\WordPress\Access\AssetUploadPolicyInterface;
-use Period\WpFramework\WordPress\Access\DefaultProtectedAssetPathStrategy;
-use Period\WpFramework\WordPress\Access\WordPressAssetUploadHookRegistrar;
+use Period\WpKit\WordPress\Access\AssetRequestContext;
+use Period\WpKit\WordPress\Access\AssetUploadDecision;
+use Period\WpKit\WordPress\Access\AssetUploadInterceptor;
+use Period\WpKit\WordPress\Access\AssetUploadPathResolver;
+use Period\WpKit\WordPress\Access\AssetUploadPolicyInterface;
+use Period\WpKit\WordPress\Access\DefaultProtectedAssetPathStrategy;
+use Period\WpKit\WordPress\Access\WordPressAssetUploadHookRegistrar;
 
 final class AssetUploadHookTest extends TestCase
 {

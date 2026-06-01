@@ -7,7 +7,7 @@
 ## HookRegistrar
 
 ```php
-use Period\WpFramework\Infrastructure\WordPress\HookRegistrar;
+use Period\WpKit\Infrastructure\WordPress\HookRegistrar;
 
 $hooks = new HookRegistrar();
 
@@ -34,7 +34,7 @@ $hooks
 `period_wp_document_title` フィルターでタイトルを変更する例:
 
 ```php
-use Period\WpFramework\Infrastructure\WordPress\HookRegistrar;
+use Period\WpKit\Infrastructure\WordPress\HookRegistrar;
 
 (new HookRegistrar())->filter('period_wp_document_title', function (string $title): string {
     return $title . ' | My Site';
@@ -48,7 +48,7 @@ use Period\WpFramework\Infrastructure\WordPress\HookRegistrar;
 `ShortcodeRegistrar` は `HookRegistrar` を使って `[document]` / `[title]` / `[site_name]` を登録する便利クラスです。
 
 ```php
-use Period\WpFramework\Infrastructure\WordPress\ShortcodeRegistrar;
+use Period\WpKit\Infrastructure\WordPress\ShortcodeRegistrar;
 
 (new ShortcodeRegistrar())->register();
 ```

@@ -12,10 +12,10 @@ require_once __DIR__ . '/src/Infrastructure/ShortcodeRegistrar.php';
 require_once __DIR__ . '/src/Support/ArgsResolver.php';
 require_once __DIR__ . '/src/View/Renderer.php';
 
-use Period\WpFramework\Application;
+use Period\WpKit\Application;
 
-if (!function_exists('pwf')) {
-    function pwf(): Application
+if (!function_exists('pwk')) {
+    function pwk(): Application
     {
         static $instance = null;
 

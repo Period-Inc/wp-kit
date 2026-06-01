@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress;
+namespace Period\WpKit\Tests\WordPress;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\MetaBox;
-use Period\WpFramework\WordPress\PostAssets;
-use Period\WpFramework\WordPress\PostAssetsCompileResult;
-use Period\WpFramework\WordPress\PostAssetsCompileService;
-use Period\WpFramework\WordPress\PostAssetsCompilerInterface;
-use Period\WpFramework\WordPress\PostMetaManager;
+use Period\WpKit\WordPress\MetaBox;
+use Period\WpKit\WordPress\PostAssets;
+use Period\WpKit\WordPress\PostAssetsCompileResult;
+use Period\WpKit\WordPress\PostAssetsCompileService;
+use Period\WpKit\WordPress\PostAssetsCompilerInterface;
+use Period\WpKit\WordPress\PostMetaManager;
 
 final class MetaBoxTest extends TestCase
 {

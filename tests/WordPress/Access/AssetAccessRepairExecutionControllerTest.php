@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AssetAccessRepairAction;
-use Period\WpFramework\WordPress\Access\AssetAccessRepairExecutionController;
-use Period\WpFramework\WordPress\Access\AssetAccessRepairExecutionRenderer;
-use Period\WpFramework\WordPress\Access\AssetAccessRepairRequest;
-use Period\WpFramework\WordPress\Access\FilesystemInspectorInterface;
-use Period\WpFramework\WordPress\Access\FilesystemOperatorInterface;
-use Period\WpFramework\WordPress\Access\FilesystemRepairExecutor;
-use Period\WpFramework\WordPress\Access\FilesystemRepairPlanner;
+use Period\WpKit\WordPress\Access\AssetAccessRepairAction;
+use Period\WpKit\WordPress\Access\AssetAccessRepairExecutionController;
+use Period\WpKit\WordPress\Access\AssetAccessRepairExecutionRenderer;
+use Period\WpKit\WordPress\Access\AssetAccessRepairRequest;
+use Period\WpKit\WordPress\Access\FilesystemInspectorInterface;
+use Period\WpKit\WordPress\Access\FilesystemOperatorInterface;
+use Period\WpKit\WordPress\Access\FilesystemRepairExecutor;
+use Period\WpKit\WordPress\Access\FilesystemRepairPlanner;
 
 final class AssetAccessRepairExecutionControllerTest extends TestCase
 {
@@ -96,7 +96,7 @@ final class AssetAccessRepairExecutionControllerTest extends TestCase
     public function testRendererEscapesOutput(): void
     {
         $html = (new AssetAccessRepairExecutionRenderer())->render([
-            new \Period\WpFramework\WordPress\Access\AssetAccessRepairExecutionResult(
+            new \Period\WpKit\WordPress\Access\AssetAccessRepairExecutionResult(
                 false,
                 '"><script>alert(1)</script>',
                 '/tmp/"><script>alert(2)</script>',

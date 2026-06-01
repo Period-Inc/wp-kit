@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\WordPress;
+namespace Period\WpKit\WordPress;
 
 use ScssPhp\ScssPhp\Compiler;
 use Throwable;

@@ -3,7 +3,7 @@
 ## 基本的な使い方
 
 ```php
-use Period\WpFramework\Infrastructure\WordPress\MetaBox;
+use Period\WpKit\Infrastructure\WordPress\MetaBox;
 
 $box = new MetaBox([
     'id'        => 'my_box',

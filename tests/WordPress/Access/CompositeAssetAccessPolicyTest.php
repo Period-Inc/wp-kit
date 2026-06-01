@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AssetAccessPolicyInterface;
-use Period\WpFramework\WordPress\Access\AssetAccessResult;
-use Period\WpFramework\WordPress\Access\AssetRequestContext;
-use Period\WpFramework\WordPress\Access\CompositeAssetAccessPolicy;
-use Period\WpFramework\WordPress\Access\CompositeMode;
+use Period\WpKit\WordPress\Access\AssetAccessPolicyInterface;
+use Period\WpKit\WordPress\Access\AssetAccessResult;
+use Period\WpKit\WordPress\Access\AssetRequestContext;
+use Period\WpKit\WordPress\Access\CompositeAssetAccessPolicy;
+use Period\WpKit\WordPress\Access\CompositeMode;
 
 final class CompositeAssetAccessPolicyTest extends TestCase
 {

@@ -1,41 +1,41 @@
-# period-wp-framework
+# period-wp-kit
 
 WordPress のテーマ・プラグイン開発向け軽量ライブラリ。MetaBox、カスタム投稿タイプ、スクリプト/スタイル管理、HTML生成などの定型処理をまとめる。
 
-- namespace: `Period\WpFramework`
-- エントリポイント: `pwf()`
+- namespace: `Period\WpKit`
+- エントリポイント: `pwk()`
 - WordPress 依存は `src/Infrastructure/WordPress/` に閉じている
 - WordPress 非依存ユーティリティは `src/Support/` に属する
 
 ## セットアップ
 
 ```bash
-composer require period/wp-framework
+composer require period/wp-kit
 ```
 
 ```php
 require_once __DIR__ . '/vendor/autoload.php';
-require_once __DIR__ . '/vendor/period/wp-framework/bootstrap.php';
-$app = pwf();
+require_once __DIR__ . '/vendor/period/wp-kit/bootstrap.php';
+$app = pwk();
 ```
 
-## 基本使用（pwf）
+## 基本使用（pwk）
 
 ```php
 // HTML ドキュメント生成
-echo pwf()->document('<h1>Hello</h1>');
+echo pwk()->document('<h1>Hello</h1>');
 
 // ページタイトル
-echo pwf()->title();
+echo pwk()->title();
 
 // サイト情報
-echo pwf()->site()->name();
+echo pwk()->site()->name();
 ```
 
 ## HTML レンダリング
 
 ```php
-echo pwf()->document('<main>...</main>', [
+echo pwk()->document('<main>...</main>', [
     'body_class'        => ['home'],
     'head_elements'     => ['<meta name="description" content="説明">'],
     'include_wp_head'   => true,
@@ -48,7 +48,7 @@ echo pwf()->document('<main>...</main>', [
 `HookRegistrar` は `add_action` / `add_filter` / `add_shortcode` を統一的に登録する基盤です。WordPress がない環境では noop になります。
 
 ```php
-use Period\WpFramework\Infrastructure\WordPress\HookRegistrar;
+use Period\WpKit\Infrastructure\WordPress\HookRegistrar;
 
 $hooks = new HookRegistrar();
 $hooks
@@ -60,7 +60,7 @@ $hooks
 ショートコード登録には `ShortcodeRegistrar` も使えます。
 
 ```php
-use Period\WpFramework\Infrastructure\WordPress\ShortcodeRegistrar;
+use Period\WpKit\Infrastructure\WordPress\ShortcodeRegistrar;
 
 (new ShortcodeRegistrar())->register(); // [document] [title] [site_name]
 ```
@@ -68,8 +68,8 @@ use Period\WpFramework\Infrastructure\WordPress\ShortcodeRegistrar;
 ## データ取得（SiteInfo / TitleResolver）
 
 ```php
-use Period\WpFramework\Infrastructure\WordPress\SiteInfo;
-use Period\WpFramework\Infrastructure\WordPress\TitleResolver;
+use Period\WpKit\Infrastructure\WordPress\SiteInfo;
+use Period\WpKit\Infrastructure\WordPress\TitleResolver;
 
 $info     = new SiteInfo();
 $resolver = new TitleResolver($info);
@@ -81,7 +81,7 @@ $resolver->siteTitle();  // "タイトル | サイト名"
 ## MetaBox
 
 ```php
-pwf()->posts()
+pwk()->posts()
     ->register('news', ['label' => 'ニュース', 'menu_icon' => 'dashicons-media-text'])
     ->metaBox([
         'id'     => 'news_detail',
@@ -106,9 +106,9 @@ pwf()->posts()
 ## ユーティリティ（Support）
 
 ```php
-use Period\WpFramework\Support\TemplateFormatter;
-use Period\WpFramework\Support\CssName;
-use Period\WpFramework\Support\ImageUtil;
+use Period\WpKit\Support\TemplateFormatter;
+use Period\WpKit\Support\CssName;
+use Period\WpKit\Support\ImageUtil;
 
 // {{ key }} 置換（WordPress 非依存）
 (new TemplateFormatter())->format('{{ title }} | {{ site }}', ['title' => 'About', 'site' => 'My Site']);
@@ -125,14 +125,14 @@ ImageUtil::orientation(1920, 1080); // → "landscape"
 `Translator` はテンプレート層・呼び出し側で使います。内部ロジックへの注入は行いません。
 
 ```php
-$t = pwf()->translator();
-echo $t->html('Save'); // esc_html__('Save', 'period-wp-framework')
+$t = pwk()->translator();
+echo $t->html('Save'); // esc_html__('Save', 'period-wp-kit')
 ```
 
 MetaBox のラベルを翻訳したい場合は呼び出し側で `labels` に渡します。
 
 ```php
-$t = pwf()->translator();
+$t = pwk()->translator();
 new MetaBox([
     'id'     => 'sample',
     'post_type' => 'post',
@@ -157,7 +157,7 @@ new MetaBox([
 - [docs/usage-body-renderer.md](docs/usage-body-renderer.md) — BodyRenderer（body タグ生成）
 - [docs/usage-document-renderer.md](docs/usage-document-renderer.md) — DocumentRenderer（完全な HTML ドキュメント生成）
 - [docs/usage-hooks.md](docs/usage-hooks.md) — HookRegistrar / ShortcodeRegistrar（action / filter / shortcode 登録）
-- [docs/usage-template-tags.md](docs/usage-template-tags.md) — Template Tags（pwf()->title() / site() / document()）
+- [docs/usage-template-tags.md](docs/usage-template-tags.md) — Template Tags（pwk()->title() / site() / document()）
 - [docs/migration.md](docs/migration.md) — v1 → v2 移行ガイド・非推奨項目一覧
 - [docs/design-decisions.md](docs/design-decisions.md) — 設計判断の記録
 - [docs/testing.md](docs/testing.md) — テスト方針・モック構成

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\WordPress\Access;
+namespace Period\WpKit\WordPress\Access;
 
 final class WordPressAssetAccessRuntimeInstaller
 {
@@ -35,6 +35,7 @@ final class WordPressAssetAccessRuntimeInstaller
         private readonly ?WordPressAssetAccessSettingsMenuRegistrar $settingsMenuRegistrar = null,
         private readonly ?WordPressAssetAccessSettingsSaveHookRegistrar $settingsSaveHookRegistrar = null,
         private readonly ?AssetAccessHealthReporter $healthReporter = null,
+        private readonly ?AssetAccessRepairAdminPostRegistrar $repairAdminPostRegistrar = null,
     ) {
         $this->addAction          = $addAction;
         $this->addFilter          = $addFilter;
@@ -59,6 +60,7 @@ final class WordPressAssetAccessRuntimeInstaller
         $this->attachmentEditFieldHookRegistrar?->register();
         $this->settingsMenuRegistrar?->register();
         $this->settingsSaveHookRegistrar?->register();
+        $this->repairAdminPostRegistrar?->register();
     }
 
     public function healthReport(): array

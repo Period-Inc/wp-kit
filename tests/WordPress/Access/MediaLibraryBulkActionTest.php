@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AssetBulkProtectionActionProvider;
-use Period\WpFramework\WordPress\Access\AssetBulkProtectionProcessor;
-use Period\WpFramework\WordPress\Access\AssetBulkProtectionResult;
-use Period\WpFramework\WordPress\Access\WordPressMediaLibraryBulkActionHookRegistrar;
+use Period\WpKit\WordPress\Access\AssetBulkProtectionActionProvider;
+use Period\WpKit\WordPress\Access\AssetBulkProtectionProcessor;
+use Period\WpKit\WordPress\Access\AssetBulkProtectionResult;
+use Period\WpKit\WordPress\Access\WordPressMediaLibraryBulkActionHookRegistrar;
 
 final class MediaLibraryBulkActionTest extends TestCase
 {

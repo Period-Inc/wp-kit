@@ -5,7 +5,7 @@
 ### 使用例
 
 ```php
-use Period\WpFramework\Infrastructure\WordPress\PageNavigationRenderer;
+use Period\WpKit\Infrastructure\WordPress\PageNavigationRenderer;
 
 $renderer = new PageNavigationRenderer();
 echo $renderer->render([

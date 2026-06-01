@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress;
+namespace Period\WpKit\Tests\WordPress;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\SiteInfo;
+use Period\WpKit\WordPress\SiteInfo;
 
 final class SiteInfoTest extends TestCase
 {

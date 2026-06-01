@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\WordPress\Access;
+namespace Period\WpKit\WordPress\Access;
 
 final class WordPressAssetAccessApplicationFactory
 {
@@ -59,6 +59,10 @@ final class WordPressAssetAccessApplicationFactory
         private readonly ?FilesystemInspectorInterface $filesystemInspector = null,
         private readonly ?string $privateAssetRoot = null,
         private readonly mixed $nonceField = null,
+        private readonly ?FilesystemOperatorInterface $repairFilesystemOperator = null,
+        private readonly mixed $repairNonceVerifier = null,
+        private readonly ?AssetAccessRepairRequest $repairRequest = null,
+        private readonly mixed $repairRedirectUrlResolver = null,
     ) {
         $this->addAction      = $addAction      ?? static fn(mixed ...$args): null => null;
         $this->addFilter      = $addFilter      ?? static fn(mixed ...$args): null => null;
@@ -125,6 +129,7 @@ final class WordPressAssetAccessApplicationFactory
             $this->createSettingsMenuRegistrar(),
             $this->createSettingsSaveHookRegistrar(),
             $this->createHealthReporter(),
+            $this->createRepairAdminPostRegistrar(),
         );
     }
 
@@ -281,6 +286,32 @@ final class WordPressAssetAccessApplicationFactory
         );
     }
 
+    public function createRepairAdminPostAction(): ?AssetAccessRepairAdminPostAction
+    {
+        $controller = $this->createRepairExecutionController();
+
+        if ($controller === null || !is_callable($this->repairRedirectUrlResolver)) {
+            return null;
+        }
+
+        return new AssetAccessRepairAdminPostAction(
+            'period_asset_access_repair_execute',
+            $controller,
+            $this->repairRedirectUrlResolver,
+        );
+    }
+
+    public function createRepairAdminPostRegistrar(): ?AssetAccessRepairAdminPostRegistrar
+    {
+        $action = $this->createRepairAdminPostAction();
+
+        if ($action === null) {
+            return null;
+        }
+
+        return new AssetAccessRepairAdminPostRegistrar($this->addAction, $action);
+    }
+
     private function createSettingsPage(): WordPressAssetAccessSettingsPage
     {
         return new WordPressAssetAccessSettingsPage(
@@ -292,6 +323,28 @@ final class WordPressAssetAccessApplicationFactory
             $this->createHealthSettingsSection(),
             $this->createRepairSection(),
             repairNonceFieldRenderer: $this->createRepairNonceFieldRenderer(),
+        );
+    }
+
+    private function createRepairExecutionController(): ?AssetAccessRepairExecutionController
+    {
+        $privateAssetRoot = $this->privateAssetRoot();
+
+        if (
+            $this->filesystemInspector === null
+            || $privateAssetRoot === null
+            || $this->repairFilesystemOperator === null
+            || !is_callable($this->repairNonceVerifier)
+            || $this->repairRequest === null
+        ) {
+            return null;
+        }
+
+        return new AssetAccessRepairExecutionController(
+            new FilesystemRepairPlanner($this->filesystemInspector, $privateAssetRoot),
+            new FilesystemRepairExecutor($this->repairFilesystemOperator),
+            $this->repairNonceVerifier,
+            $this->repairRequest,
         );
     }
 

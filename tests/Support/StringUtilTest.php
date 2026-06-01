@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\Support;
+namespace Period\WpKit\Tests\Support;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\Support\StringUtil;
+use Period\WpKit\Support\StringUtil;
 
 final class StringUtilTest extends TestCase
 {

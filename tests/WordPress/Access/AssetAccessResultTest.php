@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AssetAccessResult;
+use Period\WpKit\WordPress\Access\AssetAccessResult;
 
 final class AssetAccessResultTest extends TestCase
 {

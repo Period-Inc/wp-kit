@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress;
+namespace Period\WpKit\Tests\WordPress;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\PostAssets;
-use Period\WpFramework\WordPress\PostAssetsRenderer;
-use Period\WpFramework\WordPress\PostMetaManager;
-use Period\WpFramework\WordPress\ScriptStyleRegistrar;
+use Period\WpKit\WordPress\PostAssets;
+use Period\WpKit\WordPress\PostAssetsRenderer;
+use Period\WpKit\WordPress\PostMetaManager;
+use Period\WpKit\WordPress\ScriptStyleRegistrar;
 use ReflectionClass;
 
 class PostAssetsRendererTest extends TestCase

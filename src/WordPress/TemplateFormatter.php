@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\WordPress;
+namespace Period\WpKit\WordPress;
 
-use Period\WpFramework\Support\TemplateFormatter as BaseTemplateFormatter;
+use Period\WpKit\Support\TemplateFormatter as BaseTemplateFormatter;
 
 /**
- * @deprecated Use Period\WpFramework\Support\TemplateFormatter instead.
+ * @deprecated Use Period\WpKit\Support\TemplateFormatter instead.
  *             apply_filters support has been moved to the call site.
  */
 final class TemplateFormatter extends BaseTemplateFormatter

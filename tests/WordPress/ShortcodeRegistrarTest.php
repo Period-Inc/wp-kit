@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress;
+namespace Period\WpKit\Tests\WordPress;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\ShortcodeRegistrar;
+use Period\WpKit\WordPress\ShortcodeRegistrar;
 
 final class ShortcodeRegistrarTest extends TestCase
 {

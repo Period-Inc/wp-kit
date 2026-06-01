@@ -4,7 +4,7 @@
 
 **Status:** Done
 
-- Application singleton (`pwf()`)
+- Application singleton (`pwk()`)
 - HookRegistrar, ShortcodeRegistrar
 - ScriptStyleRegistrar (assets)
 - PostTypeRegistrar + MetaBox
@@ -344,7 +344,7 @@ DONE:
 
 ---
 
-### DONE: period-wp-framework-agent semantic tooling
+### DONE: period-wp-kit-agent semantic tooling
 
 Commands:
 

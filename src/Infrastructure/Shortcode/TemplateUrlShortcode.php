@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Infrastructure\Shortcode;
+namespace Period\WpKit\Infrastructure\Shortcode;
 
 final class TemplateUrlShortcode implements ShortcodeInterface
 {

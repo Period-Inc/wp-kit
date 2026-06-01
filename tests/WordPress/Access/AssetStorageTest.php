@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AssetStorageInterface;
-use Period\WpFramework\WordPress\Access\AssetStorageItem;
-use Period\WpFramework\WordPress\Access\InMemoryAssetStorage;
+use Period\WpKit\WordPress\Access\AssetStorageInterface;
+use Period\WpKit\WordPress\Access\AssetStorageItem;
+use Period\WpKit\WordPress\Access\InMemoryAssetStorage;
 
 final class AssetStorageTest extends TestCase
 {

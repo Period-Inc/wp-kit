@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Infrastructure\Shortcode;
+namespace Period\WpKit\Infrastructure\Shortcode;
 
-use Period\WpFramework\Infrastructure\Shortcode\ShortcodeInterface;
-use Period\WpFramework\Support\HtmlDocument;
-use Period\WpFramework\Support\HtmlTemplate;
+use Period\WpKit\Infrastructure\Shortcode\ShortcodeInterface;
+use Period\WpKit\Support\HtmlDocument;
+use Period\WpKit\Support\HtmlTemplate;
 
 final class FetchTitleShortcode implements ShortcodeInterface
 {

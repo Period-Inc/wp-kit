@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress;
+namespace Period\WpKit\Tests\WordPress;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\RelationDefinition;
+use Period\WpKit\WordPress\RelationDefinition;
 
 final class RelationDefinitionTest extends TestCase
 {

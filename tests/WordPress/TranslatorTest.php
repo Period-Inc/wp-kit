@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress;
+namespace Period\WpKit\Tests\WordPress;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Translator;
+use Period\WpKit\WordPress\Translator;
 
 final class TranslatorTest extends TestCase
 {
@@ -87,10 +87,10 @@ final class TranslatorTest extends TestCase
         $this->assertSame('my-plugin', $translator->domain());
     }
 
-    public function testDefaultDomainIsPeriodWpFramework(): void
+    public function testDefaultDomainIsPeriodWpKit(): void
     {
         $translator = new Translator();
 
-        $this->assertSame('period-wp-framework', $translator->domain());
+        $this->assertSame('period-wp-kit', $translator->domain());
     }
 }

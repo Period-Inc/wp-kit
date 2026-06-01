@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Support\Locale;
+namespace Period\WpKit\Support\Locale;
 
 final class MonthName
 {

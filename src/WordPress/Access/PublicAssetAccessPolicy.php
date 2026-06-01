@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\WordPress\Access;
+namespace Period\WpKit\WordPress\Access;
 
 final class PublicAssetAccessPolicy implements AssetAccessPolicyInterface
 {

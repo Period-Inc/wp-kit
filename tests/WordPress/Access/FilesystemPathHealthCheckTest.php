@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AssetAccessHealthStatus;
-use Period\WpFramework\WordPress\Access\FilesystemInspectorInterface;
-use Period\WpFramework\WordPress\Access\FilesystemPathHealthCheck;
-use Period\WpFramework\WordPress\Access\NativeFilesystemInspector;
+use Period\WpKit\WordPress\Access\AssetAccessHealthStatus;
+use Period\WpKit\WordPress\Access\FilesystemInspectorInterface;
+use Period\WpKit\WordPress\Access\FilesystemPathHealthCheck;
+use Period\WpKit\WordPress\Access\NativeFilesystemInspector;
 
 final class FilesystemPathHealthCheckTest extends TestCase
 {
@@ -78,7 +78,7 @@ final class FilesystemPathHealthCheckTest extends TestCase
 
     public function testNativeInspectorDelegatesToFilesystemState(): void
     {
-        $path = tempnam(sys_get_temp_dir(), 'pwf-access-health-');
+        $path = tempnam(sys_get_temp_dir(), 'pwk-access-health-');
         $this->assertIsString($path);
 
         try {

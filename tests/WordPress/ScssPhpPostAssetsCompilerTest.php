@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress;
+namespace Period\WpKit\Tests\WordPress;
 
-use Period\WpFramework\WordPress\ScssPhpPostAssetsCompiler;
+use Period\WpKit\WordPress\ScssPhpPostAssetsCompiler;
 use PHPUnit\Framework\TestCase;
 
 final class ScssPhpPostAssetsCompilerTest extends TestCase

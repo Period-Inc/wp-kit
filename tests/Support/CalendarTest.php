@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\Support;
+namespace Period\WpKit\Tests\Support;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\Support\Calendar;
-use Period\WpFramework\Support\CalendarDay;
-use Period\WpFramework\Support\Locale\WeekdayName;
+use Period\WpKit\Support\Calendar;
+use Period\WpKit\Support\CalendarDay;
+use Period\WpKit\Support\Locale\WeekdayName;
 
 final class CalendarTest extends TestCase
 {

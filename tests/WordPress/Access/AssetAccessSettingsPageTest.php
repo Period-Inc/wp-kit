@@ -2,31 +2,31 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AssetAccessHealthCheckInterface;
-use Period\WpFramework\WordPress\Access\AssetAccessHealthReporter;
-use Period\WpFramework\WordPress\Access\AssetAccessHealthSettingsSection;
-use Period\WpFramework\WordPress\Access\AssetAccessHealthStatus;
-use Period\WpFramework\WordPress\Access\AssetAccessHealthStatusRenderer;
-use Period\WpFramework\WordPress\Access\AssetAccessRepairPlanRenderer;
-use Period\WpFramework\WordPress\Access\AssetAccessRepairExecutionController;
-use Period\WpFramework\WordPress\Access\AssetAccessRepairExecutionRenderer;
-use Period\WpFramework\WordPress\Access\AssetAccessRepairNonceFieldRenderer;
-use Period\WpFramework\WordPress\Access\AssetAccessRepairRequest;
-use Period\WpFramework\WordPress\Access\AssetAccessRepairSection;
-use Period\WpFramework\WordPress\Access\AssetAccessSettings;
-use Period\WpFramework\WordPress\Access\AssetAccessSettingsFormHandler;
-use Period\WpFramework\WordPress\Access\AssetAccessSettingsPageRenderer;
-use Period\WpFramework\WordPress\Access\AssetAccessSettingsRepositoryInterface;
-use Period\WpFramework\WordPress\Access\CallableAssetAccessSettingsRepository;
-use Period\WpFramework\WordPress\Access\FilesystemInspectorInterface;
-use Period\WpFramework\WordPress\Access\FilesystemOperatorInterface;
-use Period\WpFramework\WordPress\Access\FilesystemRepairExecutor;
-use Period\WpFramework\WordPress\Access\FilesystemRepairPlanner;
-use Period\WpFramework\WordPress\Access\WordPressAssetAccessSettingsMenuRegistrar;
-use Period\WpFramework\WordPress\Access\WordPressAssetAccessSettingsPage;
+use Period\WpKit\WordPress\Access\AssetAccessHealthCheckInterface;
+use Period\WpKit\WordPress\Access\AssetAccessHealthReporter;
+use Period\WpKit\WordPress\Access\AssetAccessHealthSettingsSection;
+use Period\WpKit\WordPress\Access\AssetAccessHealthStatus;
+use Period\WpKit\WordPress\Access\AssetAccessHealthStatusRenderer;
+use Period\WpKit\WordPress\Access\AssetAccessRepairPlanRenderer;
+use Period\WpKit\WordPress\Access\AssetAccessRepairExecutionController;
+use Period\WpKit\WordPress\Access\AssetAccessRepairExecutionRenderer;
+use Period\WpKit\WordPress\Access\AssetAccessRepairNonceFieldRenderer;
+use Period\WpKit\WordPress\Access\AssetAccessRepairRequest;
+use Period\WpKit\WordPress\Access\AssetAccessRepairSection;
+use Period\WpKit\WordPress\Access\AssetAccessSettings;
+use Period\WpKit\WordPress\Access\AssetAccessSettingsFormHandler;
+use Period\WpKit\WordPress\Access\AssetAccessSettingsPageRenderer;
+use Period\WpKit\WordPress\Access\AssetAccessSettingsRepositoryInterface;
+use Period\WpKit\WordPress\Access\CallableAssetAccessSettingsRepository;
+use Period\WpKit\WordPress\Access\FilesystemInspectorInterface;
+use Period\WpKit\WordPress\Access\FilesystemOperatorInterface;
+use Period\WpKit\WordPress\Access\FilesystemRepairExecutor;
+use Period\WpKit\WordPress\Access\FilesystemRepairPlanner;
+use Period\WpKit\WordPress\Access\WordPressAssetAccessSettingsMenuRegistrar;
+use Period\WpKit\WordPress\Access\WordPressAssetAccessSettingsPage;
 
 final class AssetAccessSettingsPageTest extends TestCase
 {

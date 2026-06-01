@@ -15,7 +15,7 @@
 - `ImageRenderer` — WordPress 添付ファイルを `<img>` タグとしてレンダリング
 - `PageNavigationRenderer` — `paginate_links()` ラッパー
 - `ShortcodeRegistrar` （WordPress namespace） — `[document]` / `[title]` / `[site_name]` ショートコード登録
-- Template Tags — `pwf()->title()` / `pwf()->site()` / `pwf()->document()`
+- Template Tags — `pwk()->title()` / `pwk()->site()` / `pwk()->document()`
 - MetaBox `labels` 配列によるラベル一括指定
 
 ### Changed

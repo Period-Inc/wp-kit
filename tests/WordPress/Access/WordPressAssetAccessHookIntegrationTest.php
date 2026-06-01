@@ -2,25 +2,25 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\Tests\WordPress\Access;
+namespace Period\WpKit\Tests\WordPress\Access;
 
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
-use Period\WpFramework\WordPress\Access\AssetAccessManager;
-use Period\WpFramework\WordPress\Access\AssetDeliveryResult;
-use Period\WpFramework\WordPress\Access\AssetEmitResult;
-use Period\WpFramework\WordPress\Access\AssetRequestContext;
-use Period\WpFramework\WordPress\Access\AssetRequestMatcher;
-use Period\WpFramework\WordPress\Access\AssetResponseEmitterInterface;
-use Period\WpFramework\WordPress\Access\DefaultRequestContextFactory;
-use Period\WpFramework\WordPress\Access\InMemoryAssetStorage;
-use Period\WpFramework\WordPress\Access\MemoryAssetResponseEmitter;
-use Period\WpFramework\WordPress\Access\NullAssetDelivery;
-use Period\WpFramework\WordPress\Access\PublicAssetAccessPolicy;
-use Period\WpFramework\WordPress\Access\WordPressAssetAccessBootstrap;
-use Period\WpFramework\WordPress\Access\WordPressAssetAccessController;
-use Period\WpFramework\WordPress\Access\WordPressAssetAccessHookRegistrar;
-use Period\WpFramework\WordPress\Access\WordPressAssetAccessKernel;
+use Period\WpKit\WordPress\Access\AssetAccessManager;
+use Period\WpKit\WordPress\Access\AssetDeliveryResult;
+use Period\WpKit\WordPress\Access\AssetEmitResult;
+use Period\WpKit\WordPress\Access\AssetRequestContext;
+use Period\WpKit\WordPress\Access\AssetRequestMatcher;
+use Period\WpKit\WordPress\Access\AssetResponseEmitterInterface;
+use Period\WpKit\WordPress\Access\DefaultRequestContextFactory;
+use Period\WpKit\WordPress\Access\InMemoryAssetStorage;
+use Period\WpKit\WordPress\Access\MemoryAssetResponseEmitter;
+use Period\WpKit\WordPress\Access\NullAssetDelivery;
+use Period\WpKit\WordPress\Access\PublicAssetAccessPolicy;
+use Period\WpKit\WordPress\Access\WordPressAssetAccessBootstrap;
+use Period\WpKit\WordPress\Access\WordPressAssetAccessController;
+use Period\WpKit\WordPress\Access\WordPressAssetAccessHookRegistrar;
+use Period\WpKit\WordPress\Access\WordPressAssetAccessKernel;
 
 final class WordPressAssetAccessHookIntegrationTest extends TestCase
 {
@@ -51,7 +51,7 @@ final class WordPressAssetAccessHookIntegrationTest extends TestCase
         $kernel = new WordPressAssetAccessKernel(
             new AssetRequestMatcher(['/wp-content/uploads/']),
             new AssetAccessManager(new PublicAssetAccessPolicy()),
-            new class($fixed) implements \Period\WpFramework\WordPress\Access\AssetDeliveryInterface {
+            new class($fixed) implements \Period\WpKit\WordPress\Access\AssetDeliveryInterface {
                 public function __construct(private readonly AssetDeliveryResult $result) {}
 
                 public function deliver(AssetRequestContext $ctx): AssetDeliveryResult
@@ -59,8 +59,8 @@ final class WordPressAssetAccessHookIntegrationTest extends TestCase
                     return $this->result;
                 }
             },
-            new \Period\WpFramework\WordPress\Access\InMemoryAssetStorage([
-                new \Period\WpFramework\WordPress\Access\AssetStorageItem(
+            new \Period\WpKit\WordPress\Access\InMemoryAssetStorage([
+                new \Period\WpKit\WordPress\Access\AssetStorageItem(
                     '/wp-content/uploads/file.pdf', null, null, null, null
                 ),
             ]),

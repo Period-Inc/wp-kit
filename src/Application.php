@@ -2,22 +2,22 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework;
+namespace Period\WpKit;
 
-use Period\WpFramework\Infrastructure\ShortcodeRegistrar;
-use Period\WpFramework\Infrastructure\Shortcode\ButtonShortcode;
-use Period\WpFramework\Infrastructure\Shortcode\FetchTitleShortcode;
-use Period\WpFramework\Infrastructure\Shortcode\TemplateUrlShortcode;
-use Period\WpFramework\WordPress\NavMenuClassEnhancer;
-use Period\WpFramework\WordPress\PostClassEnhancer;
-use Period\WpFramework\WordPress\PostTypeRegistrar;
-use Period\WpFramework\WordPress\ScriptStyleRegistrar;
-use Period\WpFramework\WordPress\DocumentRenderer;
-use Period\WpFramework\WordPress\SiteInfo;
-use Period\WpFramework\WordPress\TitleResolver;
-use Period\WpFramework\WordPress\Translator;
-use Period\WpFramework\Support\ArgsResolver;
-use Period\WpFramework\View\Renderer;
+use Period\WpKit\Infrastructure\ShortcodeRegistrar;
+use Period\WpKit\Infrastructure\Shortcode\ButtonShortcode;
+use Period\WpKit\Infrastructure\Shortcode\FetchTitleShortcode;
+use Period\WpKit\Infrastructure\Shortcode\TemplateUrlShortcode;
+use Period\WpKit\WordPress\NavMenuClassEnhancer;
+use Period\WpKit\WordPress\PostClassEnhancer;
+use Period\WpKit\WordPress\PostTypeRegistrar;
+use Period\WpKit\WordPress\ScriptStyleRegistrar;
+use Period\WpKit\WordPress\DocumentRenderer;
+use Period\WpKit\WordPress\SiteInfo;
+use Period\WpKit\WordPress\TitleResolver;
+use Period\WpKit\WordPress\Translator;
+use Period\WpKit\Support\ArgsResolver;
+use Period\WpKit\View\Renderer;
 
 final class Application
 {

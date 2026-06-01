@@ -5,7 +5,7 @@
 ### 使用例
 
 ```php
-use Period\WpFramework\Infrastructure\WordPress\DocumentRenderer;
+use Period\WpKit\Infrastructure\WordPress\DocumentRenderer;
 
 $renderer = new DocumentRenderer();
 echo $renderer->render('<h1>Hello</h1>', [
@@ -46,8 +46,8 @@ echo $renderer->render('<h1>Hello</h1>', [
 各レンダラーをコンストラクタから差し替えられます。`null` を渡すと内部で `new` されます。
 
 ```php
-use Period\WpFramework\Infrastructure\WordPress\DocumentRenderer;
-use Period\WpFramework\Infrastructure\WordPress\StartHtmlRenderer;
+use Period\WpKit\Infrastructure\WordPress\DocumentRenderer;
+use Period\WpKit\Infrastructure\WordPress\StartHtmlRenderer;
 
 $renderer = new DocumentRenderer(
     start: new StartHtmlRenderer(),

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Period\WpFramework\WordPress;
+namespace Period\WpKit\WordPress;
 
-use Period\WpFramework\View\Element;
-use Period\WpFramework\View\RawHtml;
+use Period\WpKit\View\Element;
+use Period\WpKit\View\RawHtml;
 
 final class PageNavigationRenderer
 {
