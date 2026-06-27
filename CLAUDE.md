@@ -14,7 +14,7 @@ No linting toolchain is configured.
 
 ## Architecture
 
-**Period WP Framework** is a WordPress utility library. All classes use `declare(strict_types=1)` and PSR-4 under the `Period\WpKit` namespace.
+**WP-Kit** is a WordPress utility library. All classes use `declare(strict_types=1)` and PSR-4 under the `Period\WpKit` namespace.
 
 ### Layer structure
 
